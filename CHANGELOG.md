@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.2.1...v4.2.1) (2023-04-26)
+
+
+### Bug Fixes
+
+* enforce adding "v" in tag ([39fbf59](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/39fbf59e577f9beada7cba191872b1081a053ae3))
+
+
+### Miscellaneous Chores
+
+* release 4.2.1 ([dd99c54](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/dd99c54645ae9d339ae6c357863de5c643e7c0ea))
+
 ## [4.2.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.2.0...v4.2.1) (2023-04-26)
 
 
