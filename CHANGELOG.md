@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.2.2...v4.2.1) (2023-05-03)
+
+
+### Features
+
+* add web sdk ([c9bdeda](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/c9bdedae42e155feceefb9dbd6a19a606359d184))
+* added new Intercom features and moved java class in correct folder ([85ad5d2](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/85ad5d28e211fa5ed74eb9818cddab4f7b0f2756))
+* **android:** add plugin initialization ([4419064](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/44190641f7aab3ee7c72d11d130a73091ae02401))
+* **android:** finish initial api ([45b64b6](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/45b64b6e0b31ad1d5d6dbb0ae5d55721e87ea3df))
+* **capacitor:** add support for iOS ([beac173](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/beac17371101a0c152e8c52aaec701848bf2ad3a))
+* **intercom:** allow sending of push token / receiving push notifs ([50299dc](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/50299dc6c8ea11db480d17ee1550096a6bc934a1))
+
+
+### Bug Fixes
+
+* android config initialization ([6d5440e](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/6d5440ec9e0508b0a41f54abd199bc07ab7ca54b))
+* **android:** add app compat ([9e2a97c](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/9e2a97c317119b481269a08ecd82202918055540))
+* **android:** cap implementation ([081eb00](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/081eb00594acffeaa04a0d01398f3f38a8d4b8cf))
+* **android:** revamp platform ([9c72418](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/9c72418063fe970c1efe4d810170c17ea12deb0c))
+* Cann't resolve io.intercom.android:intercom-sdk ([50f18ff](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/50f18ffc02281a379b6100bccae1c17bd5958e2e))
+* displayMessageComposer can sen a message to the messenger ([54428ce](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/54428ce6d1a5a7dd040810b18475bd227ea420ce))
+* enforce adding "v" in tag ([39fbf59](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/39fbf59e577f9beada7cba191872b1081a053ae3))
+* **intercom:** :art: unify updateUser method with different platforms ([80c1d40](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/80c1d4095c8e20b5a7fe17c5b94b28c4dc751bca))
+* **intercom:** :art: use same space naming on each platform ([b86743a](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/b86743a7d2709d6dc339bae949f887c85612e69f))
+* **intercom:** :bug: rename ios podspec ([08daf5c](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/08daf5c53974f551dab13cbb5943d83d5df2249c))
+* **intercom:** fix imports ([20623c7](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/20623c7006098c0a1b477eafc26c3e4b04d8d64d))
+* **ios:** :bug: moved ios methods to main thread ([dc52787](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/dc5278789098915581a9209266b978a55f423d45))
+* plugin api ([bdae017](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/bdae017151fd5d1e203e977a56521258a02d3c81))
+* **README:** add .md extension ([bec5b49](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/bec5b49b5e2fd50c87674d44c9f46885cae627b2))
+* **README:** typo ([1898e9e](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/1898e9ed4996dd06153e9920cc04856640efd57a))
+* **register user ios:** get email from correct field ([1aea48f](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/1aea48f901accb4fb851d24575c3ef8baf874ed7))
+* remove Podfile.lock closes [#44](https://github.com/Fiksuruoka-fi/capacitor-intercom/issues/44) ([d2e7374](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/d2e737455a67efe7584dc696bc7ec172b94a74aa))
+* ts definitions ([7433dac](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/7433dacbec98819a477e3b79a026f6299f9ffd10))
+* typo on README ([dbdc6b6](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/dbdc6b66b77046ddf09cc4ba8bfa6450e985d609))
+* unlock capacitor version ([45f1703](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/45f170392d47e4f56a54b2b771620196206a49da))
+* upgrade ios api to intercom 13 ([1ad877a](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/1ad877a642caa4083425dfd7c2c0c28f983e0786))
+* **web:** :bug: removed unwanted 'boot' on logout ([eaf9f53](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/eaf9f53f9fa9eed7a4dc421a27088e6bfbca166b))
+
+
+### Miscellaneous Chores
+
+* release 4.2.1 ([dd99c54](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/dd99c54645ae9d339ae6c357863de5c643e7c0ea))
+* release 4.2.1 ([6cda093](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/6cda0939e39a33c559f3c022c77912b66ae0978e))
+
 ## [4.2.2](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.2.1...v4.2.2) (2023-05-03)
 
 
