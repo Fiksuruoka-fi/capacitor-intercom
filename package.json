@@ -1,6 +1,6 @@
 {
   "name": "@foodello/intercom",
-  "version": "4.3.1",
+  "version": "4.2.1",
   "description": "Enable Intercom features for Capacitor apps",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
