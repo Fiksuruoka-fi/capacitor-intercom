@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.2](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.4.1...v4.4.2) (2024-02-26)
+
+
+### Bug Fixes
+
+* **ios:** read unread notifications from Intercom SDK when notification fires ([1cbc636](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/1cbc63693e7630ee53adb082bb6faa5a14380d27))
+
 ## [4.4.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.4.0...v4.4.1) (2023-06-12)
 
 
