@@ -16,7 +16,7 @@ declare module '@capacitor/cli' {
        * @since 1.0.0
        * @example "ios_sdk-xxx"
        */
-      iosApiKey: string;
+      iosApiKey?: string;
 
       /**
        * Configure Intercom iOS APP ID.
@@ -212,6 +212,15 @@ export interface IntercomPlugin {
    * @since 4.2.0
    */
   load(config: IntercomWebConfig): Promise<void>;
+
+  /**
+   * Load Intercom and set configs on Web environment.
+   *
+   * Only available for iOS and Android
+   *
+   * @since 4.2.0
+   */
+  loadWithKeys(options: LoadWithKeysOption): Promise<void>;
 
   /**
    * @deprecated
@@ -559,6 +568,28 @@ export interface IntercomStatic {
     ...params: Parameters<IntercomCommandSignature[Command]>
   ): ReturnType<IntercomCommandSignature[Command]>;
   booted: boolean;
+}
+
+/**
+ * LoadWithKeysOption Interface.
+ *
+ * Represents options required for dynamic load of native Intercom SDK.
+ *
+ * Only available for iOS and Android.
+ * @since 4.3.2
+ */
+export interface LoadWithKeysOption {
+  appId: string;
+
+  /**
+   * Required for iOS
+   */
+  iosApiKey?: string;
+
+  /**
+   * Required for Android
+   */
+  androidApiKey?: string;
 }
 
 /**

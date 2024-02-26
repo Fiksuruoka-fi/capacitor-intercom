@@ -8,17 +8,27 @@ import Intercom
  */
 @objc(IntercomPlugin)
 public class IntercomPlugin: CAPPlugin {
+    private var appId = "NO_APP_ID_PASSED"
+    private var apiKey = "NO_API_KEY_PASSED"
+
     public override func load() {
-        let apiKey = getConfig().getString("iosApiKey") ?? "ADD_IN_CAPACITOR_CONFIG_JSON"
-        let appId = getConfig().getString("iosAppId") ?? "ADD_IN_CAPACITOR_CONFIG_JSON"
-        
-        Intercom.setApiKey(apiKey, forAppId: appId)
-        
-        #if DEBUG
-        Intercom.enableLogging()
-        #endif
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didRegisterWithToken(notification:)), name: Notification.Name.capacitorDidRegisterForRemoteNotifications, object: nil)
+        appId = getConfig().getString("iosAppId") ?? "NO_APP_ID_PASSED"
+        apiKey = getConfig().getString("iosApiKey") ?? "NO_API_KEY_PASSED"
+            
+        let _ = try? setupIntercom()
+    }
+
+    @objc func loadWithKeys(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            do {
+                self.appId = call.getString("appId", "NO_APP_ID_PASSED")
+                self.apiKey = call.getString("iosApiKey", "NO_API_KEY_PASSED")
+                try self.setupIntercom()
+                call.resolve()
+            } catch let error as NSError {
+                call.reject(error.localizedDescription)
+            }
+        }
     }
     
     
@@ -263,7 +273,7 @@ public class IntercomPlugin: CAPPlugin {
     }
     
     @objc func setUserHash(_ call: CAPPluginCall) {
-        guard let hmac = call.getString("hmsc") else {
+        guard let hmac = call.getString("hmac") else {
             call.reject("hmac is missing or empty. Read intercom docs and generate it.")
             return
         }
@@ -363,6 +373,24 @@ public class IntercomPlugin: CAPPlugin {
         }
         
         return companyAttributes
+    }
+    
+    private func setupIntercom() throws {
+        guard appId != "NO_APP_ID_PASSED" else {
+            throw NSError(domain: "Intercom", code: 0, userInfo: [NSLocalizedDescriptionKey: "App ID missing"])
+        }
+
+        guard apiKey != "NO_API_KEY_PASSED" else {
+            throw NSError(domain: "Intercom", code: 0, userInfo: [NSLocalizedDescriptionKey: "API Key missing"])
+        }
+
+        Intercom.setApiKey(apiKey, forAppId: appId)
+        
+        #if DEBUG
+            Intercom.enableLogging()
+        #endif
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didRegisterWithToken(notification:)), name: Notification.Name.capacitorDidRegisterForRemoteNotifications, object: nil)
     }
 }
 

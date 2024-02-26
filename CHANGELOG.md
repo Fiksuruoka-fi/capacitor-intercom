@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.4.0...v4.4.1) (2023-06-12)
+
+
+### Bug Fixes
+
+* **intercom:** :bug: fixes building release ([cb9cdd0](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/cb9cdd04b6c88f9902d2619e427c3853edca1bfd))
+
+## [4.4.0](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.3.1...v4.4.0) (2023-05-30)
+
+
+### Features
+
+* **intercom:** add support for dynamic env keys ([caaa80d](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/caaa80db2aa73f04eafc5ec4bb24c53bff0aa396))
+
+
+### Bug Fixes
+
+* **intercom:** :bug: fixes null checks on user attributes ([635127f](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/635127fa0274a1fe8518b048ae0c36632505d60f))
+
+## [4.3.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.3.0...v4.3.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* **ios:** hmac typo ([20f3cce](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/20f3cce758a1ff346359d48c2b1cda9e00f4bdc9))
+
 ## [4.3.0](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.2.2...v4.3.0) (2023-05-05)
 
 

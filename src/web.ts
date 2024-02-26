@@ -7,6 +7,7 @@ import type {
   IntercomPushNotificationData,
   IntercomUserUpdateOptions,
   IntercomWebConfig,
+  LoadWithKeysOption,
   State,
 } from './definitions';
 import { IntercomContent, IntercomSpace } from './definitions';
@@ -48,6 +49,10 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
         window.addEventListener('load', listener, false);
       }
     }
+  }
+
+  async loadWithKeys(_options: LoadWithKeysOption): Promise<void> {
+    throw this.unimplemented('Not implemented on web.');
   }
 
   async initialize(): Promise<void> {
