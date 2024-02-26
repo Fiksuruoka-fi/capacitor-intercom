@@ -51,10 +51,7 @@ public class IntercomPlugin: CAPPlugin {
     }
     
     @objc func updateUnreadCount(notification: NSNotification) {
-        guard let unreadCount = notification.object as? Data else {
-            return
-        }
-        
+        let unreadCount = Intercom.unreadConversationCount()
         notifyListeners("updateUnreadCount", data: ["unreadCount": unreadCount])
     }
     
