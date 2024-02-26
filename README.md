@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/maintenance/yes/2023?style=flat-square" />
+  <img src="https://img.shields.io/maintenance/yes/2024?style=flat-square" />
   <a href="https://www.npmjs.com/package/@foodello/intercom"><img src="https://img.shields.io/npm/l/@foodello/intercom?style=flat-square" /></a>
 <br>
   <a href="https://www.npmjs.com/package/@foodello/intercom"><img src="https://img.shields.io/npm/dw/@foodello/intercom?style=flat-square" /></a>
