@@ -17,7 +17,9 @@
 
 ## Notice 🚀
 
-This version is for Capacitor > v5. If you are looking for plugin for Capacitor v4 please use `@foodello/intercom@^4.2.2`.
+This version is for Capacitor > v6. If you are looking for plugin for another Capacitor versions use:
+- `@foodello/intercom@^4.2.2` for v4
+- `@foodello/intercom@^5.0.0`for v5
 
 Thanks for the all the authors with their work in [`@capacitor-community/intercom`](https://github.com/capacitor-community/intercom
 ). We have noticed that the repository was left behind the newest updates and the original repository did not get updates quick enough once pull request were opened. So we decided to serve the newest Intercom capabilities under seperate org until the original repository catches the changes.
