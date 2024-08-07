@@ -91,26 +91,24 @@ public class IntercomPlugin: CAPPlugin {
         let email = call.getString("email")
         let attributes = ICMUserAttributes()
         
+        if ((email) == nil && (userId) == nil) {
+            call.reject("Email or userId is required")
+            return
+        }
+
         if ((email) != nil) {
             attributes.email = email
-            DispatchQueue.main.async {
-                Intercom.loginUser(with: attributes) { result in
-                    switch result {
-                    case .success: call.resolve()
-                    case .failure(let error): call.reject("Error logging in: \(error.localizedDescription)")
-                    }
-                }
-            }
         }
         
         if ((userId) != nil) {
             attributes.userId = userId
-            DispatchQueue.main.async {
-                Intercom.loginUser(with: attributes) { result in
-                    switch result {
-                    case .success: call.resolve()
-                    case .failure(let error): call.reject("Error logging in: \(error.localizedDescription)")
-                    }
+        }
+
+        DispatchQueue.main.async {
+            Intercom.loginUser(with: attributes) { result in
+                switch result {
+                case .success: call.resolve()
+                case .failure(let error): call.reject("Error logging in: \(error.localizedDescription)")
                 }
             }
         }
