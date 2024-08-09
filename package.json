@@ -1,6 +1,6 @@
 {
   "name": "@foodello/intercom",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Enable Intercom features for Capacitor apps",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -29,23 +29,23 @@
   "author": "Stewan Silva",
   "license": "MIT",
   "peerDependencies": {
-    "@capacitor/core": "^5.0.0"
+    "@capacitor/core": "^6.0.0"
   },
   "devDependencies": {
-    "@capacitor/android": "^5.0.0",
-    "@capacitor/cli": "^5.0.0",
-    "@capacitor/core": "^5.0.0",
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
     "@capacitor/docgen": "^0.0.10",
-    "@capacitor/ios": "^5.0.0",
+    "@capacitor/ios": "^6.0.0",
     "@commitlint/cli": "^17.6.1",
     "@commitlint/config-conventional": "^17.6.1",
-    "@ionic/eslint-config": "^0.3.0",
+    "@ionic/eslint-config": "^0.4.0",
     "@ionic/prettier-config": "^1.0.1",
     "@ionic/swiftlint-config": "^1.1.2",
     "@types/intercom-web": "^2.8.20",
     "@types/node": "^18.16.0",
     "all-contributors-cli": "^6.20.0",
-    "eslint": "^7.11.0",
+    "eslint": "^8.57.0",
     "husky": "^8.0.0",
     "prettier": "~2.3.0",
     "prettier-plugin-java": "~1.0.2",

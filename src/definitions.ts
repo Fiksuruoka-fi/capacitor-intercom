@@ -1,5 +1,6 @@
 /// <reference types="@capacitor/cli" />
 import type { PluginListenerHandle } from '@capacitor/core';
+import type { Intercom_ } from 'intercom-web';
 
 declare module '@capacitor/cli' {
   export interface PluginsConfig {
@@ -442,7 +443,7 @@ export interface IntercomPlugin {
   addListener(
     eventName: 'updateUnreadCount',
     listenerFunc: (data: { unreadCount: number }) => void,
-  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+  ): Promise<PluginListenerHandle>;
 }
 
 /**
