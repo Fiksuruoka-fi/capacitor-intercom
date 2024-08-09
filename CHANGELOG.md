@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v5.0.0...v5.1.0) (2024-08-09)
+
+
+### Features
+
+* **capacitor:** upgrades to capacitor v6 ([17c9643](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/17c9643f1b8419fa50018f5c2ea3d18b418588b8))
+
 ## [4.4.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.4.0...v4.4.1) (2023-06-12)
 
 
