@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v6.0.0...v6.0.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* **types:** fix type errors ([d3edc90](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/d3edc90ccb047b52339929ca4a9e487eada93c88))
+
 ## [4.4.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.4.0...v4.4.1) (2023-06-12)
 
 
