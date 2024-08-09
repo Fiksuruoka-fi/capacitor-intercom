@@ -1,6 +1,5 @@
 /// <reference types="@capacitor/cli" />
 import type { PluginListenerHandle } from '@capacitor/core';
-import type { Intercom_ } from 'intercom-web';
 
 declare module '@capacitor/cli' {
   export interface PluginsConfig {
@@ -503,7 +502,7 @@ export interface IntercomCommandSignature
   extends Intercom_.IntercomCommandSignature {
   showNews: (newsItemId: number) => void;
   startChecklist: (checklistId: number) => void;
-  showSpace: (spaceName: IntercomSpace) => void;
+  showSpace: (spaceName: IntercomSpace | string) => void;
 }
 
 /**

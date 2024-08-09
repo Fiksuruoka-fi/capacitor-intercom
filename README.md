@@ -77,6 +77,7 @@ if (!Capacitor.isNativePlatform()) {
 <docgen-index>
 
 * [`load(...)`](#load)
+* [`loadWithKeys(...)`](#loadwithkeys)
 * [`registerIdentifiedUser(...)`](#registeridentifieduser)
 * [`loginIdentifiedUser(...)`](#loginidentifieduser)
 * [`registerUnidentifiedUser()`](#registerunidentifieduser)
@@ -127,6 +128,23 @@ Only available for Web
 | Param        | Type                                                            |
 | ------------ | --------------------------------------------------------------- |
 | **`config`** | <code><a href="#intercomwebconfig">IntercomWebConfig</a></code> |
+
+--------------------
+
+
+### loadWithKeys(...)
+
+```typescript
+loadWithKeys(options: LoadWithKeysOption) => Promise<void>
+```
+
+Load Intercom and set configs on Web environment.
+
+Only available for iOS and Android
+
+| Param         | Type                                                              |
+| ------------- | ----------------------------------------------------------------- |
+| **`options`** | <code><a href="#loadwithkeysoption">LoadWithKeysOption</a></code> |
 
 --------------------
 
@@ -462,7 +480,7 @@ Get current unread conversation count.
 ### addListener(...)
 
 ```typescript
-addListener(eventName: 'updateUnreadCount', listenerFunc: (data: { unreadCount: number; }) => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+addListener(eventName: 'updateUnreadCount', listenerFunc: (data: { unreadCount: number; }) => void) => Promise<PluginListenerHandle>
 ```
 
 Listen for when the unread conversation count is changed.
@@ -472,7 +490,7 @@ Listen for when the unread conversation count is changed.
 | **`eventName`**    | <code>"updateUnreadCount"</code>                         |
 | **`listenerFunc`** | <code>(data: { unreadCount: number; }) =&gt; void</code> |
 
-**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
 --------------------
 
@@ -500,6 +518,21 @@ Represent configs that are available on Intercom Web SDK.
 | **`background_color`**         | <code>string</code>                                                         | Configure background color for Intercom. Used behind your team profile and other attributes. The color string can be any valid CSS Color Name HEX or RGB Only available for Web                                                                                       |
 
 
+#### LoadWithKeysOption
+
+<a href="#loadwithkeysoption">LoadWithKeysOption</a> Interface.
+
+Represents options required for dynamic load of native Intercom SDK.
+
+Only available for iOS and Android.
+
+| Prop                | Type                | Description          |
+| ------------------- | ------------------- | -------------------- |
+| **`appId`**         | <code>string</code> |                      |
+| **`iosApiKey`**     | <code>string</code> | Required for iOS     |
+| **`androidApiKey`** | <code>string</code> | Required for Android |
+
+
 #### IntercomUserUpdateOptions
 
 <a href="#intercomuserupdateoptions">IntercomUserUpdateOptions</a> Interface
@@ -517,6 +550,7 @@ Only available for iOS and Android.
 | **`languageOverride`** | <code>string</code>                                     |
 | **`customAttributes`** | <code>Record&lt;string, any&gt;</code>                  |
 | **`company`**          | <code><a href="#companyoption">CompanyOption</a></code> |
+| **`companies`**        | <code>CompanyOption[]</code>                            |
 
 
 #### CompanyOption
