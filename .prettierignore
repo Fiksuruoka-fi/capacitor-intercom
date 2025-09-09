@@ -1,4 +1,3 @@
-dist
 ios
 android/*
 !android/src
