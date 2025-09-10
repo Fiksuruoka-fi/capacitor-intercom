@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.0](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v6.0.1...v7.0.0) (2025-09-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ios:** lock intercom sdk to > v17
+* **android:** remove firebase dependency
+
+### Features
+
+* **android:** adds new methods from intercom sdk ([0d6cbd7](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/0d6cbd798c118fb0d492c6f67259be12d3390174))
+* **ios:** adds new methods from intercom sdk ([8db2b40](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/8db2b40ed7253fe8fc3824dc759a6d53e2bab9f1))
+* **web:** adds new methods from intercom sdk ([0703afa](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/0703afa6946752b06fb84198168bf71cfd51ed4c))
+* **web:** convert to use intercom npm module ([9dfb2fc](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/9dfb2fc67722d0d1de54b3fbf5483a75ea478c60))
+
+
+### Bug Fixes
+
+* typo fixes ([bea4729](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/bea472966d5e7580a71111e5b32d1b05d86c4ee5))
+
+
+### Miscellaneous Chores
+
+* **ios:** lock intercom sdk to &gt; v17 ([1f10216](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/1f102163efcb32ec55726837c7e69b133e73c353))
+
+
+### Code Refactoring
+
+* **android:** remove firebase dependency ([f992828](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/f9928283a629e8eabc01d13152d285524aa062b7))
+
 ## [4.4.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v4.4.0...v4.4.1) (2023-06-12)
 
 

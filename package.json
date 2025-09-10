@@ -27,7 +27,9 @@
     "watch": "tsc --watch"
   },
   "author": "Eljas Jalo",
-  "contributors": ["Stewan Silva"],
+  "contributors": [
+    "Stewan Silva"
+  ],
   "license": "MIT",
   "peerDependencies": {
     "@capacitor/core": ">=7.0.0"
