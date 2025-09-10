@@ -43,14 +43,16 @@ public class IntercomPlugin: CAPPlugin {
     }
     
     @objc func setupUnreadConversationListener(_ call: CAPPluginCall) {
-        NotificationCenter.default.addObserver(self,
-           selector: #selector(self.updateUnreadCount(notification:)),
-               name: NSNotification.Name.IntercomUnreadConversationCountDidChange,
-             object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleUpdateUnreadCountListener(notification:)),
+            name: NSNotification.Name.IntercomUnreadConversationCountDidChange,
+            object: nil
+        )
         call.resolve()
     }
     
-    @objc func updateUnreadCount(notification: NSNotification) {
+    @objc func handleUpdateUnreadCountListener(notification: NSNotification) {
         let unreadCount = Intercom.unreadConversationCount()
         notifyListeners("updateUnreadCount", data: ["unreadCount": unreadCount])
     }
@@ -216,7 +218,8 @@ public class IntercomPlugin: CAPPlugin {
         let spaceMapping: [String: Space] = [
             "help": .helpCenter,
             "messages": .messages,
-            "home": .home
+            "home": .home,
+            "tickets": .tickets
         ]
         let spaceString = call.getString("space", "")
         let space = spaceMapping[spaceString] ?? .home
@@ -301,7 +304,8 @@ public class IntercomPlugin: CAPPlugin {
         let contentMapping: [String: Intercom.Content] = [
             "carousel": Intercom.Content.carousel(id: contentId),
             "survey": Intercom.Content.survey(id: contentId),
-            "article": Intercom.Content.article(id: contentId)
+            "article": Intercom.Content.article(id: contentId),
+            "converation": Intercom.Content.conversation(id: contentId),
         ]
         let contentTypeString = call.getString("contentType", "")
         guard let contentType = contentMapping[contentTypeString] else {
@@ -388,7 +392,81 @@ public class IntercomPlugin: CAPPlugin {
             Intercom.enableLogging()
         #endif
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didRegisterWithToken(notification:)), name: Notification.Name.capacitorDidRegisterForRemoteNotifications, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.didRegisterWithToken(notification:)),
+            name: Notification.Name.capacitorDidRegisterForRemoteNotifications,
+            object: nil
+        )
+        
+        // Listen for Messenger show/hide events
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleMessengerWillShowListener(_:)),
+            name: NSNotification.Name.IntercomWindowWillShow,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleMessengerDidShow(_:)),
+            name: NSNotification.Name.IntercomWindowDidShow,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleMessengerWillHideListener(_:)),
+            name: NSNotification.Name.IntercomWindowWillHide,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleMessengerDidHideListener(_:)),
+            name: NSNotification.Name.IntercomWindowDidHide,
+            object: nil
+        )
+        
+        // Listen for new conversation events
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleNewConversationStartedListener(_:)),
+            name: NSNotification.Name.IntercomDidStartNewConversation,
+            object: nil
+        )
+
+        // Listen for unread ticket count change events
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.unreadTicketCountChanged(_:)),
+            name: NSNotification.Name.IntercomUnreadTicketCountDidChange,
+            object: nil
+        )
+    }
+
+    @objc func handleMessengerWillShowListener(_ notification: Notification) {
+        self.notifyListeners("messengerWillShow", data: [:])
+    }
+    
+    @objc func handleMessengerDidShow(_ notification: Notification) {
+        self.notifyListeners("messengerDidShow", data: [:])
+    }
+    
+    @objc func handleMessengerWillHideListener(_ notification: Notification) {
+        self.notifyListeners("messengerWillHide", data: [:])
+    }
+    
+    @objc func handleMessengerDidHideListener(_ notification: Notification) {
+        self.notifyListeners("messengerDidHide", data: [:])
+    }
+
+    @objc func handleNewConversationStartedListener(_ notification: Notification) {
+        self.notifyListeners("newConversationStarted", data: [:])
+    }
+
+    @objc func unreadTicketCountChanged(_ notification: Notification) {
+        self.notifyListeners("unreadTicketCountChange", data: [:])
     }
 }
 

@@ -433,10 +433,77 @@ export interface IntercomPlugin {
   /**
    * Listen for when a visitor enters their email into the Messenger.
    *
-   * @requires calling `setupOnUserEmailSuppliedListener()` before getting notifications.
-   * @since 4.1.0
+   * Only available for Web
+   *
+   * @since 7.0.0
    */
-  addListener(eventName: 'onUserEmailSupplied', listenerFunc: () => void): Promise<PluginListenerHandle>;
+  addListener(eventName: 'userEmailSupplied', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when the Messenger is about to be shown.
+   *
+   * Only available for iOS
+   * @see https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'messengerWillShow', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when the Messenger is shown.
+   *
+   * Only available for iOS and Web
+   *
+   * @see [iOS](https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications)
+   * @see [Web](https://developers.intercom.com/installing-intercom/web/methods#intercomonshow)
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'messengerDidShow', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when the Messenger is about to be hidden.
+   *
+   * Only available for iOS
+   * @see https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'messengerWillHide', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when the Messenger is hidden.
+   *
+   * Only available for iOS and Web
+   *
+   * @see [iOS](https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications)
+   * @see [Web](https://developers.intercom.com/installing-intercom/web/methods#intercomonhide)
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'messengerDidHide', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when new conversation is started.
+   *
+   * Only available for iOS
+   *
+   * @see https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'newConversationStarted', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when unread ticket count changes.
+   *
+   * Only available for iOS
+   *
+   * @see https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'unreadTicketCountChanged', listenerFunc: () => void): Promise<PluginListenerHandle>;
 }
 
 /**
@@ -523,11 +590,6 @@ export interface State {
    * Status if listener for unread messages has been set.
    */
   unreadListenerAttached: boolean;
-
-  /**
-   * Status if listener for user email supplied has been set.
-   */
-  onUserEmailSuppliedListenerAttached: boolean;
 }
 
 /**
@@ -672,6 +734,8 @@ export enum IntercomContent {
   Tour = 'tour',
 
   /**
+   * Only available for Web
+   *
    * @since 7.0.0
    */
   Ticket = 'ticket',
