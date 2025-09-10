@@ -1,15 +1,4 @@
 import { WebPlugin } from '@capacitor/core';
-
-import type {
-  IntercomCompany,
-  IntercomPlugin,
-  IntercomPushNotificationData,
-  IntercomUserUpdateOptions,
-  IntercomWebConfig,
-  LoadWithKeysOption,
-  State,
-} from './definitions';
-import { IntercomContent, IntercomSpace } from './definitions';
 import IntercomModule, {
   boot,
   hide,
@@ -31,6 +20,17 @@ import IntercomModule, {
   trackEvent,
   update,
 } from '@intercom/messenger-js-sdk';
+
+import type {
+  IntercomCompany,
+  IntercomPlugin,
+  IntercomPushNotificationData,
+  IntercomUserUpdateOptions,
+  IntercomWebConfig,
+  LoadWithKeysOption,
+  State,
+} from './definitions';
+import { IntercomContent, IntercomSpace } from './definitions';
 
 export class IntercomWeb extends WebPlugin implements IntercomPlugin {
   private state: State = {

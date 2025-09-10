@@ -110,7 +110,13 @@ if (!Capacitor.isNativePlatform()) {
 * [`removeUnreadConversationListener()`](#removeunreadconversationlistener)
 * [`getUnreadConversationCount()`](#getunreadconversationcount)
 * [`addListener('updateUnreadCount', ...)`](#addlistenerupdateunreadcount-)
-* [`addListener('onUserEmailSupplied', ...)`](#addlisteneronuseremailsupplied-)
+* [`addListener('userEmailSupplied', ...)`](#addlisteneruseremailsupplied-)
+* [`addListener('messengerWillShow', ...)`](#addlistenermessengerwillshow-)
+* [`addListener('messengerDidShow', ...)`](#addlistenermessengerdidshow-)
+* [`addListener('messengerWillHide', ...)`](#addlistenermessengerwillhide-)
+* [`addListener('messengerDidHide', ...)`](#addlistenermessengerdidhide-)
+* [`addListener('newConversationStarted', ...)`](#addlistenernewconversationstarted-)
+* [`addListener('unreadTicketCountChanged', ...)`](#addlistenerunreadticketcountchanged-)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 * [Enums](#enums)
@@ -560,22 +566,156 @@ Listen for when the unread conversation count is changed.
 --------------------
 
 
-### addListener('onUserEmailSupplied', ...)
+### addListener('userEmailSupplied', ...)
 
 ```typescript
-addListener(eventName: 'onUserEmailSupplied', listenerFunc: () => void) => Promise<PluginListenerHandle>
+addListener(eventName: 'userEmailSupplied', listenerFunc: () => void) => Promise<PluginListenerHandle>
 ```
 
 Listen for when a visitor enters their email into the Messenger.
 
-| Param              | Type                               |
-| ------------------ | ---------------------------------- |
-| **`eventName`**    | <code>'onUserEmailSupplied'</code> |
-| **`listenerFunc`** | <code>() =&gt; void</code>         |
+Only available for Web
+
+| Param              | Type                             |
+| ------------------ | -------------------------------- |
+| **`eventName`**    | <code>'userEmailSupplied'</code> |
+| **`listenerFunc`** | <code>() =&gt; void</code>       |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
-**Since:** 4.1.0
+**Since:** 7.0.0
+
+--------------------
+
+
+### addListener('messengerWillShow', ...)
+
+```typescript
+addListener(eventName: 'messengerWillShow', listenerFunc: () => void) => Promise<PluginListenerHandle>
+```
+
+Listen for when the Messenger is about to be shown.
+
+Only available for iOS
+
+| Param              | Type                             |
+| ------------------ | -------------------------------- |
+| **`eventName`**    | <code>'messengerWillShow'</code> |
+| **`listenerFunc`** | <code>() =&gt; void</code>       |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 7.0.0
+
+--------------------
+
+
+### addListener('messengerDidShow', ...)
+
+```typescript
+addListener(eventName: 'messengerDidShow', listenerFunc: () => void) => Promise<PluginListenerHandle>
+```
+
+Listen for when the Messenger is shown.
+
+Only available for iOS and Web
+
+| Param              | Type                            |
+| ------------------ | ------------------------------- |
+| **`eventName`**    | <code>'messengerDidShow'</code> |
+| **`listenerFunc`** | <code>() =&gt; void</code>      |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 7.0.0
+
+--------------------
+
+
+### addListener('messengerWillHide', ...)
+
+```typescript
+addListener(eventName: 'messengerWillHide', listenerFunc: () => void) => Promise<PluginListenerHandle>
+```
+
+Listen for when the Messenger is about to be hidden.
+
+Only available for iOS
+
+| Param              | Type                             |
+| ------------------ | -------------------------------- |
+| **`eventName`**    | <code>'messengerWillHide'</code> |
+| **`listenerFunc`** | <code>() =&gt; void</code>       |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 7.0.0
+
+--------------------
+
+
+### addListener('messengerDidHide', ...)
+
+```typescript
+addListener(eventName: 'messengerDidHide', listenerFunc: () => void) => Promise<PluginListenerHandle>
+```
+
+Listen for when the Messenger is hidden.
+
+Only available for iOS and Web
+
+| Param              | Type                            |
+| ------------------ | ------------------------------- |
+| **`eventName`**    | <code>'messengerDidHide'</code> |
+| **`listenerFunc`** | <code>() =&gt; void</code>      |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 7.0.0
+
+--------------------
+
+
+### addListener('newConversationStarted', ...)
+
+```typescript
+addListener(eventName: 'newConversationStarted', listenerFunc: () => void) => Promise<PluginListenerHandle>
+```
+
+Listen for when new conversation is started.
+
+Only available for iOS
+
+| Param              | Type                                  |
+| ------------------ | ------------------------------------- |
+| **`eventName`**    | <code>'newConversationStarted'</code> |
+| **`listenerFunc`** | <code>() =&gt; void</code>            |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 7.0.0
+
+--------------------
+
+
+### addListener('unreadTicketCountChanged', ...)
+
+```typescript
+addListener(eventName: 'unreadTicketCountChanged', listenerFunc: () => void) => Promise<PluginListenerHandle>
+```
+
+Listen for when unread ticket count changes.
+
+Only available for iOS
+
+| Param              | Type                                    |
+| ------------------ | --------------------------------------- |
+| **`eventName`**    | <code>'unreadTicketCountChanged'</code> |
+| **`listenerFunc`** | <code>() =&gt; void</code>              |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 7.0.0
 
 --------------------
 
@@ -727,7 +867,7 @@ Construct a type with a set of properties K of type T
 | **`Checklist`**    | <code>'checklist'</code>    | Only available for Web             | 4.2.0 |
 | **`News`**         | <code>'news'</code>         | Only available for Web             | 4.2.0 |
 | **`Tour`**         | <code>'tour'</code>         | Only available for Web             | 4.2.0 |
-| **`Ticket`**       | <code>'ticket'</code>       |                                    | 7.0.0 |
+| **`Ticket`**       | <code>'ticket'</code>       | Only available for Web             | 7.0.0 |
 | **`Conversation`** | <code>'conversation'</code> |                                    | 7.0.0 |
 
 
