@@ -31,6 +31,9 @@
   "peerDependencies": {
     "@capacitor/core": ">=7.0.0"
   },
+  "dependencies": {
+    "@intercom/messenger-js-sdk": "^0.0.17"
+  },
   "devDependencies": {
     "@capacitor/android": "^7.0.0",
     "@capacitor/cli": "^7.0.0",
@@ -42,7 +45,6 @@
     "@ionic/eslint-config": "^0.4.0",
     "@ionic/prettier-config": "^4.0.0",
     "@ionic/swiftlint-config": "^2.0.0",
-    "@types/intercom-web": "^2.8.26",
     "@types/node": "^18.16.0",
     "all-contributors-cli": "^6.20.0",
     "eslint": "^8.57.0",

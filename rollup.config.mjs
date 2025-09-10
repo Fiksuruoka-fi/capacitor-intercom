@@ -7,6 +7,7 @@ export default {
       name: 'capacitorIntercom',
       globals: {
         '@capacitor/core': 'capacitorExports',
+        '@intercom/messenger-js-sdk': 'Intercom',
       },
       sourcemap: true,
       inlineDynamicImports: true,
@@ -18,5 +19,5 @@ export default {
       inlineDynamicImports: true,
     },
   ],
-  external: ['@capacitor/core'],
+  external: ['@capacitor/core', '@intercom/messenger-js-sdk'],
 };

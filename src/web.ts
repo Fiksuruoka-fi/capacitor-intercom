@@ -1,8 +1,7 @@
 import { WebPlugin } from '@capacitor/core';
 
 import type {
-  IntercomCommand,
-  IntercomCommandSignature,
+  IntercomCompany,
   IntercomPlugin,
   IntercomPushNotificationData,
   IntercomUserUpdateOptions,
@@ -11,14 +10,29 @@ import type {
   State,
 } from './definitions';
 import { IntercomContent, IntercomSpace } from './definitions';
+import IntercomModule, {
+  boot,
+  hide,
+  onHide,
+  onShow,
+  onUnreadCountChange,
+  showArticle,
+  showMessages,
+  showNewMessage,
+  showNews,
+  showSpace,
+  shutdown,
+  startChecklist,
+  startSurvey,
+  startTour,
+  trackEvent,
+  update,
+} from '@intercom/messenger-js-sdk';
 
 export class IntercomWeb extends WebPlugin implements IntercomPlugin {
-  private SCRIPT_ID = 'capacitor-intercom';
-  private preCalledMethods: IntercomCommand[][] = [];
-
   private state: State = {
     booted: false,
-    config: {},
+    config: { app_id: '' },
     initialized: false,
     isVisible: false,
     unreadCount: 0,
@@ -32,23 +46,8 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
   async load(config: IntercomWebConfig): Promise<void> {
     this.state.config = config;
 
-    if (typeof window.Intercom === 'function' && window.Intercom.booted) {
-      this.initialize();
-    } else {
-      if (document.readyState === 'complete') {
-        this.includeScript(this.state.config.app_id || '', () =>
-          this.initialize(),
-        );
-      } else {
-        const listener = () => {
-          this.includeScript(this.state.config.app_id || '', () =>
-            this.initialize(),
-          );
-          window.removeEventListener('load', listener);
-        };
-        window.addEventListener('load', listener, false);
-      }
-    }
+    IntercomModule(config);
+    await this.initialize();
   }
 
   async loadWithKeys(_options: LoadWithKeysOption): Promise<void> {
@@ -56,24 +55,15 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
   }
 
   async initialize(): Promise<void> {
-    this.state.booted = window.Intercom.booted;
-    this.callIntercom('reattach_activator');
-    this.updateConfig(this.state.config);
     this.state.initialized = true;
 
-    for (const [command, params] of this.preCalledMethods) {
-      this.callIntercom(command, params);
-    }
-
-    this.callIntercom('onHide', () => this.setIsVisible(true));
-    this.callIntercom('onShow', () => this.setIsVisible(false));
-    this.callIntercom('boot', this.state.config);
+    onHide(() => this.setIsVisible(false));
+    onShow(() => this.setIsVisible(true));
+    boot(this.state.config);
+    this.state.booted = true;
   }
 
-  async loginIdentifiedUser(_options: {
-    userId?: string | undefined;
-    email?: string | undefined;
-  }): Promise<void> {
+  async loginIdentifiedUser(_options: { userId?: string; email?: string }): Promise<void> {
     throw this.unimplemented('Not implemented on web.');
   }
 
@@ -81,67 +71,46 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     throw this.unimplemented('Not implemented on web.');
   }
 
-  async presentContent(options: {
-    contentType: IntercomContent;
-    contentId: string;
-  }): Promise<void> {
+  async presentContent(options: { contentType: IntercomContent; contentId: string }): Promise<void> {
     const { contentType, contentId } = options;
-    const parsedId = parseInt(contentId);
+    const parsedId = contentId;
+
     if (!contentId) {
       throw this.unavailable('Content ID not defined.');
     }
 
-    switch (contentType) {
-      case IntercomContent.Article:
-        this.callIntercom('showArticle', parsedId);
-        return;
-      case IntercomContent.Carousel:
-        throw this.unimplemented('Carousel not implemented on web.');
-      case IntercomContent.Checklist:
-        this.callIntercom('startChecklist', parsedId);
-        return;
-      case IntercomContent.News:
-        this.callIntercom('showNews', parsedId);
-        return;
-      case IntercomContent.Survey:
-        this.callIntercom('startSurvey', parsedId);
-        return;
-      case IntercomContent.Tour:
-        this.callIntercom('startTour', parsedId);
-        return;
-      default:
-        throw this.unimplemented(`${contentType} not implemented on web.`);
-    }
+    const actions: Partial<Record<IntercomContent, (id: string) => void>> = {
+      [IntercomContent.Article]: showArticle,
+      [IntercomContent.Checklist]: startChecklist,
+      [IntercomContent.News]: showNews,
+      [IntercomContent.Survey]: startSurvey,
+      [IntercomContent.Tour]: startTour,
+    };
+
+    const action = actions[contentType];
+    if (!action) throw this.unimplemented(`${contentType} not implemented on web.`);
+
+    action(parsedId);
   }
 
   async present(options: { space: IntercomSpace }): Promise<void> {
     const { space } = options;
 
-    switch (space) {
-      case IntercomSpace.HelpCenter:
-        this.callIntercom('showSpace', IntercomSpace.HelpCenter);
-        return;
-      case IntercomSpace.Home:
-        this.callIntercom('showSpace', IntercomSpace.Home);
-        return;
-      case IntercomSpace.Messages:
-        this.callIntercom('showSpace', IntercomSpace.Messages);
-        return;
-      case IntercomSpace.News:
-        this.callIntercom('showSpace', IntercomSpace.News);
-        return;
-      case IntercomSpace.Tasks:
-        this.callIntercom('showSpace', IntercomSpace.Tasks);
-        return;
-      default:
-        throw this.unimplemented(`${space} not implemented on web.`);
-    }
+    const actions: Record<IntercomSpace, () => void> = {
+      [IntercomSpace.HelpCenter]: () => showSpace(IntercomSpace.HelpCenter),
+      [IntercomSpace.Home]: () => showSpace(IntercomSpace.Home),
+      [IntercomSpace.Messages]: () => showSpace(IntercomSpace.Messages),
+      [IntercomSpace.News]: () => showSpace(IntercomSpace.News),
+      [IntercomSpace.Tasks]: () => showSpace(IntercomSpace.Tasks),
+    };
+
+    const action = actions[space];
+    if (!action) throw this.unimplemented(`${space} not implemented on web.`);
+
+    action();
   }
 
-  async registerIdentifiedUser(_options: {
-    userId?: string;
-    email?: string;
-  }): Promise<void> {
+  async registerIdentifiedUser(_options: { userId?: string; email?: string }): Promise<void> {
     throw this.unimplemented('Not implemented on web.');
   }
 
@@ -151,9 +120,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
 
   async updateUser(options: IntercomUserUpdateOptions): Promise<void> {
     const company = this.constructCompany(options.company);
-    const companies = options.companies
-      ?.map(this.constructCompany)
-      .filter(company => !!company) as Intercom_.IntercomCompany[];
+    const companies = options.companies?.map(this.constructCompany).filter((company) => !!company) as IntercomCompany[];
 
     const configEntries = Object.entries({
       user_id: options.userId,
@@ -165,12 +132,12 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
       ...(options.customAttributes || {}),
     }).filter(([_, value]) => value !== undefined);
 
-    const webConfig: IntercomWebConfig = Object.fromEntries(configEntries);
+    const webConfig: Partial<IntercomWebConfig> = Object.fromEntries(configEntries);
     this.updateConfig(webConfig);
   }
 
   async logout(): Promise<void> {
-    this.callIntercom('shutdown');
+    shutdown();
     this.resetState();
   }
 
@@ -181,27 +148,27 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     }
 
     if (data) {
-      this.callIntercom('trackEvent', name, data);
+      trackEvent(name, data);
     } else {
-      this.callIntercom('trackEvent', name);
+      trackEvent(name);
     }
   }
 
   async displayMessenger(): Promise<void> {
-    this.callIntercom('showMessages');
+    showMessages();
   }
 
   async hideMessenger(): Promise<void> {
-    this.callIntercom('hide');
+    hide();
   }
 
   async displayMessageComposer(options: { message: string }): Promise<void> {
     const { message } = options;
-    this.callIntercom('showNewMessage', message);
+    showNewMessage(message);
   }
 
   async displayHelpCenter(): Promise<void> {
-    this.callIntercom('showSpace', IntercomSpace.HelpCenter);
+    showSpace(IntercomSpace.HelpCenter);
   }
 
   async displayLauncher(): Promise<void> {
@@ -244,9 +211,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     this.updateConfig({ vertical_padding: numberValue });
   }
 
-  async receivePush(
-    _notification: IntercomPushNotificationData,
-  ): Promise<void> {
+  async receivePush(_notification: IntercomPushNotificationData): Promise<void> {
     throw this.unimplemented('Not implemented on web.');
   }
 
@@ -256,19 +221,17 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
 
   async displayArticle(options: { articleId: string }): Promise<void> {
     const { articleId } = options;
-    if (!parseInt(articleId)) {
+    if (!articleId) {
       throw this.unavailable('Invalid article id');
     }
 
-    this.callIntercom('showArticle', parseInt(articleId));
+    showArticle(articleId);
   }
 
   async setupUnreadConversationListener(): Promise<void> {
     if (this.state.unreadListenerAttached) return;
 
-    this.callIntercom('onUnreadCountChange', unreadCount =>
-      this.unreadListener(unreadCount),
-    );
+    onUnreadCountChange((count: number) => this.onUnreadCountChangeHandler(count));
     this.state.unreadListenerAttached = true;
   }
 
@@ -283,9 +246,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     };
   }
 
-  private constructCompany(
-    company: IntercomUserUpdateOptions['company'],
-  ): IntercomWebConfig['company'] {
+  private constructCompany(company: IntercomUserUpdateOptions['company']): IntercomWebConfig['company'] {
     if (company) {
       const companyEntries = Object.entries({
         name: company.name,
@@ -297,9 +258,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
       }).filter(([_, value]) => value !== undefined);
 
       if (companyEntries.length) {
-        return Object.fromEntries(
-          companyEntries,
-        ) as IntercomWebConfig['company'];
+        return Object.fromEntries(companyEntries) as IntercomWebConfig['company'];
       }
     }
   }
@@ -310,35 +269,9 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
    * @private
    */
   private resetState() {
-    this.state.config = {};
+    this.state.config = { app_id: '' };
     this.state.unreadCount = 0;
     this.state.unreadListenerAttached = false;
-  }
-
-  /**
-   * Includes the Intercom script on the page and calls the done callback when finished.
-   *
-   * @param appId - The Intercom application ID.
-   * @param done - The callback function to be called when the script is loaded.
-   * @private
-   */
-  private includeScript(appId: string, done: () => void) {
-    const doc = window.document;
-    if (doc.getElementById(this.SCRIPT_ID)) {
-      done();
-      return;
-    }
-
-    const script = doc.createElement('script');
-    script.id = this.SCRIPT_ID;
-    script.type = 'text/javascript';
-    script.async = true;
-    script.src = `https://widget.intercom.io/widget/${appId}`;
-
-    const head = doc.getElementsByTagName('head')[0];
-    head.appendChild(script);
-
-    script.onload = done;
   }
 
   /**
@@ -347,27 +280,9 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
    * @param count - The new unread message count.
    * @private
    */
-  private unreadListener(count: number) {
+  private onUnreadCountChangeHandler(count: number) {
     this.state.unreadCount = count;
     this.notifyListeners('updateUnreadCount', { unreadCount: count });
-  }
-
-  /**
-   * Calls the Intercom function with the given command and parameters.
-   *
-   * @param command - The Intercom command to call.
-   * @param params - The parameters for the command.
-   * @private
-   */
-  private callIntercom<Command extends IntercomCommand>(
-    command: Command,
-    ...params: Parameters<IntercomCommandSignature[Command]>
-  ) {
-    if (typeof window.Intercom === 'function') {
-      window.Intercom(command, ...params);
-    } else {
-      this.preCalledMethods.push([command, ...params]);
-    }
   }
 
   /**
@@ -387,12 +302,12 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
    * @throws If options are not found or invalid.
    * @private
    */
-  private updateConfig(options: IntercomWebConfig) {
+  private updateConfig(options: Partial<IntercomWebConfig>) {
     if (!Object.keys(options || {}).length) {
       throw this.unavailable('Update options not found or invalid.');
     }
 
-    this.callIntercom('update', options);
+    update(options);
     Object.assign(this.state.config, options);
   }
 }
