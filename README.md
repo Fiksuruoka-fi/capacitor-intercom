@@ -81,37 +81,39 @@ if (!Capacitor.isNativePlatform()) {
 
 <docgen-index>
 
-- [`load(...)`](#load)
-- [`loadWithKeys(...)`](#loadwithkeys)
-- [`registerIdentifiedUser(...)`](#registeridentifieduser)
-- [`loginIdentifiedUser(...)`](#loginidentifieduser)
-- [`registerUnidentifiedUser()`](#registerunidentifieduser)
-- [`loginUnidentifiedUser()`](#loginunidentifieduser)
-- [`updateUser(...)`](#updateuser)
-- [`logout()`](#logout)
-- [`logEvent(...)`](#logevent)
-- [`displayMessenger()`](#displaymessenger)
-- [`displayMessageComposer(...)`](#displaymessagecomposer)
-- [`displayHelpCenter()`](#displayhelpcenter)
-- [`hideMessenger()`](#hidemessenger)
-- [`displayLauncher()`](#displaylauncher)
-- [`hideLauncher()`](#hidelauncher)
-- [`displayInAppMessages()`](#displayinappmessages)
-- [`hideInAppMessages()`](#hideinappmessages)
-- [`displayCarousel(...)`](#displaycarousel)
-- [`setUserHash(...)`](#setuserhash)
-- [`setBottomPadding(...)`](#setbottompadding)
-- [`sendPushTokenToIntercom(...)`](#sendpushtokentointercom)
-- [`receivePush(...)`](#receivepush)
-- [`displayArticle(...)`](#displayarticle)
-- [`presentContent(...)`](#presentcontent)
-- [`present(...)`](#present)
-- [`setupUnreadConversationListener()`](#setupunreadconversationlistener)
-- [`removeUnreadConversationListener()`](#removeunreadconversationlistener)
-- [`getUnreadConversationCount()`](#getunreadconversationcount)
-- [`addListener(...)`](#addlistener)
-- [Interfaces](#interfaces)
-- [Enums](#enums)
+* [`load(...)`](#load)
+* [`loadWithKeys(...)`](#loadwithkeys)
+* [`registerIdentifiedUser(...)`](#registeridentifieduser)
+* [`loginIdentifiedUser(...)`](#loginidentifieduser)
+* [`registerUnidentifiedUser()`](#registerunidentifieduser)
+* [`loginUnidentifiedUser()`](#loginunidentifieduser)
+* [`updateUser(...)`](#updateuser)
+* [`logout()`](#logout)
+* [`logEvent(...)`](#logevent)
+* [`displayMessenger()`](#displaymessenger)
+* [`displayMessageComposer(...)`](#displaymessagecomposer)
+* [`displayHelpCenter()`](#displayhelpcenter)
+* [`hideMessenger()`](#hidemessenger)
+* [`displayLauncher()`](#displaylauncher)
+* [`hideLauncher()`](#hidelauncher)
+* [`displayInAppMessages()`](#displayinappmessages)
+* [`hideInAppMessages()`](#hideinappmessages)
+* [`displayCarousel(...)`](#displaycarousel)
+* [`setUserHash(...)`](#setuserhash)
+* [`setBottomPadding(...)`](#setbottompadding)
+* [`sendPushTokenToIntercom(...)`](#sendpushtokentointercom)
+* [`receivePush(...)`](#receivepush)
+* [`displayArticle(...)`](#displayarticle)
+* [`presentContent(...)`](#presentcontent)
+* [`present(...)`](#present)
+* [`setupUnreadConversationListener()`](#setupunreadconversationlistener)
+* [`removeUnreadConversationListener()`](#removeunreadconversationlistener)
+* [`getUnreadConversationCount()`](#getunreadconversationcount)
+* [`addListener('updateUnreadCount', ...)`](#addlistenerupdateunreadcount-)
+* [`addListener('onUserEmailSupplied', ...)`](#addlisteneronuseremailsupplied-)
+* [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
+* [Enums](#enums)
 
 </docgen-index>
 
@@ -134,7 +136,10 @@ Only available for Web
 | ------------ | --------------------------------------------------------------- |
 | **`config`** | <code><a href="#intercomwebconfig">IntercomWebConfig</a></code> |
 
----
+**Since:** 4.2.0
+
+--------------------
+
 
 ### loadWithKeys(...)
 
@@ -150,7 +155,10 @@ Only available for iOS and Android
 | ------------- | ----------------------------------------------------------------- |
 | **`options`** | <code><a href="#loadwithkeysoption">LoadWithKeysOption</a></code> |
 
----
+**Since:** 4.2.0
+
+--------------------
+
 
 ### registerIdentifiedUser(...)
 
@@ -162,7 +170,10 @@ registerIdentifiedUser(options: { userId?: string; email?: string; }) => Promise
 | ------------- | ------------------------------------------------- |
 | **`options`** | <code>{ userId?: string; email?: string; }</code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### loginIdentifiedUser(...)
 
@@ -176,7 +187,10 @@ Login an identified user with Intercom.
 | ------------- | ------------------------------------------------- |
 | **`options`** | <code>{ userId?: string; email?: string; }</code> |
 
----
+**Since:** 4.1.0
+
+--------------------
+
 
 ### registerUnidentifiedUser()
 
@@ -184,7 +198,10 @@ Login an identified user with Intercom.
 registerUnidentifiedUser() => Promise<void>
 ```
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### loginUnidentifiedUser()
 
@@ -194,7 +211,10 @@ loginUnidentifiedUser() => Promise<void>
 
 Login an unidentified user with Intercom.
 
----
+**Since:** 4.1.0
+
+--------------------
+
 
 ### updateUser(...)
 
@@ -208,7 +228,10 @@ Updates a user's attributes in Intercom.
 | ------------- | ------------------------------------------------------------------------------- |
 | **`options`** | <code><a href="#intercomuserupdateoptions">IntercomUserUpdateOptions</a></code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### logout()
 
@@ -218,7 +241,10 @@ logout() => Promise<void>
 
 Logs the user out of Intercom.
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### logEvent(...)
 
@@ -232,7 +258,10 @@ Logs an event with optional metadata in Intercom.
 | ------------- | ------------------------------------------ |
 | **`options`** | <code>{ name: string; data?: any; }</code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### displayMessenger()
 
@@ -240,7 +269,10 @@ Logs an event with optional metadata in Intercom.
 displayMessenger() => Promise<void>
 ```
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### displayMessageComposer(...)
 
@@ -254,7 +286,10 @@ Displays the Intercom Message Composer with an initial message.
 | ------------- | --------------------------------- |
 | **`options`** | <code>{ message: string; }</code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### displayHelpCenter()
 
@@ -262,7 +297,10 @@ Displays the Intercom Message Composer with an initial message.
 displayHelpCenter() => Promise<void>
 ```
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### hideMessenger()
 
@@ -272,7 +310,10 @@ hideMessenger() => Promise<void>
 
 Hides the Intercom Messenger.
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### displayLauncher()
 
@@ -282,7 +323,10 @@ displayLauncher() => Promise<void>
 
 Displays the default Intercom Launcher.
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### hideLauncher()
 
@@ -292,7 +336,10 @@ hideLauncher() => Promise<void>
 
 Hides the Intercom Launcher.
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### displayInAppMessages()
 
@@ -302,7 +349,10 @@ displayInAppMessages() => Promise<void>
 
 Displays Intercom In-App Messages.
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### hideInAppMessages()
 
@@ -312,7 +362,10 @@ hideInAppMessages() => Promise<void>
 
 Hides Intercom In-App Messages.
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### displayCarousel(...)
 
@@ -324,7 +377,10 @@ displayCarousel(options: { carouselId: string; }) => Promise<void>
 | ------------- | ------------------------------------ |
 | **`options`** | <code>{ carouselId: string; }</code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### setUserHash(...)
 
@@ -338,7 +394,10 @@ Sets the HMAC user hash for Intercom Identity Verification.
 | ------------- | ------------------------------ |
 | **`options`** | <code>{ hmac: string; }</code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### setBottomPadding(...)
 
@@ -352,7 +411,10 @@ Sets the bottom padding for the Intercom Messenger.
 | ------------- | ------------------------------- |
 | **`options`** | <code>{ value: string; }</code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### sendPushTokenToIntercom(...)
 
@@ -366,7 +428,10 @@ Sends a push token to Intercom.
 | ------------- | ------------------------------- |
 | **`options`** | <code>{ value: string; }</code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### receivePush(...)
 
@@ -380,7 +445,10 @@ Processes a received Intercom push notification.
 | ------------------ | ------------------------------------------------------------------------------------- |
 | **`notification`** | <code><a href="#intercompushnotificationdata">IntercomPushNotificationData</a></code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### displayArticle(...)
 
@@ -392,7 +460,10 @@ displayArticle(options: { articleId: string; }) => Promise<void>
 | ------------- | ----------------------------------- |
 | **`options`** | <code>{ articleId: string; }</code> |
 
----
+**Since:** 1.0.0
+
+--------------------
+
 
 ### presentContent(...)
 
@@ -406,7 +477,10 @@ Presents an Intercom content item by its type and ID.
 | ------------- | ------------------------------------------------------------------------------------------------ |
 | **`options`** | <code>{ contentType: <a href="#intercomcontent">IntercomContent</a>; contentId: string; }</code> |
 
----
+**Since:** 4.1.0
+
+--------------------
+
 
 ### present(...)
 
@@ -420,7 +494,10 @@ Presents the Intercom's space.
 | ------------- | ------------------------------------------------------------------- |
 | **`options`** | <code>{ space: <a href="#intercomspace">IntercomSpace</a>; }</code> |
 
----
+**Since:** 4.1.0
+
+--------------------
+
 
 ### setupUnreadConversationListener()
 
@@ -430,7 +507,10 @@ setupUnreadConversationListener() => Promise<void>
 
 Setup listener for unread conversation count updates.
 
----
+**Since:** 4.1.0
+
+--------------------
+
 
 ### removeUnreadConversationListener()
 
@@ -440,7 +520,10 @@ removeUnreadConversationListener() => Promise<void>
 
 Remove listener for unread conversation count updates.
 
----
+**Since:** 4.1.0
+
+--------------------
+
 
 ### getUnreadConversationCount()
 
@@ -452,9 +535,12 @@ Get current unread conversation count.
 
 **Returns:** <code>Promise&lt;{ unreadCount: number; }&gt;</code>
 
----
+**Since:** 4.1.0
 
-### addListener(...)
+--------------------
+
+
+### addListener('updateUnreadCount', ...)
 
 ```typescript
 addListener(eventName: 'updateUnreadCount', listenerFunc: (data: { unreadCount: number; }) => void) => Promise<PluginListenerHandle>
@@ -464,14 +550,38 @@ Listen for when the unread conversation count is changed.
 
 | Param              | Type                                                     |
 | ------------------ | -------------------------------------------------------- |
-| **`eventName`**    | <code>"updateUnreadCount"</code>                         |
+| **`eventName`**    | <code>'updateUnreadCount'</code>                         |
 | **`listenerFunc`** | <code>(data: { unreadCount: number; }) =&gt; void</code> |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
----
+**Since:** 4.1.0
+
+--------------------
+
+
+### addListener('onUserEmailSupplied', ...)
+
+```typescript
+addListener(eventName: 'onUserEmailSupplied', listenerFunc: () => void) => Promise<PluginListenerHandle>
+```
+
+Listen for when a visitor enters their email into the Messenger.
+
+| Param              | Type                               |
+| ------------------ | ---------------------------------- |
+| **`eventName`**    | <code>'onUserEmailSupplied'</code> |
+| **`listenerFunc`** | <code>() =&gt; void</code>         |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 4.1.0
+
+--------------------
+
 
 ### Interfaces
+
 
 #### IntercomWebConfig
 
@@ -479,18 +589,19 @@ Listen for when the unread conversation count is changed.
 
 Represent configs that are available on Intercom Web SDK.
 
-| Prop                           | Type                                                                        | Description                                                                                                                                                                                                                                                           |
-| ------------------------------ | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`app_id`**                   | <code>string</code>                                                         | Configure Intercom Web APP ID. The APP ID of your Intercom app which will indicate where to store any data. Only available for Web                                                                                                                                    |
-| **`api_base`**                 | <code><a href="#intercomregionalapibase">IntercomRegionalApiBase</a></code> | Configure Intercom's regional API baseurl. For customers who are using Regional Data Hosting for Intercom, there is an additional parameter to set, to ensure your Messenger is pointing to your Regional workspace. Only available for Web                           |
-| **`custom_launcher_selector`** | <code>string</code>                                                         | Configure Intercom custom launcher selector. The CSS selector of an element to trigger Intercom("show") in order to activate the messenger. To target an element by ID: "#id_of_element". To target elements by class ".classname_of_elements" Only available for Web |
-| **`alignment`**                | <code><a href="#intercomalignment">IntercomAlignment</a></code>             | Configure Intercom default launcher alignment. Dictate the alignment of the default launcher icon to be on the left/right. Possible values: "left" or "right" (any other value is treated as right). Only available for Web                                           |
-| **`vertical_padding`**         | <code>number</code>                                                         | Configure Intercom default launcher icon's vertical padding. Move the default launcher icon vertically. Padding from bottom of screen. Minimum value: 20. Does not work on mobile. Only available for Web                                                             |
-| **`horizontal_padding`**       | <code>number</code>                                                         | Configure Intercom default launcher icon's horizontal padding. Move the default launcher icon horizontally. Padding from right side of screen Minimum value: 20. Does not work on mobile. Only available for Web                                                      |
-| **`hide_default_launcher`**    | <code>boolean</code>                                                        | Configure Intercom default launcher icon's visibility. Hide the default launcher icon. Setting to false will forcefully show the launcher icon. Only available for Web                                                                                                |
-| **`session_duration`**         | <code>number</code>                                                         | Configure Intercom session duration. Time in milliseconds for the Intercom session to be considered active. A value of 5 _ 60 _ 1000 would set the expiry time to be 5 minutes Only available for Web                                                                 |
-| **`action_color`**             | <code>string</code>                                                         | Configure action color for Intercom. Used in button links and more to highlight and emphasise. The color string can be any valid CSS Color Name HEX or RGB Only available for Web                                                                                     |
-| **`background_color`**         | <code>string</code>                                                         | Configure background color for Intercom. Used behind your team profile and other attributes. The color string can be any valid CSS Color Name HEX or RGB Only available for Web                                                                                       |
+| Prop                           | Type                                                                        | Description                                                                                                                                                                                                                                                           | Default              | Since |
+| ------------------------------ | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ----- |
+| **`app_id`**                   | <code>string</code>                                                         | Configure Intercom Web APP ID. The APP ID of your Intercom app which will indicate where to store any data. Only available for Web                                                                                                                                    |                      | 4.2.0 |
+| **`api_base`**                 | <code><a href="#intercomregionalapibase">IntercomRegionalApiBase</a></code> | Configure Intercom's regional API baseurl. For customers who are using Regional Data Hosting for Intercom, there is an additional parameter to set, to ensure your Messenger is pointing to your Regional workspace. Only available for Web                           |                      | 4.2.0 |
+| **`custom_launcher_selector`** | <code>string</code>                                                         | Configure Intercom custom launcher selector. The CSS selector of an element to trigger Intercom("show") in order to activate the messenger. To target an element by ID: "#id_of_element". To target elements by class ".classname_of_elements" Only available for Web |                      | 4.2.0 |
+| **`alignment`**                | <code><a href="#intercomalignment">IntercomAlignment</a></code>             | Configure Intercom default launcher alignment. Dictate the alignment of the default launcher icon to be on the left/right. Possible values: "left" or "right" (any other value is treated as right). Only available for Web                                           | <code>"right"</code> | 4.2.0 |
+| **`vertical_padding`**         | <code>number</code>                                                         | Configure Intercom default launcher icon's vertical padding. Move the default launcher icon vertically. Padding from bottom of screen. Minimum value: 20. Does not work on mobile. Only available for Web                                                             |                      | 4.2.0 |
+| **`horizontal_padding`**       | <code>number</code>                                                         | Configure Intercom default launcher icon's horizontal padding. Move the default launcher icon horizontally. Padding from right side of screen Minimum value: 20. Does not work on mobile. Only available for Web                                                      |                      | 4.2.0 |
+| **`hide_default_launcher`**    | <code>boolean</code>                                                        | Configure Intercom default launcher icon's visibility. Hide the default launcher icon. Setting to false will forcefully show the launcher icon. Only available for Web                                                                                                |                      | 4.2.0 |
+| **`session_duration`**         | <code>number</code>                                                         | Configure Intercom session duration. Time in milliseconds for the Intercom session to be considered active. A value of 5 * 60 * 1000 would set the expiry time to be 5 minutes Only available for Web                                                                 |                      | 4.2.0 |
+| **`action_color`**             | <code>string</code>                                                         | Configure action color for Intercom. Used in button links and more to highlight and emphasise. The color string can be any valid CSS Color Name HEX or RGB Only available for Web                                                                                     |                      | 4.2.0 |
+| **`background_color`**         | <code>string</code>                                                         | Configure background color for Intercom. Used behind your team profile and other attributes. The color string can be any valid CSS Color Name HEX or RGB Only available for Web                                                                                       |                      | 4.2.0 |
+
 
 #### LoadWithKeysOption
 
@@ -506,6 +617,7 @@ Only available for iOS and Android.
 | **`iosApiKey`**     | <code>string</code> | Required for iOS     |
 | **`androidApiKey`** | <code>string</code> | Required for Android |
 
+
 #### IntercomUserUpdateOptions
 
 <a href="#intercomuserupdateoptions">IntercomUserUpdateOptions</a> Interface
@@ -514,16 +626,17 @@ Represents the options for updating a user's attributes in Intercom.
 
 Only available for iOS and Android.
 
-| Prop                   | Type                                                    |
-| ---------------------- | ------------------------------------------------------- |
-| **`userId`**           | <code>string</code>                                     |
-| **`email`**            | <code>string</code>                                     |
-| **`name`**             | <code>string</code>                                     |
-| **`phone`**            | <code>string</code>                                     |
-| **`languageOverride`** | <code>string</code>                                     |
-| **`customAttributes`** | <code>Record&lt;string, any&gt;</code>                  |
-| **`company`**          | <code><a href="#companyoption">CompanyOption</a></code> |
-| **`companies`**        | <code>CompanyOption[]</code>                            |
+| Prop                   | Type                                                         |
+| ---------------------- | ------------------------------------------------------------ |
+| **`userId`**           | <code>string</code>                                          |
+| **`email`**            | <code>string</code>                                          |
+| **`name`**             | <code>string</code>                                          |
+| **`phone`**            | <code>string</code>                                          |
+| **`languageOverride`** | <code>string</code>                                          |
+| **`customAttributes`** | <code><a href="#record">Record</a>&lt;string, any&gt;</code> |
+| **`company`**          | <code><a href="#companyoption">CompanyOption</a></code>      |
+| **`companies`**        | <code>CompanyOption[]</code>                                 |
+
 
 #### CompanyOption
 
@@ -531,14 +644,15 @@ Only available for iOS and Android.
 
 Represents Intercom option to include company details.
 
-| Prop                   | Type                                   | Description                   |
-| ---------------------- | -------------------------------------- | ----------------------------- |
-| **`name`**             | <code>string</code>                    | Required for Web              |
-| **`companyId`**        | <code>string</code>                    | Required for Native platforms |
-| **`createdAt`**        | <code>number</code>                    | Unix timestamp                |
-| **`monthlySpend`**     | <code>number</code>                    |                               |
-| **`plan`**             | <code>string</code>                    |                               |
-| **`customAttributes`** | <code>Record&lt;string, any&gt;</code> |                               |
+| Prop                   | Type                                                         | Description                   |
+| ---------------------- | ------------------------------------------------------------ | ----------------------------- |
+| **`name`**             | <code>string</code>                                          | Required for Web              |
+| **`companyId`**        | <code>string</code>                                          | Required for Native platforms |
+| **`createdAt`**        | <code>number</code>                                          | Unix timestamp                |
+| **`monthlySpend`**     | <code>number</code>                                          |                               |
+| **`plan`**             | <code>string</code>                                          |                               |
+| **`customAttributes`** | <code><a href="#record">Record</a>&lt;string, any&gt;</code> |                               |
+
 
 #### IntercomPushNotificationData
 
@@ -565,13 +679,26 @@ Only available for iOS and Android.
 | **`title`**                     | <code>string</code> |
 | **`priority`**                  | <code>number</code> |
 
+
 #### PluginListenerHandle
 
 | Prop         | Type                                      |
 | ------------ | ----------------------------------------- |
 | **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
 
+
+### Type Aliases
+
+
+#### Record
+
+Construct a type with a set of properties K of type T
+
+<code>{ [P in K]: T; }</code>
+
+
 ### Enums
+
 
 #### IntercomRegionalApiBase
 
@@ -581,6 +708,7 @@ Only available for iOS and Android.
 | **`Eu`** | <code>'https://api-iam.eu.intercom.io'</code> |
 | **`Au`** | <code>'https://api-iam.au.intercom.io'</code> |
 
+
 #### IntercomAlignment
 
 | Members     | Value                |
@@ -588,26 +716,31 @@ Only available for iOS and Android.
 | **`Left`**  | <code>'left'</code>  |
 | **`Right`** | <code>'right'</code> |
 
+
 #### IntercomContent
 
-| Members         | Value                    | Description                        |
-| --------------- | ------------------------ | ---------------------------------- |
-| **`Article`**   | <code>'article'</code>   |                                    |
-| **`Survey`**    | <code>'survey'</code>    |                                    |
-| **`Carousel`**  | <code>'carousel'</code>  | Only available for iOS and Android |
-| **`Checklist`** | <code>'checklist'</code> | Only available for Web             |
-| **`News`**      | <code>'news'</code>      | Only available for Web             |
-| **`Tour`**      | <code>'tour'</code>      | Only available for Web             |
+| Members            | Value                       | Description                        | Since |
+| ------------------ | --------------------------- | ---------------------------------- | ----- |
+| **`Article`**      | <code>'article'</code>      |                                    |       |
+| **`Survey`**       | <code>'survey'</code>       |                                    |       |
+| **`Carousel`**     | <code>'carousel'</code>     | Only available for iOS and Android | 4.1.0 |
+| **`Checklist`**    | <code>'checklist'</code>    | Only available for Web             | 4.2.0 |
+| **`News`**         | <code>'news'</code>         | Only available for Web             | 4.2.0 |
+| **`Tour`**         | <code>'tour'</code>         | Only available for Web             | 4.2.0 |
+| **`Ticket`**       | <code>'ticket'</code>       |                                    | 7.0.0 |
+| **`Conversation`** | <code>'conversation'</code> |                                    | 7.0.0 |
+
 
 #### IntercomSpace
 
-| Members          | Value                   | Description            |
-| ---------------- | ----------------------- | ---------------------- |
-| **`Home`**       | <code>'home'</code>     |                        |
-| **`Messages`**   | <code>'messages'</code> |                        |
-| **`HelpCenter`** | <code>'help'</code>     |                        |
-| **`News`**       | <code>'news'</code>     | Only available on web. |
-| **`Tasks`**      | <code>'tasks'</code>    | Only available on web. |
+| Members          | Value                   | Description            | Since |
+| ---------------- | ----------------------- | ---------------------- | ----- |
+| **`Home`**       | <code>'home'</code>     |                        |       |
+| **`Messages`**   | <code>'messages'</code> |                        |       |
+| **`HelpCenter`** | <code>'help'</code>     |                        |       |
+| **`News`**       | <code>'news'</code>     | Only available on web. | 4.2.0 |
+| **`Tasks`**      | <code>'tasks'</code>    | Only available on web. | 4.2.0 |
+| **`Tickets`**    | <code>'tickets'</code>  |                        | 7.0.0 |
 
 </docgen-api>
 

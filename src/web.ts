@@ -16,11 +16,14 @@ import IntercomModule, {
   onHide,
   onShow,
   onUnreadCountChange,
+  onUserEmailSupplied,
   showArticle,
+  showConversation,
   showMessages,
   showNewMessage,
   showNews,
   showSpace,
+  showTicket,
   shutdown,
   startChecklist,
   startSurvey,
@@ -37,6 +40,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     isVisible: false,
     unreadCount: 0,
     unreadListenerAttached: false,
+    onUserEmailSuppliedListenerAttached: false,
   };
 
   constructor() {
@@ -82,8 +86,10 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     const actions: Partial<Record<IntercomContent, (id: string) => void>> = {
       [IntercomContent.Article]: showArticle,
       [IntercomContent.Checklist]: startChecklist,
+      [IntercomContent.Conversation]: showConversation,
       [IntercomContent.News]: showNews,
       [IntercomContent.Survey]: startSurvey,
+      [IntercomContent.Ticket]: showTicket,
       [IntercomContent.Tour]: startTour,
     };
 
@@ -102,6 +108,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
       [IntercomSpace.Messages]: () => showSpace(IntercomSpace.Messages),
       [IntercomSpace.News]: () => showSpace(IntercomSpace.News),
       [IntercomSpace.Tasks]: () => showSpace(IntercomSpace.Tasks),
+      [IntercomSpace.Tickets]: () => showSpace(IntercomSpace.Tickets),
     };
 
     const action = actions[space];
@@ -235,6 +242,13 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     this.state.unreadListenerAttached = true;
   }
 
+  async setupOnUserEmailSuppliedListener(): Promise<void> {
+    if (this.state.onUserEmailSuppliedListenerAttached) return;
+
+    onUserEmailSupplied(() => this.onUserEmailSuppliedHandler());
+    this.state.onUserEmailSuppliedListenerAttached = true;
+  }
+
   async removeUnreadConversationListener(): Promise<void> {
     throw this.unimplemented('Method not implemented on web.');
   }
@@ -272,6 +286,15 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     this.state.config = { app_id: '' };
     this.state.unreadCount = 0;
     this.state.unreadListenerAttached = false;
+  }
+
+  /**
+   * Notifies listeners when the user email is supplied.
+   *
+   * @private
+   */
+  private onUserEmailSuppliedHandler() {
+    this.notifyListeners('onUserEmailSupplied', {});
   }
 
   /**

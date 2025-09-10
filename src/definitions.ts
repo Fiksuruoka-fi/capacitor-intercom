@@ -429,6 +429,14 @@ export interface IntercomPlugin {
     eventName: 'updateUnreadCount',
     listenerFunc: (data: { unreadCount: number }) => void,
   ): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when a visitor enters their email into the Messenger.
+   *
+   * @requires calling `setupOnUserEmailSuppliedListener()` before getting notifications.
+   * @since 4.1.0
+   */
+  addListener(eventName: 'onUserEmailSupplied', listenerFunc: () => void): Promise<PluginListenerHandle>;
 }
 
 /**
@@ -516,6 +524,10 @@ export interface State {
    */
   unreadListenerAttached: boolean;
 
+  /**
+   * Status if listener for user email supplied has been set.
+   */
+  onUserEmailSuppliedListenerAttached: boolean;
 }
 
 /**
@@ -616,6 +628,11 @@ export enum IntercomSpace {
    * @since 4.2.0
    */
   Tasks = 'tasks',
+
+  /**
+   * @since 7.0.0
+   */
+  Tickets = 'tickets',
 }
 
 /**
@@ -653,6 +670,16 @@ export enum IntercomContent {
    * @since 4.2.0
    */
   Tour = 'tour',
+
+  /**
+   * @since 7.0.0
+   */
+  Ticket = 'ticket',
+
+  /**
+   * @since 7.0.0
+   */
+  Conversation = 'conversation',
 }
 
 /**
