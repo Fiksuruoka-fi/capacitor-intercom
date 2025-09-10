@@ -86,7 +86,6 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
 
   async presentContent(options: { contentType: IntercomContent; contentId: string }): Promise<void> {
     const { contentType, contentId } = options;
-    const parsedId = contentId;
 
     if (!contentId) {
       throw this.unavailable('Content ID not defined.');
@@ -105,7 +104,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     const action = actions[contentType];
     if (!action) throw this.unimplemented(`${contentType} not implemented on web.`);
 
-    action(parsedId);
+    action(contentId);
   }
 
   async present(options: { space: IntercomSpace }): Promise<void> {
