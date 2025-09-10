@@ -1,5 +1,6 @@
 /// <reference types="@capacitor/cli" />
 import type { PluginListenerHandle } from '@capacitor/core';
+import type { IntercomSettings } from '@intercom/messenger-js-sdk/dist/types';
 
 declare module '@capacitor/cli' {
   export interface PluginsConfig {
@@ -54,12 +55,6 @@ declare module '@capacitor/cli' {
   }
 }
 
-declare global {
-  interface Window {
-    Intercom: IntercomStatic;
-  }
-}
-
 /**
  * IntercomWebConfig Interface
  *
@@ -68,7 +63,7 @@ declare global {
  * @see https://developers.intercom.com/installing-intercom/docs/javascript-api-attributes-objects
  * @since 4.2.0
  */
-export interface IntercomWebConfig extends Intercom_.IntercomSettings {
+export interface IntercomWebConfig extends IntercomSettings {
   /**
    * Configure Intercom Web APP ID.
    * The APP ID of your Intercom app which will indicate where to store any data.
@@ -79,7 +74,7 @@ export interface IntercomWebConfig extends Intercom_.IntercomSettings {
    * @since 4.2.0
    * @example "xxx"
    */
-  app_id?: string;
+  app_id: string;
 
   /**
    * Configure Intercom's regional API baseurl.
@@ -230,20 +225,14 @@ export interface IntercomPlugin {
    *
    * @since 1.0.0
    */
-  registerIdentifiedUser(options: {
-    userId?: string;
-    email?: string;
-  }): Promise<void>;
+  registerIdentifiedUser(options: { userId?: string; email?: string }): Promise<void>;
 
   /**
    * Login an identified user with Intercom.
    *
    * @since 4.1.0
    */
-  loginIdentifiedUser(options: {
-    userId?: string;
-    email?: string;
-  }): Promise<void>;
+  loginIdentifiedUser(options: { userId?: string; email?: string }): Promise<void>;
 
   /**
    * @deprecated
@@ -400,10 +389,7 @@ export interface IntercomPlugin {
    *
    * @since 4.1.0
    */
-  presentContent(options: {
-    contentType: IntercomContent;
-    contentId: string;
-  }): Promise<void>;
+  presentContent(options: { contentType: IntercomContent; contentId: string }): Promise<void>;
 
   /**
    * Presents the Intercom's space.
@@ -443,6 +429,81 @@ export interface IntercomPlugin {
     eventName: 'updateUnreadCount',
     listenerFunc: (data: { unreadCount: number }) => void,
   ): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when a visitor enters their email into the Messenger.
+   *
+   * Only available for Web
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'userEmailSupplied', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when the Messenger is about to be shown.
+   *
+   * Only available for iOS
+   * @see https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'messengerWillShow', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when the Messenger is shown.
+   *
+   * Only available for iOS and Web
+   *
+   * @see [iOS](https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications)
+   * @see [Web](https://developers.intercom.com/installing-intercom/web/methods#intercomonshow)
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'messengerDidShow', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when the Messenger is about to be hidden.
+   *
+   * Only available for iOS
+   * @see https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'messengerWillHide', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when the Messenger is hidden.
+   *
+   * Only available for iOS and Web
+   *
+   * @see [iOS](https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications)
+   * @see [Web](https://developers.intercom.com/installing-intercom/web/methods#intercomonhide)
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'messengerDidHide', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when new conversation is started.
+   *
+   * Only available for iOS
+   *
+   * @see https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'newConversationStarted', listenerFunc: () => void): Promise<PluginListenerHandle>;
+
+  /**
+   * Listen for when unread ticket count changes.
+   *
+   * Only available for iOS
+   *
+   * @see https://developers.intercom.com/installing-intercom/ios/using-intercom#intercom-notifications
+   *
+   * @since 7.0.0
+   */
+  addListener(eventName: 'unreadTicketCountChanged', listenerFunc: () => void): Promise<PluginListenerHandle>;
 }
 
 /**
@@ -492,29 +553,6 @@ export interface IntercomUserUpdateOptions {
 }
 
 /**
- * IntercomCommandSignature Interface
- *
- * Represents available methods in Web implementation
- *
- * Only available for Web.
- */
-export interface IntercomCommandSignature
-  extends Intercom_.IntercomCommandSignature {
-  showNews: (newsItemId: number) => void;
-  startChecklist: (checklistId: number) => void;
-  showSpace: (spaceName: IntercomSpace | string) => void;
-}
-
-/**
- * IntercomCommand Type
- *
- * Represents available method names in Web implementation
- *
- * Only available for Web.
- */
-export type IntercomCommand = keyof IntercomCommandSignature;
-
-/**
  * State Interface
  *
  * Represents the state of the current Web SDK.
@@ -552,22 +590,6 @@ export interface State {
    * Status if listener for unread messages has been set.
    */
   unreadListenerAttached: boolean;
-}
-
-/**
- * IntercomStatic Interface
- *
- * Represents web Intercom SDK's API method caller.
- *
- * Only available for Web.
- * @since 4.2.0
- */
-export interface IntercomStatic {
-  <Command extends IntercomCommand>(
-    command: Command,
-    ...params: Parameters<IntercomCommandSignature[Command]>
-  ): ReturnType<IntercomCommandSignature[Command]>;
-  booted: boolean;
 }
 
 /**
@@ -620,6 +642,28 @@ export interface CompanyOption {
   customAttributes?: Record<string, any>;
 }
 
+type IntercomCustomAttribute = string | number | boolean | null | undefined;
+
+/**
+ * Represents a company in Intercom.
+ * @see https://developers.intercom.com/installing-intercom/web/attributes-objects#company-object
+ * @since 7.0.0
+ */
+export interface IntercomCompany {
+  name: string;
+  id?: string | number | undefined;
+  company_id?: string | number | undefined;
+  created_at?: number | undefined;
+  remote_created_at?: number | undefined;
+  plan?: string | undefined;
+  monthly_spend?: number | undefined;
+  user_count?: number | undefined;
+  size?: number | undefined;
+  website?: string | undefined;
+  industry?: string | undefined;
+  [custom_attribute: string]: IntercomCustomAttribute;
+}
+
 /**
  * IntercomSpace Enum
  *
@@ -646,6 +690,11 @@ export enum IntercomSpace {
    * @since 4.2.0
    */
   Tasks = 'tasks',
+
+  /**
+   * @since 7.0.0
+   */
+  Tickets = 'tickets',
 }
 
 /**
@@ -683,6 +732,18 @@ export enum IntercomContent {
    * @since 4.2.0
    */
   Tour = 'tour',
+
+  /**
+   * Only available for Web
+   *
+   * @since 7.0.0
+   */
+  Ticket = 'ticket',
+
+  /**
+   * @since 7.0.0
+   */
+  Conversation = 'conversation',
 }
 
 /**
