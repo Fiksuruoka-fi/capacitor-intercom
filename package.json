@@ -26,7 +26,8 @@
     "verify:web": "npm run build",
     "watch": "tsc --watch"
   },
-  "author": "Stewan Silva",
+  "author": "Eljas Jalo",
+  "contributors": ["Stewan Silva"],
   "license": "MIT",
   "peerDependencies": {
     "@capacitor/core": ">=7.0.0"
