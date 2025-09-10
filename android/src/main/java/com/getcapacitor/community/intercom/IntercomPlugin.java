@@ -83,10 +83,10 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
 
         Registration registration = new Registration();
 
-        if (email != null && email.length() > 0) {
+        if (email != null && !email.isEmpty()) {
             registration = registration.withEmail(email);
         }
-        if (userId != null && userId.length() > 0) {
+        if (userId != null && !userId.isEmpty()) {
             registration = registration.withUserId(userId);
         }
         Intercom
@@ -114,10 +114,10 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
 
         Registration registration = new Registration();
 
-        if (email != null && email.length() > 0) {
+        if (email != null && !email.isEmpty()) {
             registration = registration.withEmail(email);
         }
-        if (userId != null && userId.length() > 0) {
+        if (userId != null && !userId.isEmpty()) {
             registration = registration.withUserId(userId);
         }
 
@@ -182,23 +182,23 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
     public void updateUser(PluginCall call) {
         UserAttributes.Builder builder = new UserAttributes.Builder();
         String userId = call.getString("userId");
-        if (userId != null && userId.length() > 0) {
+        if (userId != null && !userId.isEmpty()) {
             builder.withUserId(userId);
         }
         String email = call.getString("email");
-        if (email != null && email.length() > 0) {
+        if (email != null && !email.isEmpty()) {
             builder.withEmail(email);
         }
         String name = call.getString("name");
-        if (name != null && name.length() > 0) {
+        if (name != null && !name.isEmpty()) {
             builder.withName(name);
         }
         String phone = call.getString("phone");
-        if (phone != null && phone.length() > 0) {
+        if (phone != null && !phone.isEmpty()) {
             builder.withPhone(phone);
         }
         String languageOverride = call.getString("languageOverride");
-        if (languageOverride != null && languageOverride.length() > 0) {
+        if (languageOverride != null && !languageOverride.isEmpty()) {
             builder.withLanguageOverride(languageOverride);
         }
         Map<String, Object> customAttributes = mapFromJSON(call.getObject("customAttributes", null));
@@ -273,8 +273,9 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
     public void present(PluginCall call) {
         Map<String, IntercomSpace> spaceMapping = new HashMap<>();
         spaceMapping.put("help", IntercomSpace.HelpCenter);
-        spaceMapping.put("messages", IntercomSpace.Messages);
         spaceMapping.put("home", IntercomSpace.Home);
+        spaceMapping.put("messages", IntercomSpace.Messages);
+        spaceMapping.put("tickets", IntercomSpace.Tickets);
 
         String spaceString = call.getString("space", "");
         IntercomSpace space = spaceMapping.get(spaceString);
@@ -346,9 +347,11 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
         }
 
         Map<String, IntercomContent> contentTypeMapping = new HashMap<>();
-        contentTypeMapping.put("carousel", new IntercomContent.Carousel(contentId));
-        contentTypeMapping.put("survey", new IntercomContent.Survey(contentId));
         contentTypeMapping.put("article", new IntercomContent.Article(contentId));
+        contentTypeMapping.put("carousel", new IntercomContent.Carousel(contentId));
+        contentTypeMapping.put("conversation", new IntercomContent.Conversation(contentId));
+        contentTypeMapping.put("survey", new IntercomContent.Survey(contentId));
+        contentTypeMapping.put("ticket", new IntercomContent.Ticket(contentId));
 
         String contentTypeString = call.getString("contentType", "");
         IntercomContent contentType = contentTypeMapping.get(contentTypeString);
@@ -435,8 +438,12 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
     public void receivePush(PluginCall call) {
         try {
             JSObject notificationData = call.getData();
+
+            //noinspection rawtypes
             Map message = mapFromJSON(notificationData);
+            //noinspection unchecked
             if (intercomPushClient.isIntercomPush(message)) {
+                //noinspection unchecked
                 intercomPushClient.handlePush(this.getActivity().getApplication(), message);
                 call.resolve();
             } else {
