@@ -400,6 +400,43 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
     }
 
     @PluginMethod
+    public void setJWT(PluginCall call) {
+        String jwt = call.getString("jwt");
+        if (jwt == null || jwt.isEmpty()) {
+            call.reject("jwt is required");
+            return;
+        }
+        Intercom.client().setJWT(jwt);
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void isUserLoggedIn(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("isLoggedIn", Intercom.client().isUserLoggedIn());
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void fetchLoggedInUserAttributes(PluginCall call) {
+        bridge.getActivity().runOnUiThread(() -> {
+            Intercom.client().fetchLoggedInUserAttributes(result -> {
+                if (result != null) {
+                    JSObject ret = new JSObject();
+                    if (result.getUserId() != null) ret.put("userId", result.getUserId());
+                    if (result.getEmail() != null) ret.put("email", result.getEmail());
+                    if (result.getName() != null) ret.put("name", result.getName());
+                    if (result.getPhone() != null) ret.put("phone", result.getPhone());
+                    if (result.getLanguageOverride() != null) ret.put("languageOverride", result.getLanguageOverride());
+                    call.resolve(ret);
+                } else {
+                    call.reject("Failed to fetch user attributes");
+                }
+            });
+        });
+    }
+
+    @PluginMethod
     public void setBottomPadding(PluginCall call) {
         String stringValue = call.getString("value");
         if (stringValue == null || stringValue.isEmpty()) {

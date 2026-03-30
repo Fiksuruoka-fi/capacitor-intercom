@@ -25,6 +25,7 @@ import type {
   IntercomCompany,
   IntercomPlugin,
   IntercomPushNotificationData,
+  IntercomUserAttributes,
   IntercomUserUpdateOptions,
   IntercomWebConfig,
   LoadWithKeysOption,
@@ -213,6 +214,18 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
       return;
     }
     throw this.unavailable('HMAC option not found.');
+  }
+
+  async setJWT(_options: { jwt: string }): Promise<void> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  async isUserLoggedIn(): Promise<{ isLoggedIn: boolean }> {
+    return { isLoggedIn: this.state.booted && this.state.initialized };
+  }
+
+  async fetchLoggedInUserAttributes(): Promise<IntercomUserAttributes> {
+    throw this.unimplemented('Not implemented on web.');
   }
 
   async setBottomPadding(options: { value: string }): Promise<void> {
