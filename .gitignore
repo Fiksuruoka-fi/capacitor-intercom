@@ -1,5 +1,8 @@
 dist/
 
+# bg-shell session state (pi process manager)
+.bg-shell
+
 # node files
 node_modules
 

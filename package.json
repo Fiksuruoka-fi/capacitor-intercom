@@ -1,6 +1,6 @@
 {
   "name": "@foodello/intercom",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "Enable Intercom features for Capacitor apps",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -32,17 +32,17 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@capacitor/core": ">=7.0.0"
+    "@capacitor/core": ">=8.0.0"
   },
   "dependencies": {
     "@intercom/messenger-js-sdk": "^0.0.17"
   },
   "devDependencies": {
-    "@capacitor/android": "^7.0.0",
-    "@capacitor/cli": "^7.0.0",
-    "@capacitor/core": "^7.0.0",
-    "@capacitor/docgen": "^0.3.0",
-    "@capacitor/ios": "^7.0.0",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/docgen": "^0.3.1",
+    "@capacitor/ios": "^8.0.0",
     "@commitlint/cli": "^17.6.1",
     "@commitlint/config-conventional": "^17.6.1",
     "@ionic/eslint-config": "^0.4.0",
@@ -70,7 +70,8 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "FoodelloIntercom.podspec"
+    "FoodelloIntercom.podspec",
+    "Package.swift"
   ],
   "keywords": [
     "capacitor",

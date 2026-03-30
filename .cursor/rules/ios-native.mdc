@@ -1,0 +1,135 @@
+---
+description: iOS-specific rules for IntercomPlugin.swift — native method implementation, event bridging, Intercom SDK API mapping.
+globs: ["ios/**/*.swift", "*.podspec"]
+alwaysApply: false
+---
+
+# iOS Native — IntercomPlugin.swift
+
+## Class Structure
+
+`IntercomPlugin` subclasses `CAPPlugin`. Two init paths:
+
+1. **Static** — `load()` reads `iosApiKey` + `iosAppId` from `capacitor.config.json` via `getConfig()`, then calls `setupIntercom()`.
+2. **Dynamic** — `loadWithKeys(_ call:)` accepts `appId`, `iosApiKey` at runtime; same `setupIntercom()` call.
+
+`setupIntercom()` is `throws`. It guards both keys, calls `Intercom.setApiKey(_:forAppId:)`, enables logging in DEBUG, and registers all `NotificationCenter` observers.
+
+## Adding a New Method
+
+```swift
+@objc func myNewMethod(_ call: CAPPluginCall) {
+    // 1. Extract and validate params
+    guard let param = call.getString("param") else {
+        call.reject("param is required")
+        return
+    }
+    // 2. Dispatch to main if touching UI or Intercom SDK
+    DispatchQueue.main.async {
+        // 3. Call Intercom
+        // 4. Resolve or reject
+        call.resolve()
+    }
+}
+```
+
+Register the method in the plugin's bridging header if needed (Objective-C bridging is automatic for `@objc` methods in `CAPPlugin` subclasses).
+
+## Event Bridging
+
+All events are fired via:
+
+```swift
+self.notifyListeners("eventName", data: ["key": value])
+```
+
+Current events wired via `NotificationCenter`:
+
+| Notification | Listener event name |
+|---|---|
+| `IntercomWindowWillShow` | `messengerWillShow` |
+| `IntercomWindowDidShow` | `messengerDidShow` |
+| `IntercomWindowWillHide` | `messengerWillHide` |
+| `IntercomWindowDidHide` | `messengerDidHide` |
+| `IntercomDidStartNewConversation` | `newConversationStarted` |
+| `IntercomUnreadConversationCountDidChange` | `updateUnreadCount` (with `unreadCount: Int`) |
+| `IntercomUnreadTicketCountDidChange` | `unreadTicketCountChanged` |
+| `capacitorDidRegisterForRemoteNotifications` | forwarded as device token to `Intercom.setDeviceToken(_:)` |
+
+## Intercom iOS SDK Cheatsheet
+
+```swift
+// Auth
+Intercom.loginUser(with: ICMUserAttributes) { result in ... }
+Intercom.loginUnidentifiedUser { result in ... }
+Intercom.logout()
+
+// User
+Intercom.updateUser(with: ICMUserAttributes) { result in ... }
+Intercom.setUserHash(_ hmac: String)     // identity verification — call BEFORE login
+
+// Presentation
+Intercom.present(Space)                  // .home | .messages | .helpCenter | .tickets
+Intercom.presentContent(Intercom.Content) // .article(id:) | .carousel(id:) | .survey(id:) | .conversation(id:)
+Intercom.presentMessageComposer(_ initialMessage: String)
+Intercom.hide()
+
+// Launcher / in-app
+Intercom.setLauncherVisible(_ visible: Bool)
+Intercom.setInAppMessagesVisible(_ visible: Bool)
+Intercom.setBottomPadding(_ padding: CGFloat)
+
+// Push
+Intercom.setDeviceToken(_ token: Data)
+
+// Events
+Intercom.logEvent(withName: String, metaData: [AnyHashable: Any]?)
+
+// Unread
+Intercom.unreadConversationCount() -> Int
+```
+
+## ICMUserAttributes Mapping
+
+```swift
+let attr = ICMUserAttributes()
+attr.email = "..."
+attr.userId = "..."
+attr.name = "..."
+attr.phone = "..."
+attr.languageOverride = "..."
+attr.customAttributes = [String: Any]()
+attr.companies = [ICMCompany]()
+```
+
+`ICMCompany` fields: `companyId` (required), `name`, `createdAt: Date`, `monthlySpend: NSNumber`, `plan`, `customAttributes`.
+
+## Space Availability
+
+| Space | iOS | Android | Web |
+|---|---|---|---|
+| home | ✓ | ✓ | ✓ |
+| messages | ✓ | ✓ | ✓ |
+| helpCenter | ✓ | ✓ | ✓ |
+| tickets | ✓ | ✓ | ✓ |
+| news | ✗ | ✗ | ✓ |
+| tasks | ✗ | ✗ | ✓ |
+
+Reject unknown spaces with `call.reject("Unsupported space: \(spaceString)")`.
+
+## Content Availability
+
+| Content | iOS | Android | Web |
+|---|---|---|---|
+| article | ✓ | ✓ | ✓ |
+| carousel | ✓ | ✓ | ✗ |
+| survey | ✓ | ✓ | ✓ |
+| conversation | ✓ | ✓ | ✓ |
+| checklist | ✗ | ✗ | ✓ |
+| news | ✗ | ✗ | ✓ |
+| tour | ✗ | ✗ | ✓ |
+| ticket | ✗ | ✗ | ✓ |
+
+## Podspec
+
+`FoodelloIntercom.podspec` — update `s.version`, `s.dependency 'Intercom', '~> X.Y'` when bumping the SDK. Do not change `s.source_files` unless you add/move Swift files.

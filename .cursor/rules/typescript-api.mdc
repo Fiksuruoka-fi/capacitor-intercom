@@ -1,0 +1,140 @@
+---
+description: TypeScript API rules — definitions.ts, web.ts, index.ts. Adding new methods to the plugin public API.
+globs: ["src/**/*.ts"]
+alwaysApply: false
+---
+
+# TypeScript Layer — src/
+
+## API Source of Truth
+
+`src/definitions.ts` is the single source of truth for the public API. It drives:
+- TypeScript types for consumers
+- Auto-generated `README.md` API sections (between `<docgen-index>` / `<docgen-api>`)
+- `dist/docs.json`
+
+After any change to `src/definitions.ts`, run:
+```bash
+npm run docgen   # or npm run build
+```
+**Never** manually edit the auto-generated sections in `README.md`.
+
+## Adding a New Method — Full Checklist
+
+### 1. Add to `IntercomPlugin` interface in `definitions.ts`
+
+```typescript
+/**
+ * One-line summary.
+ *
+ * @since X.Y.Z
+ */
+myNewMethod(options: MyOptions): Promise<void>;
+```
+
+- JSDoc is required — it generates the README entry.
+- `@since` tag is required.
+- Platform-only methods need `@platform` or a plain doc note: "Only available for iOS and Android."
+
+### 2. Add types/interfaces if needed
+
+Keep types in `definitions.ts`. Export all public types.
+
+### 3. Implement in `src/web.ts`
+
+If supported on web:
+```typescript
+async myNewMethod(options: MyOptions): Promise<void> {
+  // implement using @intercom/messenger-js-sdk
+}
+```
+
+If not supported on web:
+```typescript
+async myNewMethod(_options: MyOptions): Promise<void> {
+  throw this.unimplemented('Not implemented on web.');
+}
+```
+
+### 4. Implement in `ios/Plugin/IntercomPlugin.swift`
+
+See `ios-native.mdc`.
+
+### 5. Implement in `android/src/main/.../IntercomPlugin.java`
+
+See `android-native.mdc`.
+
+## `IntercomSpace` Enum
+
+```typescript
+export enum IntercomSpace {
+  Home = 'home',
+  Messages = 'messages',
+  HelpCenter = 'help',
+  News = 'news',    // web only
+  Tasks = 'tasks',  // web only
+  Tickets = 'tickets',
+}
+```
+
+## `IntercomContent` Enum
+
+```typescript
+export enum IntercomContent {
+  Article = 'article',
+  Survey = 'survey',
+  Carousel = 'carousel',   // iOS/Android only
+  Checklist = 'checklist', // web only
+  News = 'news',           // web only
+  Tour = 'tour',           // web only
+  Ticket = 'ticket',
+  Conversation = 'conversation',
+}
+```
+
+## Web State Object
+
+`IntercomWeb` maintains a private `State`:
+```typescript
+private state: State = {
+  booted: false,
+  config: { app_id: '' },
+  initialized: false,
+  isVisible: false,
+  unreadCount: 0,
+  unreadListenerAttached: false,
+};
+```
+Update relevant fields when implementing new web-only state.
+
+## Event Names
+
+Consistent event names across all three platforms:
+
+| Event | Platform |
+|---|---|
+| `updateUnreadCount` | iOS, Android, Web |
+| `messengerWillShow` | iOS |
+| `messengerDidShow` | iOS, Web |
+| `messengerWillHide` | iOS |
+| `messengerDidHide` | iOS, Web |
+| `newConversationStarted` | iOS |
+| `unreadTicketCountChanged` | iOS |
+| `userEmailSupplied` | Web |
+
+When adding a new event: add `addListener` overload to `IntercomPlugin` interface in `definitions.ts`, fire it from each platform that supports it.
+
+## Build Output
+
+```
+dist/
+  esm/
+    index.js         ES module entry
+    definitions.js   Compiled types
+    web.js           Web implementation
+  plugin.cjs.js      CommonJS bundle
+  plugin.js          UMD bundle
+  docs.json          Docgen output
+```
+
+All generated. Run `npm run build` to regenerate.
