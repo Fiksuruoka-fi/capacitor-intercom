@@ -25,13 +25,19 @@
         <div class="space-y-3">
           <div class="grid grid-cols-2 gap-3">
             <Field label="App ID" v-model="config.appId" placeholder="your_app_id" />
+            <Select label="API Base (web)" v-model="config.apiBase" :options="apiBaseOptions" />
             <Field label="iOS API Key" v-model="config.iosApiKey" placeholder="ios_sdk-..." />
             <Field label="Android API Key" v-model="config.androidApiKey" placeholder="android_sdk-..." />
-            <Field label="API Base (web)" v-model="config.apiBase" placeholder="https://api-iam.intercom.io" />
           </div>
           <div class="flex gap-2">
             <Button label="load() — Web" color="indigo" @click="loadWeb" />
-            <Button label="loadWithKeys() — Native" color="indigo" @click="loadWithKeys" />
+            <Button
+              label="loadWithKeys() — Native"
+              color="indigo"
+              :disabled="isWeb"
+              disabled-reason="Native only — not available on web"
+              @click="loadWithKeys"
+            />
           </div>
         </div>
       </Section>
@@ -47,14 +53,44 @@
           </div>
           <div class="flex flex-wrap gap-2">
             <Button label="setUserHash()" color="yellow" @click="setUserHash" />
-            <Button label="setJWT() ★" color="yellow" @click="setJWT" />
-            <Button label="loginIdentifiedUser()" color="green" @click="loginIdentifiedUser" />
-            <Button label="loginUnidentifiedUser()" color="green" @click="loginUnidentifiedUser" />
-            <Button label="logout()" color="red" @click="logout" />
+            <Button
+              label="setJWT() ★"
+              color="yellow"
+              :disabled="isWeb"
+              disabled-reason="Native only — not available on web"
+              @click="setJWT"
+            />
+            <Button
+              label="loginIdentifiedUser()"
+              color="green"
+              :disabled="isWeb"
+              disabled-reason="Native only — not available on web"
+              @click="loginIdentifiedUser"
+            />
+            <Button
+              label="loginUnidentifiedUser()"
+              color="green"
+              :disabled="isWeb"
+              disabled-reason="Native only — not available on web"
+              @click="loginUnidentifiedUser"
+            />
+            <Button
+              label="logout()"
+              color="red"
+              :disabled="isWeb"
+              disabled-reason="Native only — not available on web"
+              @click="logout"
+            />
           </div>
           <div class="flex flex-wrap gap-2">
             <Button label="isUserLoggedIn() ★" color="blue" @click="isUserLoggedIn" />
-            <Button label="fetchLoggedInUserAttributes() ★" color="blue" @click="fetchLoggedInUserAttributes" />
+            <Button
+              label="fetchLoggedInUserAttributes() ★"
+              color="blue"
+              :disabled="isWeb"
+              disabled-reason="Native only — not available on web"
+              @click="fetchLoggedInUserAttributes"
+            />
           </div>
         </div>
       </Section>
@@ -75,18 +111,20 @@
 
       <!-- Messenger -->
       <Section title="Messenger" icon="💬">
-        <div class="flex flex-wrap gap-2">
-          <Button label="present(home)" color="indigo" @click="present('home')" />
-          <Button label="present(messages)" color="indigo" @click="present('messages')" />
-          <Button label="present(help)" color="indigo" @click="present('help')" />
-          <Button label="present(tickets)" color="indigo" @click="present('tickets')" />
-          <Button label="present(news) web" color="gray" @click="present('news')" />
-          <Button label="present(tasks) web" color="gray" @click="present('tasks')" />
-          <Button label="hideMessenger()" color="red" @click="hideMessenger" />
-        </div>
-        <div class="mt-3 flex gap-3 items-end">
-          <Field label="Initial message" v-model="composerMessage" placeholder="Hi, I need help with..." class="flex-1" />
-          <Button label="Open composer" color="indigo" @click="displayMessageComposer" />
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <Select label="Space" v-model="messengerSpace" :options="spaceOptions" />
+            <div class="flex items-end">
+              <Button label="present(space)" color="indigo" @click="presentSpace" />
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <Button label="hideMessenger()" color="red" @click="hideMessenger" />
+          </div>
+          <div class="flex gap-3 items-end">
+            <Field label="Initial message" v-model="composerMessage" placeholder="Hi, I need help with..." class="flex-1" />
+            <Button label="Open composer" color="indigo" @click="displayMessageComposer" />
+          </div>
         </div>
       </Section>
 
@@ -94,18 +132,7 @@
       <Section title="Content" icon="📄">
         <div class="grid grid-cols-2 gap-3 mb-3">
           <Field label="Content ID" v-model="content.id" placeholder="12345" />
-          <div>
-            <label class="block text-xs text-gray-400 mb-1">Content type</label>
-            <select v-model="content.type" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
-              <option value="article">Article</option>
-              <option value="carousel">Carousel (native)</option>
-              <option value="survey">Survey</option>
-              <option value="conversation">Conversation</option>
-              <option value="checklist">Checklist (web)</option>
-              <option value="tour">Tour (web)</option>
-              <option value="ticket">Ticket</option>
-            </select>
-          </div>
+          <Select label="Content type" v-model="content.type" :options="contentTypeOptions" />
         </div>
         <Button label="presentContent()" color="indigo" @click="presentContent" />
       </Section>
@@ -113,14 +140,44 @@
       <!-- Launcher & In-App -->
       <Section title="Launcher & In-App" icon="🚀">
         <div class="flex flex-wrap gap-2">
-          <Button label="displayLauncher()" color="green" @click="displayLauncher" />
-          <Button label="hideLauncher()" color="red" @click="hideLauncher" />
-          <Button label="displayInAppMessages()" color="green" @click="displayInAppMessages" />
-          <Button label="hideInAppMessages()" color="red" @click="hideInAppMessages" />
+          <Button
+            label="displayLauncher()"
+            color="green"
+            :disabled="isWeb"
+            disabled-reason="Native only — not available on web"
+            @click="displayLauncher"
+          />
+          <Button
+            label="hideLauncher()"
+            color="red"
+            :disabled="isWeb"
+            disabled-reason="Native only — not available on web"
+            @click="hideLauncher"
+          />
+          <Button
+            label="displayInAppMessages()"
+            color="green"
+            :disabled="isWeb"
+            disabled-reason="Native only — not available on web"
+            @click="displayInAppMessages"
+          />
+          <Button
+            label="hideInAppMessages()"
+            color="red"
+            :disabled="isWeb"
+            disabled-reason="Native only — not available on web"
+            @click="hideInAppMessages"
+          />
         </div>
         <div class="mt-3 flex gap-3 items-end">
           <Field label="Bottom padding (px)" v-model="bottomPadding" placeholder="80" class="w-40" />
-          <Button label="setBottomPadding()" color="gray" @click="setBottomPadding" />
+          <Button
+            label="setBottomPadding()"
+            color="gray"
+            :disabled="isWeb"
+            disabled-reason="Native only — not available on web"
+            @click="setBottomPadding"
+          />
         </div>
       </Section>
 
@@ -130,11 +187,17 @@
           <div class="grid grid-cols-2 gap-3">
             <Field label="Event name" v-model="event.name" placeholder="button_tapped" />
             <Field label="Event data (JSON)" v-model="event.data" placeholder='{"screen":"home"}' />
-            <Field label="Push token" v-model="pushToken" placeholder="device-push-token" />
+            <Field label="Push token" v-model="pushToken" placeholder="device-push-token" class="col-span-2" />
           </div>
           <div class="flex flex-wrap gap-2">
             <Button label="logEvent()" color="indigo" @click="logEvent" />
-            <Button label="sendPushTokenToIntercom()" color="indigo" @click="sendPushToken" />
+            <Button
+              label="sendPushTokenToIntercom()"
+              color="indigo"
+              :disabled="isWeb"
+              disabled-reason="Native only — not available on web"
+              @click="sendPushToken"
+            />
           </div>
         </div>
       </Section>
@@ -171,12 +234,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import { Capacitor } from '@capacitor/core'
-import { Intercom, IntercomSpace, IntercomContent } from '@foodello/intercom'
+import { Intercom } from '@foodello/intercom'
+
+// ─── platform ────────────────────────────────────────────────────────────────
+const platform = ref(Capacitor.getPlatform())
+const isWeb = computed(() => platform.value === 'web')
+const isNative = computed(() => !isWeb.value)
 
 // ─── state ───────────────────────────────────────────────────────────────────
-const platform = ref(Capacitor.getPlatform())
 const sdkReady = ref(false)
 const logs = ref([])
 const unreadCount = ref(null)
@@ -196,6 +263,34 @@ const event = ref({ name: '', data: '' })
 const composerMessage = ref('')
 const bottomPadding = ref('80')
 const pushToken = ref('')
+const messengerSpace = ref('home')
+
+// ─── enum options ─────────────────────────────────────────────────────────────
+const apiBaseOptions = [
+  { value: 'https://api-iam.intercom.io',    label: 'US  — api-iam.intercom.io' },
+  { value: 'https://api-iam.eu.intercom.io', label: 'EU  — api-iam.eu.intercom.io' },
+  { value: 'https://api-iam.au.intercom.io', label: 'AU  — api-iam.au.intercom.io' },
+]
+
+const spaceOptions = computed(() => [
+  { value: 'home',     label: 'Home' },
+  { value: 'messages', label: 'Messages' },
+  { value: 'help',     label: 'Help Center' },
+  { value: 'tickets',  label: 'Tickets' },
+  { value: 'news',     label: 'News (web only)' },
+  { value: 'tasks',    label: 'Tasks (web only)' },
+])
+
+const contentTypeOptions = computed(() => [
+  { value: 'article',      label: 'Article' },
+  { value: 'survey',       label: 'Survey' },
+  { value: 'conversation', label: 'Conversation' },
+  { value: 'ticket',       label: 'Ticket' },
+  { value: 'carousel',     label: 'Carousel (native only)' },
+  { value: 'checklist',    label: 'Checklist (web only)' },
+  { value: 'news',         label: 'News (web only)' },
+  { value: 'tour',         label: 'Tour (web only)' },
+])
 
 // ─── logging ─────────────────────────────────────────────────────────────────
 function log(msg, type = 'info') {
@@ -214,7 +309,7 @@ async function run(label, fn) {
   }
 }
 
-// ─── config ──────────────────────────────────────────────────────────────────
+// ─── config ───────────────────────────────────────────────────────────────────
 async function loadWeb() {
   await run('load()', () => Intercom.load({
     app_id: config.value.appId || 'demo',
@@ -280,8 +375,8 @@ async function updateUser() {
 }
 
 // ─── messenger ────────────────────────────────────────────────────────────────
-async function present(space) {
-  await run(`present(${space})`, () => Intercom.present({ space }))
+async function presentSpace() {
+  await run(`present(${messengerSpace.value})`, () => Intercom.present({ space: messengerSpace.value }))
 }
 
 async function hideMessenger() {
