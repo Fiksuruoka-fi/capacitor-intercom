@@ -1,8 +1,10 @@
 <template>
   <button
-    @click="$emit('click')"
+    @click="!disabled && $emit('click')"
     class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900"
-    :class="colorClasses"
+    :class="[colorClasses, disabled ? 'opacity-40 cursor-not-allowed' : '']"
+    :disabled="disabled"
+    :title="disabled && disabledReason ? disabledReason : undefined"
   >
     {{ label }}
   </button>
@@ -10,7 +12,12 @@
 
 <script setup>
 import { computed } from 'vue'
-const props = defineProps({ label: String, color: { type: String, default: 'indigo' } })
+const props = defineProps({
+  label: String,
+  color: { type: String, default: 'indigo' },
+  disabled: { type: Boolean, default: false },
+  disabledReason: { type: String, default: '' },
+})
 defineEmits(['click'])
 
 const colorClasses = computed(() => ({
