@@ -354,6 +354,33 @@ export interface IntercomPlugin {
   setUserHash(options: { hmac: string }): Promise<void>;
 
   /**
+   * Sets a JSON Web Token (JWT) for user authentication in the Messenger.
+   * Must be called before `loginIdentifiedUser()` or `loginUnidentifiedUser()`.
+   *
+   * Only available for iOS and Android.
+   *
+   * @see https://www.intercom.com/help/en/articles/10589769-authenticating-users-in-the-messenger-with-json-web-tokens-jwts
+   * @since 8.0.0
+   */
+  setJWT(options: { jwt: string }): Promise<void>;
+
+  /**
+   * Returns whether a user is currently logged in to Intercom.
+   *
+   * @since 8.0.0
+   */
+  isUserLoggedIn(): Promise<{ isLoggedIn: boolean }>;
+
+  /**
+   * Fetches the attributes of the currently logged-in Intercom user.
+   *
+   * Only available for iOS and Android.
+   *
+   * @since 8.0.0
+   */
+  fetchLoggedInUserAttributes(): Promise<IntercomUserAttributes>;
+
+  /**
    * Sets the bottom padding for the Intercom Messenger.
    *
    * @since 1.0.0
@@ -662,6 +689,24 @@ export interface IntercomCompany {
   website?: string | undefined;
   industry?: string | undefined;
   [custom_attribute: string]: IntercomCustomAttribute;
+}
+
+/**
+ * IntercomUserAttributes Interface
+ *
+ * Attributes returned by `fetchLoggedInUserAttributes()`.
+ *
+ * Only available for iOS and Android.
+ *
+ * @since 8.0.0
+ */
+export interface IntercomUserAttributes {
+  userId?: string;
+  email?: string;
+  name?: string;
+  phone?: string;
+  languageOverride?: string;
+  customAttributes?: Record<string, any>;
 }
 
 /**

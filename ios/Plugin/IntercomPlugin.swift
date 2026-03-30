@@ -349,6 +349,37 @@ public class IntercomPlugin: CAPPlugin {
         call.resolve(["unreadCount": unreadCount])
     }
 
+    @objc func setJWT(_ call: CAPPluginCall) {
+        guard let jwt = call.getString("jwt"), !jwt.isEmpty else {
+            call.reject("jwt is required")
+            return
+        }
+        Intercom.setJWT(jwt)
+        call.resolve()
+    }
+
+    @objc func isUserLoggedIn(_ call: CAPPluginCall) {
+        call.resolve(["isLoggedIn": Intercom.isUserLoggedIn()])
+    }
+
+    @objc func fetchLoggedInUserAttributes(_ call: CAPPluginCall) {
+        Intercom.fetchLoggedInUserAttributes { result in
+            switch result {
+            case .success(let attributes):
+                var data: [String: Any] = [:]
+                if let userId = attributes.userId { data["userId"] = userId }
+                if let email = attributes.email { data["email"] = email }
+                if let name = attributes.name { data["name"] = name }
+                if let phone = attributes.phone { data["phone"] = phone }
+                if let lang = attributes.languageOverride { data["languageOverride"] = lang }
+                if let custom = attributes.customAttributes { data["customAttributes"] = custom }
+                call.resolve(data)
+            case .failure(let error):
+                call.reject("Error fetching user attributes: \(error.localizedDescription)")
+            }
+        }
+    }
+
     private func constructCompany(_ companyData: JSObject?) -> ICMCompany? {
         guard let company = companyData else { return nil }
 

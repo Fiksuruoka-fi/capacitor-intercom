@@ -1,5 +1,8 @@
 dist/
 
+# bg-shell session state (pi process manager)
+.bg-shell
+
 # node files
 node_modules
 
@@ -65,3 +68,4 @@ sensitive
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
+.gsd

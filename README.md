@@ -100,6 +100,9 @@ if (!Capacitor.isNativePlatform()) {
 * [`hideInAppMessages()`](#hideinappmessages)
 * [`displayCarousel(...)`](#displaycarousel)
 * [`setUserHash(...)`](#setuserhash)
+* [`setJWT(...)`](#setjwt)
+* [`isUserLoggedIn()`](#isuserloggedin)
+* [`fetchLoggedInUserAttributes()`](#fetchloggedinuserattributes)
 * [`setBottomPadding(...)`](#setbottompadding)
 * [`sendPushTokenToIntercom(...)`](#sendpushtokentointercom)
 * [`receivePush(...)`](#receivepush)
@@ -401,6 +404,58 @@ Sets the HMAC user hash for Intercom Identity Verification.
 | **`options`** | <code>{ hmac: string; }</code> |
 
 **Since:** 1.0.0
+
+--------------------
+
+
+### setJWT(...)
+
+```typescript
+setJWT(options: { jwt: string; }) => Promise<void>
+```
+
+Sets a JSON Web Token (JWT) for user authentication in the Messenger.
+Must be called before `loginIdentifiedUser()` or `loginUnidentifiedUser()`.
+
+Only available for iOS and Android.
+
+| Param         | Type                          |
+| ------------- | ----------------------------- |
+| **`options`** | <code>{ jwt: string; }</code> |
+
+**Since:** 8.0.0
+
+--------------------
+
+
+### isUserLoggedIn()
+
+```typescript
+isUserLoggedIn() => Promise<{ isLoggedIn: boolean; }>
+```
+
+Returns whether a user is currently logged in to Intercom.
+
+**Returns:** <code>Promise&lt;{ isLoggedIn: boolean; }&gt;</code>
+
+**Since:** 8.0.0
+
+--------------------
+
+
+### fetchLoggedInUserAttributes()
+
+```typescript
+fetchLoggedInUserAttributes() => Promise<IntercomUserAttributes>
+```
+
+Fetches the attributes of the currently logged-in Intercom user.
+
+Only available for iOS and Android.
+
+**Returns:** <code>Promise&lt;<a href="#intercomuserattributes">IntercomUserAttributes</a>&gt;</code>
+
+**Since:** 8.0.0
 
 --------------------
 
@@ -792,6 +847,24 @@ Represents Intercom option to include company details.
 | **`monthlySpend`**     | <code>number</code>                                          |                               |
 | **`plan`**             | <code>string</code>                                          |                               |
 | **`customAttributes`** | <code><a href="#record">Record</a>&lt;string, any&gt;</code> |                               |
+
+
+#### IntercomUserAttributes
+
+<a href="#intercomuserattributes">IntercomUserAttributes</a> Interface
+
+Attributes returned by `fetchLoggedInUserAttributes()`.
+
+Only available for iOS and Android.
+
+| Prop                   | Type                                                         |
+| ---------------------- | ------------------------------------------------------------ |
+| **`userId`**           | <code>string</code>                                          |
+| **`email`**            | <code>string</code>                                          |
+| **`name`**             | <code>string</code>                                          |
+| **`phone`**            | <code>string</code>                                          |
+| **`languageOverride`** | <code>string</code>                                          |
+| **`customAttributes`** | <code><a href="#record">Record</a>&lt;string, any&gt;</code> |
 
 
 #### IntercomPushNotificationData
