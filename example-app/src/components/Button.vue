@@ -1,12 +1,16 @@
 <template>
   <button
     @click="!disabled && $emit('click')"
-    class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900"
+    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900"
     :class="[colorClasses, disabled ? 'opacity-40 cursor-not-allowed' : '']"
     :disabled="disabled"
-    :title="disabled && disabledReason ? disabledReason : undefined"
   >
     {{ label }}
+    <span
+      v-if="disabled && disabledReason"
+      class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-white/20 text-white/70 text-[9px] leading-none"
+      :title="disabledReason"
+    >?</span>
   </button>
 </template>
 
