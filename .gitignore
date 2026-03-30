@@ -15,8 +15,6 @@ xcuserdata
 # macOS files
 .DS_Store
 
-
-
 # Based on Android gitignore template: https://github.com/github/gitignore/blob/HEAD/Android.gitignore
 
 # Built application files
@@ -63,9 +61,32 @@ package-lock.json
 sensitive
 
 # Keystore files
-# Uncomment the following line if you do not want to check your keystore files in.
 #*.jks
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
+
+# ── GSD baseline (auto-generated) ──
 .gsd
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.code-workspace
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+build/
+__pycache__/
+*.pyc
+.venv/
+venv/
+target/
+vendor/
+coverage/
+.cache/
+tmp/
