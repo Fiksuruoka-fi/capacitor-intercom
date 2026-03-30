@@ -77,12 +77,20 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     this.state.booted = true;
   }
 
-  async loginIdentifiedUser(_options: { userId?: string; email?: string }): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+  async loginIdentifiedUser(options: { userId?: string; email?: string }): Promise<void> {
+    if (!options.userId && !options.email) {
+      throw this.unavailable('userId or email is required.');
+    }
+    const bootConfig: Partial<IntercomWebConfig> = { ...this.state.config };
+    if (options.userId) bootConfig.user_id = options.userId;
+    if (options.email) bootConfig.email = options.email;
+    boot(bootConfig as IntercomWebConfig);
+    this.state.booted = true;
   }
 
   async loginUnidentifiedUser(): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+    boot(this.state.config);
+    this.state.booted = true;
   }
 
   async presentContent(options: { contentType: IntercomContent; contentId: string }): Promise<void> {
@@ -126,12 +134,12 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     action();
   }
 
-  async registerIdentifiedUser(_options: { userId?: string; email?: string }): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+  async registerIdentifiedUser(options: { userId?: string; email?: string }): Promise<void> {
+    return this.loginIdentifiedUser(options);
   }
 
   async registerUnidentifiedUser(): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+    return this.loginUnidentifiedUser();
   }
 
   async updateUser(options: IntercomUserUpdateOptions): Promise<void> {

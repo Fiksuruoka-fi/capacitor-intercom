@@ -57,30 +57,12 @@
               label="setJWT() ★"
               color="yellow"
               :disabled="isWeb"
-              disabled-reason="Native only — not available on web"
+              disabled-reason="Native only — web SDK uses HMAC (setUserHash) instead"
               @click="setJWT"
             />
-            <Button
-              label="loginIdentifiedUser()"
-              color="green"
-              :disabled="isWeb"
-              disabled-reason="Native only — not available on web"
-              @click="loginIdentifiedUser"
-            />
-            <Button
-              label="loginUnidentifiedUser()"
-              color="green"
-              :disabled="isWeb"
-              disabled-reason="Native only — not available on web"
-              @click="loginUnidentifiedUser"
-            />
-            <Button
-              label="logout()"
-              color="red"
-              :disabled="isWeb"
-              disabled-reason="Native only — not available on web"
-              @click="logout"
-            />
+            <Button label="loginIdentifiedUser()" color="green" @click="loginIdentifiedUser" />
+            <Button label="loginUnidentifiedUser()" color="green" @click="loginUnidentifiedUser" />
+            <Button label="logout()" color="red" @click="logout" />
           </div>
           <div class="flex flex-wrap gap-2">
             <Button label="isUserLoggedIn() ★" color="blue" @click="isUserLoggedIn" />
@@ -140,20 +122,8 @@
       <!-- Launcher & In-App -->
       <Section title="Launcher & In-App" icon="🚀">
         <div class="flex flex-wrap gap-2">
-          <Button
-            label="displayLauncher()"
-            color="green"
-            :disabled="isWeb"
-            disabled-reason="Native only — not available on web"
-            @click="displayLauncher"
-          />
-          <Button
-            label="hideLauncher()"
-            color="red"
-            :disabled="isWeb"
-            disabled-reason="Native only — not available on web"
-            @click="hideLauncher"
-          />
+          <Button label="displayLauncher()" color="green" @click="displayLauncher" />
+          <Button label="hideLauncher()" color="red" @click="hideLauncher" />
           <Button
             label="displayInAppMessages()"
             color="green"
@@ -175,7 +145,7 @@
             label="setBottomPadding()"
             color="gray"
             :disabled="isWeb"
-            disabled-reason="Native only — not available on web"
+            disabled-reason="Native only — on web set vertical_padding in load() config instead"
             @click="setBottomPadding"
           />
         </div>
