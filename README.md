@@ -4,7 +4,7 @@
     <code>@foodello/intercom</code>
   </strong>
 </p>
-<p align="center">Capacitor plugin for enabling Intercom capabilities based on the Capacitor community plugin</p>
+<p align="center">Capacitor plugin for Intercom — iOS, Android, and Web with a unified API</p>
 
 <p align="center">
   <img src="https://img.shields.io/maintenance/yes/2025?style=flat-square" />
@@ -30,51 +30,328 @@ Thanks for the all the authors with their work in [`@capacitor-community/interco
 
 **This plugin is built for the Capacitor v4 upwards.**
 
-## Installation
+## Features
 
-Using npm:
+- **Unified API across iOS, Android, and Web** — write your Intercom integration once and run it on all three platforms with the same method calls
+- **Full Intercom Messenger** — display the messenger, help center, news, tickets, and all Intercom spaces
+- **User authentication** — identified and unidentified user login, HMAC identity verification, and JWT authentication
+- **Rich content** — present articles, surveys, conversations, carousels, checklists, tours, tickets, and news items
+- **Push notifications** — register tokens, receive and process Intercom push messages on iOS and Android
+- **Event tracking** — log custom events with metadata for Intercom campaigns and automation
+- **User management** — update user attributes, custom attributes, and company data
+- **Unread conversations** — listen for real-time unread count changes across all platforms
+- **Messenger lifecycle events** — listen for show, hide, new conversation, and email-supplied events
+- **Capacitor 4, 5, 6, and 7** — maintained across major Capacitor versions
+
+### Intercom SDK versions
+
+| Platform | SDK | Version |
+| -------- | --- | ------- |
+| iOS | [Intercom iOS SDK](https://github.com/intercom/intercom-ios) | `~> 17.0` |
+| Android | [Intercom Android SDK](https://github.com/intercom/intercom-android) | `17.x` |
+| Web | [`@intercom/messenger-js-sdk`](https://www.npmjs.com/package/@intercom/messenger-js-sdk) | `^0.0.17` |
+
+### Platform support matrix
+
+| Method | iOS | Android | Web |
+| ------ | :-: | :-----: | :-: |
+| `load()` | — | — | ✅ |
+| `loadWithKeys()` | ✅ | ✅ | — |
+| `loginIdentifiedUser()` | ✅ | ✅ | ✅ |
+| `loginUnidentifiedUser()` | ✅ | ✅ | ✅ |
+| `logout()` | ✅ | ✅ | ✅ |
+| `updateUser()` | ✅ | ✅ | ✅ |
+| `logEvent()` | ✅ | ✅ | ✅ |
+| `present()` | ✅ | ✅ | ✅ |
+| `presentContent()` | ✅ | ✅ | ✅ |
+| `displayMessenger()` | ✅ | ✅ | ✅ |
+| `displayMessageComposer()` | ✅ | ✅ | ✅ |
+| `displayHelpCenter()` | ✅ | ✅ | ✅ |
+| `hideMessenger()` | ✅ | ✅ | ✅ |
+| `displayLauncher()` | ✅ | ✅ | ✅ |
+| `hideLauncher()` | ✅ | ✅ | ✅ |
+| `displayInAppMessages()` | ✅ | ✅ | — |
+| `hideInAppMessages()` | ✅ | ✅ | — |
+| `setUserHash()` | ✅ | ✅ | ✅ |
+| `setUserJwt()` | ✅ | ✅ | ✅ |
+| `isUserLoggedIn()` | ✅ | ✅ | ✅ |
+| `fetchLoggedInUserAttributes()` | ✅ | ✅ | ✅ |
+| `setBottomPadding()` | ✅ | ✅ | ✅ |
+| `setupUnreadConversationListener()` | ✅ | ✅ | ✅ |
+| `removeUnreadConversationListener()` | — | ✅ | — |
+| `getUnreadConversationCount()` | ✅ | ✅ | ✅ |
+| `sendPushTokenToIntercom()` | — | ✅ | — |
+| `receivePush()` | — | ✅ | — |
+| `displayArticle()` | ✅ | ✅ | ✅ |
+| `displayCarousel()` | ✅ | ✅ | — |
+
+**Event listeners:**
+
+| Event | iOS | Android | Web |
+| ----- | :-: | :-----: | :-: |
+| `updateUnreadCount` | ✅ | ✅ | ✅ |
+| `userEmailSupplied` | — | — | ✅ |
+| `messengerWillShow` | ✅ | — | — |
+| `messengerDidShow` | ✅ | — | ✅ |
+| `messengerWillHide` | ✅ | — | — |
+| `messengerDidHide` | ✅ | — | ✅ |
+| `newConversationStarted` | ✅ | — | — |
+| `unreadTicketCountChanged` | ✅ | — | — |
+
+## Installation
 
 ```bash
 npm install @foodello/intercom
-```
-
-Using yarn:
-
-```bash
-yarn add @foodello/intercom
-```
-
-Sync native files:
-
-````bash
 npx cap sync
-```¨
+```
 
 ## Usage
 
-Import Intercom plugin into your project.
+### Importing
 
-```js
+```typescript
 import { Capacitor } from '@capacitor/core';
 import { Intercom } from '@foodello/intercom';
-import { PushNotifications } from '@capacitor/push-notifications';
-````
+```
 
-Initialize Intercom plugin.
+### Initialization
 
-```js
-/**
- * Web requires loading and initializing the script of the SDK
- * with the Intercom web config defined in IntercomWebConfig Interface.
- *
- * Only available in Web.
- * @since 4.2.0
- */
+iOS and Android initialize automatically from your Capacitor config. Web requires an explicit `load()` call:
+
+```typescript
 if (!Capacitor.isNativePlatform()) {
-  await Intercom.load({ app_id: 'xxx' });
+  await Intercom.load({
+    app_id: 'your_app_id',
+    // Optional: regional data hosting
+    // api_base: 'https://api-iam.eu.intercom.io',
+  });
 }
+```
 
-// Android and iOS does not require seperate initialization
+### User authentication
+
+```typescript
+// Login with user ID, email, or both
+await Intercom.loginIdentifiedUser({ userId: '12345' });
+await Intercom.loginIdentifiedUser({ email: 'user@example.com' });
+await Intercom.loginIdentifiedUser({ userId: '12345', email: 'user@example.com' });
+
+// Login as anonymous visitor
+await Intercom.loginUnidentifiedUser();
+
+// Check login status
+const { isLoggedIn } = await Intercom.isUserLoggedIn();
+
+// Fetch current user attributes (returns userId, email, name, etc.)
+const attrs = await Intercom.fetchLoggedInUserAttributes();
+
+// Logout
+await Intercom.logout();
+```
+
+### Identity verification
+
+If you have [Messenger Security](https://www.intercom.com/help/en/articles/183-enable-identity-verification-for-web-and-mobile) enabled, set the user hash or JWT **before** calling `loginIdentifiedUser()`:
+
+```typescript
+// HMAC-based identity verification
+await Intercom.setUserHash({ hmac: 'your_hmac_hash' });
+await Intercom.loginIdentifiedUser({ userId: '12345' });
+
+// JWT-based identity verification
+await Intercom.setUserJwt({ jwt: 'your_jwt_token' });
+await Intercom.loginIdentifiedUser({ userId: '12345' });
+```
+
+### Updating user attributes
+
+```typescript
+await Intercom.updateUser({
+  name: 'John Doe',
+  email: 'john@example.com',
+  phone: '+1234567890',
+  languageOverride: 'en',
+  customAttributes: {
+    plan: 'premium',
+    signup_date: '2025-01-01',
+  },
+  company: {
+    companyId: 'company_123',
+    name: 'Acme Inc',
+    plan: 'enterprise',
+    monthlySpend: 499,
+  },
+});
+```
+
+### Displaying the Messenger
+
+```typescript
+// Open a specific space
+import { IntercomSpace } from '@foodello/intercom';
+
+await Intercom.present({ space: IntercomSpace.Home });
+await Intercom.present({ space: IntercomSpace.Messages });
+await Intercom.present({ space: IntercomSpace.HelpCenter });
+await Intercom.present({ space: IntercomSpace.Tickets });
+
+// Web-only spaces
+await Intercom.present({ space: IntercomSpace.News });
+await Intercom.present({ space: IntercomSpace.Tasks });
+
+// Open with a pre-filled message
+await Intercom.displayMessageComposer({ message: 'I need help with...' });
+
+// Show or hide the Messenger
+await Intercom.displayMessenger();
+await Intercom.hideMessenger();
+
+// Show or hide the launcher button
+await Intercom.displayLauncher();
+await Intercom.hideLauncher();
+```
+
+### Presenting content
+
+```typescript
+import { IntercomContent } from '@foodello/intercom';
+
+// Articles (iOS, Android, Web)
+await Intercom.presentContent({ contentType: IntercomContent.Article, contentId: '123' });
+
+// Surveys (iOS, Android, Web)
+await Intercom.presentContent({ contentType: IntercomContent.Survey, contentId: '456' });
+
+// Conversations (iOS, Android, Web)
+await Intercom.presentContent({ contentType: IntercomContent.Conversation, contentId: '789' });
+
+// Tickets (Android, Web)
+await Intercom.presentContent({ contentType: IntercomContent.Ticket, contentId: '321' });
+
+// Carousels (iOS, Android)
+await Intercom.presentContent({ contentType: IntercomContent.Carousel, contentId: '654' });
+
+// Web-only content types
+await Intercom.presentContent({ contentType: IntercomContent.Checklist, contentId: '111' });
+await Intercom.presentContent({ contentType: IntercomContent.News, contentId: '222' });
+await Intercom.presentContent({ contentType: IntercomContent.Tour, contentId: '333' });
+```
+
+### Event tracking
+
+```typescript
+// Simple event
+await Intercom.logEvent({ name: 'completed_onboarding' });
+
+// Event with metadata
+await Intercom.logEvent({
+  name: 'purchased_item',
+  data: {
+    item_name: 'Premium Plan',
+    price: 49.99,
+    currency: 'USD',
+  },
+});
+```
+
+### Unread conversation count
+
+```typescript
+// Set up the listener first
+await Intercom.setupUnreadConversationListener();
+
+// Listen for count changes
+Intercom.addListener('updateUnreadCount', ({ unreadCount }) => {
+  console.log('Unread conversations:', unreadCount);
+});
+
+// Get the current count
+const { unreadCount } = await Intercom.getUnreadConversationCount();
+```
+
+### Messenger lifecycle events
+
+```typescript
+// Messenger visibility (iOS and Web)
+Intercom.addListener('messengerDidShow', () => {
+  console.log('Messenger is now visible');
+});
+
+Intercom.addListener('messengerDidHide', () => {
+  console.log('Messenger was closed');
+});
+
+// iOS-only events
+Intercom.addListener('messengerWillShow', () => {});
+Intercom.addListener('messengerWillHide', () => {});
+Intercom.addListener('newConversationStarted', () => {});
+Intercom.addListener('unreadTicketCountChanged', () => {});
+
+// Web-only events
+Intercom.addListener('userEmailSupplied', () => {
+  console.log('Visitor entered their email');
+});
+```
+
+### Push notifications (iOS and Android)
+
+On iOS, Intercom automatically registers for push notifications when the Capacitor push notification delegate fires. On Android, you need to forward the token manually:
+
+```typescript
+import { PushNotifications } from '@capacitor/push-notifications';
+
+// Request permission and register
+await PushNotifications.requestPermissions();
+await PushNotifications.register();
+
+// Forward token to Intercom (Android only)
+PushNotifications.addListener('registration', async ({ value: token }) => {
+  if (Capacitor.getPlatform() === 'android') {
+    await Intercom.sendPushTokenToIntercom({ value: token });
+  }
+});
+
+// Handle incoming Intercom push notifications (Android only)
+PushNotifications.addListener('pushNotificationReceived', async (notification) => {
+  if (Capacitor.getPlatform() === 'android') {
+    await Intercom.receivePush(notification.data);
+  }
+});
+```
+
+### Customization
+
+```typescript
+// Adjust the bottom padding of the Messenger (minimum value: 20)
+await Intercom.setBottomPadding({ value: '80' });
+```
+
+Web-specific configuration options can be passed to `load()`:
+
+```typescript
+await Intercom.load({
+  app_id: 'your_app_id',
+  custom_launcher_selector: '#my-intercom-button',
+  alignment: 'left',          // 'left' or 'right'
+  vertical_padding: 40,
+  horizontal_padding: 20,
+  hide_default_launcher: true, // use your own button with custom_launcher_selector
+  session_duration: 300000,    // 5 minutes in ms
+  action_color: '#FF5733',
+  background_color: '#1A1A2E',
+});
+```
+
+### Runtime initialization (iOS and Android)
+
+If you need to initialize Intercom at runtime instead of from the Capacitor config (for example, when the app ID comes from a remote config):
+
+```typescript
+await Intercom.loadWithKeys({
+  appId: 'your_app_id',
+  iosApiKey: 'ios_sdk-xxx',       // required on iOS
+  androidApiKey: 'android_sdk-xxx', // required on Android
+});
 ```
 
 ## API
@@ -953,62 +1230,61 @@ Construct a type with a set of properties K of type T
 
 </docgen-api>
 
-## Configurations
+## Platform configuration
 
-### iOS setup
+### iOS
 
-- `ionic start my-cap-app --capacitor`
-- `cd my-cap-app`
-- `npm install —-save @foodello/intercom`
-- `mkdir www && touch www/index.html`
-- `npx cap add ios`
-- add intercom keys to capacitor's configuration file
+Add your Intercom credentials to `capacitor.config.ts` (or `capacitor.config.json`):
 
-```
+```json
 {
- …
   "plugins": {
-   "Intercom": {
+    "Intercom": {
       "iosApiKey": "ios_sdk-xxx",
       "iosAppId": "yyy"
     }
   }
-…
 }
 ```
 
-- `npx cap open ios`
-- sign your app at xcode (general tab)
+Then run:
 
-> Tip: every time you change a native code you may need to clean up the cache (Product > Clean build folder) and then run the app again.
-
-### Android setup
-
-- `ionic start my-cap-app --capacitor`
-- `cd my-cap-app`
-- `npm install —-save @foodello/intercom`
-- `mkdir www && touch www/index.html`
-- `npx cap add android`
-- add intercom keys to capacitor's configuration file
-
+```bash
+npx cap sync ios
+npx cap open ios
 ```
+
+Sign your app in Xcode under the General tab.
+
+> **Tip:** After changing native code, clean the build cache (Product > Clean Build Folder) before running again.
+
+### Android
+
+Add your Intercom credentials to `capacitor.config.ts` (or `capacitor.config.json`):
+
+```json
 {
- …
   "plugins": {
-   "Intercom": {
+    "Intercom": {
       "androidApiKey": "android_sdk-xxx",
       "androidAppId": "yyy"
     }
   }
-…
 }
 ```
 
-- `npx cap open android`
+Then run:
 
-Now you should be set to go. Try to run your client using `ionic cap run android --livereload`.
+```bash
+npx cap sync android
+npx cap open android
+```
 
-> Tip: every time you change a native code you may need to clean up the cache (Build > Clean Project | Build > Rebuild Project) and then run the app again.
+> **Tip:** After changing native code, clean the build cache (Build > Clean Project) before running again.
+
+### Web
+
+No native configuration needed. Call `Intercom.load()` with your `app_id` in your application code. See the [Usage](#usage) section above.
 
 ## License
 
