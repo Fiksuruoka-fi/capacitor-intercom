@@ -357,12 +357,10 @@ export interface IntercomPlugin {
    * Sets a JSON Web Token (JWT) for user authentication in the Messenger.
    * Must be called before `loginIdentifiedUser()` or `loginUnidentifiedUser()`.
    *
-   * Only available for iOS and Android.
-   *
    * @see https://www.intercom.com/help/en/articles/10589769-authenticating-users-in-the-messenger-with-json-web-tokens-jwts
    * @since 8.0.0
    */
-  setJWT(options: { jwt: string }): Promise<void>;
+  setUserJwt(options: { jwt: string }): Promise<void>;
 
   /**
    * Returns whether a user is currently logged in to Intercom.
@@ -374,11 +372,9 @@ export interface IntercomPlugin {
   /**
    * Fetches the attributes of the currently logged-in Intercom user.
    *
-   * Only available for iOS and Android.
-   *
    * @since 8.0.0
    */
-  fetchLoggedInUserAttributes(): Promise<IntercomUserAttributes>;
+  fetchLoggedInUserAttributes(): Promise<IntercomUserAttributes | Record<string, string> | undefined>;
 
   /**
    * Sets the bottom padding for the Intercom Messenger.
@@ -617,6 +613,15 @@ export interface State {
    * Status if listener for unread messages has been set.
    */
   unreadListenerAttached: boolean;
+
+  /**
+   * Status if user is currently logged in to Intercom.
+   *
+   * Only available for Web.
+   *
+   * @since 8.0.0
+   */
+  isUserLoggedIn: boolean;
 }
 
 /**

@@ -100,7 +100,7 @@ if (!Capacitor.isNativePlatform()) {
 * [`hideInAppMessages()`](#hideinappmessages)
 * [`displayCarousel(...)`](#displaycarousel)
 * [`setUserHash(...)`](#setuserhash)
-* [`setJWT(...)`](#setjwt)
+* [`setUserJwt(...)`](#setuserjwt)
 * [`isUserLoggedIn()`](#isuserloggedin)
 * [`fetchLoggedInUserAttributes()`](#fetchloggedinuserattributes)
 * [`setBottomPadding(...)`](#setbottompadding)
@@ -408,16 +408,14 @@ Sets the HMAC user hash for Intercom Identity Verification.
 --------------------
 
 
-### setJWT(...)
+### setUserJwt(...)
 
 ```typescript
-setJWT(options: { jwt: string; }) => Promise<void>
+setUserJwt(options: { jwt: string; }) => Promise<void>
 ```
 
 Sets a JSON Web Token (JWT) for user authentication in the Messenger.
 Must be called before `loginIdentifiedUser()` or `loginUnidentifiedUser()`.
-
-Only available for iOS and Android.
 
 | Param         | Type                          |
 | ------------- | ----------------------------- |
@@ -446,14 +444,12 @@ Returns whether a user is currently logged in to Intercom.
 ### fetchLoggedInUserAttributes()
 
 ```typescript
-fetchLoggedInUserAttributes() => Promise<IntercomUserAttributes>
+fetchLoggedInUserAttributes() => Promise<IntercomUserAttributes | Record<string, string> | undefined>
 ```
 
 Fetches the attributes of the currently logged-in Intercom user.
 
-Only available for iOS and Android.
-
-**Returns:** <code>Promise&lt;<a href="#intercomuserattributes">IntercomUserAttributes</a>&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#intercomuserattributes">IntercomUserAttributes</a> | <a href="#record">Record</a>&lt;string, string&gt;&gt;</code>
 
 **Since:** 8.0.0
 
