@@ -4,12 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "sync": "npx cap sync",
+    "dev": "vite",
+    "open:android": "npx cap open android",
     "open:ios": "npx cap open ios",
-    "open:android": "npx cap open android"
+    "sync": "npx cap sync",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:android": "vite build && npx cap sync android && npx cap open android",
+    "test:ios": "vite build && npx cap sync ios && npx cap open ios",
+    "test:web": "vite build && vite dev"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.0",
@@ -22,7 +26,10 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.2",
     "@vitejs/plugin-vue": "^6.0.5",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^20.8.9",
     "tailwindcss": "^4.2.2",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "vitest": "^4.1.2"
   }
 }

@@ -400,13 +400,13 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
     }
 
     @PluginMethod
-    public void setJWT(PluginCall call) {
+    public void setUserJwt(PluginCall call) {
         String jwt = call.getString("jwt");
         if (jwt == null || jwt.isEmpty()) {
             call.reject("jwt is required");
             return;
         }
-        Intercom.client().setJWT(jwt);
+        Intercom.client().setUserJwt(jwt);
         call.resolve();
     }
 

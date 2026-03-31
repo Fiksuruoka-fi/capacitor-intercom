@@ -19,6 +19,7 @@ import IntercomModule, {
   startTour,
   trackEvent,
   update,
+  whoami
 } from '@intercom/messenger-js-sdk';
 
 import type {
@@ -41,6 +42,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     isVisible: false,
     unreadCount: 0,
     unreadListenerAttached: false,
+    isUserLoggedIn: false,
   };
 
   constructor() {
@@ -81,16 +83,38 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     if (!options.userId && !options.email) {
       throw this.unavailable('userId or email is required.');
     }
-    const bootConfig: Partial<IntercomWebConfig> = { ...this.state.config };
-    if (options.userId) bootConfig.user_id = options.userId;
-    if (options.email) bootConfig.email = options.email;
-    boot(bootConfig as IntercomWebConfig);
+
+    const bootConfig: IntercomWebConfig = {
+      ...this.state.config,
+      ...(options.userId ? { user_id: options.userId } : {}),
+      ...(options.email ? { email: options.email } : {}),
+    };
+
+    // Always shutdown first — boot() with credentials is ignored if the SDK
+    // is already running as a visitor. shutdown() + boot() is the correct
+    // sequence to re-identify a session on the Intercom web SDK.
+    if (this.state.booted) {
+      shutdown();
+    }
+
+    boot(bootConfig);
     this.state.booted = true;
+    this.state.config = bootConfig;
+    this.state.isUserLoggedIn = true;
   }
 
   async loginUnidentifiedUser(): Promise<void> {
-    boot(this.state.config);
+    // Strip any user identity from config, then shutdown + boot fresh
+    const { user_id: _uid, email: _email, ...anonConfig } = this.state.config as any;
+    const bootConfig: IntercomWebConfig = anonConfig;
+
+    if (this.state.booted) {
+      shutdown();
+    }
+
+    boot(bootConfig);
     this.state.booted = true;
+    this.state.config = bootConfig;
   }
 
   async presentContent(options: { contentType: IntercomContent; contentId: string }): Promise<void> {
@@ -224,16 +248,20 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     throw this.unavailable('HMAC option not found.');
   }
 
-  async setJWT(_options: { jwt: string }): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+  async setUserJwt(options: { jwt: string }): Promise<void> {
+    if (!options.jwt) {
+      throw this.unavailable('JWT option not found.');
+    }
+
+    this.updateConfig({ intercom_user_jwt: options.jwt });
   }
 
   async isUserLoggedIn(): Promise<{ isLoggedIn: boolean }> {
-    return { isLoggedIn: this.state.booted && this.state.initialized };
+    return { isLoggedIn: this.state.booted && this.state.initialized && this.state.isUserLoggedIn };
   }
 
-  async fetchLoggedInUserAttributes(): Promise<IntercomUserAttributes> {
-    throw this.unimplemented('Not implemented on web.');
+  async fetchLoggedInUserAttributes(): Promise<IntercomUserAttributes | Record<string, string> | undefined> {
+    return whoami();
   }
 
   async setBottomPadding(options: { value: string }): Promise<void> {
@@ -308,6 +336,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     this.state.config = { app_id: '' };
     this.state.unreadCount = 0;
     this.state.unreadListenerAttached = false;
+    this.state.isUserLoggedIn = false;
   }
 
   /**

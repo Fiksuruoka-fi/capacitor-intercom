@@ -1,16 +1,20 @@
 <template>
-  <div class="min-h-screen bg-gray-950 text-gray-100 font-sans">
+  <div class="min-h-screen bg-gray-950 text-gray-100 font-sans max-w-full overflow-x-hidden"
+    style="padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); padding-bottom: env(safe-area-inset-bottom);">
     <!-- Header -->
-    <header class="border-b border-gray-800 px-6 py-4 flex items-center justify-between">
+    <header class="border-b border-gray-800 px-6 py-4 flex items-center justify-between"
+      style="padding-top: env(safe-area-inset-top);">
       <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-white font-bold text-sm">I</div>
+        <div class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-white font-bold text-sm">I
+        </div>
         <div>
           <h1 class="text-sm font-semibold text-white">@foodello/intercom</h1>
           <p class="text-xs text-gray-500">Plugin test harness</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <span class="text-xs px-2 py-1 rounded-full font-mono" :class="platform === 'web' ? 'bg-blue-900 text-blue-300' : platform === 'ios' ? 'bg-gray-800 text-gray-300' : 'bg-green-900 text-green-300'">
+        <span class="text-xs px-2 py-1 rounded-full font-mono"
+          :class="platform === 'web' ? 'bg-blue-900 text-blue-300' : platform === 'ios' ? 'bg-gray-800 text-gray-300' : 'bg-green-900 text-green-300'">
           {{ platform }}
         </span>
         <span class="w-2 h-2 rounded-full" :class="sdkReady ? 'bg-green-400' : 'bg-gray-600'"></span>
@@ -18,7 +22,10 @@
       </div>
     </header>
 
-    <div class="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <div class="lg:grid lg:grid-cols-[1fr_340px] lg:gap-6 lg:max-w-5xl lg:mx-auto lg:px-6 lg:py-6">
+
+    <!-- Left column: controls -->
+    <div class="max-w-2xl mx-auto px-4 py-6 space-y-6 lg:max-w-none lg:mx-0 lg:px-0">
 
       <!-- Config -->
       <Section title="Configuration" icon="⚙️">
@@ -30,14 +37,10 @@
             <Field label="Android API Key" v-model="config.androidApiKey" placeholder="android_sdk-..." />
           </div>
           <div class="flex gap-2">
-            <Button label="load() — Web" color="indigo" @click="loadWeb" />
-            <Button
-              label="loadWithKeys() — Native"
-              color="indigo"
-              :disabled="isWeb"
-              disabled-reason="Native only — not available on web"
-              @click="loadWithKeys"
-            />
+            <Button label="load() — Web" color="indigo" :disabled="isNative"
+              disabled-reason="Web only — not available on native" @click="loadWeb" />
+            <Button label="loadWithKeys() — Native" color="indigo" :disabled="isWeb"
+              disabled-reason="Native only — not available on web" @click="loadWithKeys" />
           </div>
         </div>
       </Section>
@@ -53,26 +56,14 @@
           </div>
           <div class="flex flex-wrap gap-2">
             <Button label="setUserHash()" color="yellow" @click="setUserHash" />
-            <Button
-              label="setJWT() ★"
-              color="yellow"
-              :disabled="isWeb"
-              disabled-reason="Native only — web SDK uses HMAC (setUserHash) instead"
-              @click="setJWT"
-            />
+            <Button label="setUserJwt()" color="yellow" @click="setUserJwt" />
             <Button label="loginIdentifiedUser()" color="green" @click="loginIdentifiedUser" />
             <Button label="loginUnidentifiedUser()" color="green" @click="loginUnidentifiedUser" />
             <Button label="logout()" color="red" @click="logout" />
           </div>
           <div class="flex flex-wrap gap-2">
-            <Button label="isUserLoggedIn() ★" color="blue" @click="isUserLoggedIn" />
-            <Button
-              label="fetchLoggedInUserAttributes() ★"
-              color="blue"
-              :disabled="isWeb"
-              disabled-reason="Native only — not available on web"
-              @click="fetchLoggedInUserAttributes"
-            />
+            <Button label="isUserLoggedIn()" color="blue" @click="isUserLoggedIn" />
+            <Button label="fetchLoggedInUserAttributes()" color="blue" @click="fetchLoggedInUserAttributes" />
           </div>
         </div>
       </Section>
@@ -104,7 +95,8 @@
             <Button label="hideMessenger()" color="red" @click="hideMessenger" />
           </div>
           <div class="flex gap-3 items-end">
-            <Field label="Initial message" v-model="composerMessage" placeholder="Hi, I need help with..." class="flex-1" />
+            <Field label="Initial message" v-model="composerMessage" placeholder="Hi, I need help with..."
+              class="flex-1" />
             <Button label="Open composer" color="indigo" @click="displayMessageComposer" />
           </div>
         </div>
@@ -124,30 +116,16 @@
         <div class="flex flex-wrap gap-2">
           <Button label="displayLauncher()" color="green" @click="displayLauncher" />
           <Button label="hideLauncher()" color="red" @click="hideLauncher" />
-          <Button
-            label="displayInAppMessages()"
-            color="green"
-            :disabled="isWeb"
-            disabled-reason="Native only — not available on web"
-            @click="displayInAppMessages"
-          />
-          <Button
-            label="hideInAppMessages()"
-            color="red"
-            :disabled="isWeb"
-            disabled-reason="Native only — not available on web"
-            @click="hideInAppMessages"
-          />
+          <Button label="displayInAppMessages()" color="green" :disabled="isWeb"
+            disabled-reason="Native only — not available on web" @click="displayInAppMessages" />
+          <Button label="hideInAppMessages()" color="red" :disabled="isWeb"
+            disabled-reason="Native only — not available on web" @click="hideInAppMessages" />
         </div>
         <div class="mt-3 flex gap-3 items-end">
           <Field label="Bottom padding (px)" v-model="bottomPadding" placeholder="80" class="w-40" />
-          <Button
-            label="setBottomPadding()"
-            color="gray"
-            :disabled="isWeb"
+          <Button label="setBottomPadding()" color="gray" :disabled="isWeb"
             disabled-reason="Native only — on web set vertical_padding in load() config instead"
-            @click="setBottomPadding"
-          />
+            @click="setBottomPadding" />
         </div>
       </Section>
 
@@ -161,13 +139,8 @@
           </div>
           <div class="flex flex-wrap gap-2">
             <Button label="logEvent()" color="indigo" @click="logEvent" />
-            <Button
-              label="sendPushTokenToIntercom()"
-              color="indigo"
-              :disabled="isWeb"
-              disabled-reason="Native only — not available on web"
-              @click="sendPushToken"
-            />
+            <Button label="sendPushTokenToIntercom()" color="indigo" :disabled="isWeb"
+              disabled-reason="Native only — not available on web" @click="sendPushToken" />
           </div>
         </div>
       </Section>
@@ -185,19 +158,85 @@
         </div>
       </Section>
 
-      <!-- Log -->
-      <Section title="Log" icon="📋">
-        <div class="bg-gray-900 rounded-lg p-3 h-48 overflow-y-auto font-mono text-xs space-y-1">
-          <div v-if="logs.length === 0" class="text-gray-600">No output yet. Tap a button to test.</div>
-          <div v-for="(entry, i) in logs" :key="i" class="flex gap-2">
-            <span class="text-gray-600 shrink-0">{{ entry.time }}</span>
-            <span :class="entry.type === 'error' ? 'text-red-400' : entry.type === 'success' ? 'text-green-400' : 'text-gray-300'">{{ entry.msg }}</span>
+      <!-- Dev Tools -->
+      <Section title="Dev Tools — Local Token Generator" icon="🔧">
+        <div class="bg-amber-950 border border-amber-700 rounded-lg px-3 py-2 mb-4 flex items-start gap-2">
+          <span class="text-amber-400 text-base leading-none mt-0.5">⚠️</span>
+          <p class="text-xs text-amber-300">
+            <strong>Development only.</strong> Never expose secret keys in client-side code in production.
+            This tool runs entirely in your browser for local testing convenience.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Shared secret key -->
+          <Field label="Secret key (Identity Verification / Messenger Security)" v-model="devTools.secretKey"
+            placeholder="Your Intercom secret key" />
+
+          <!-- HMAC generator -->
+          <div class="bg-gray-800/50 rounded-lg p-3 space-y-3">
+            <h3 class="text-xs font-semibold text-gray-300">HMAC-SHA256 (Identity Verification)</h3>
+            <Field label="Data (user_id or email)" v-model="devTools.hmacData"
+              placeholder="Auto-fills from Auth fields above" />
+            <div class="flex gap-2">
+              <Button label="Generate HMAC" color="yellow" @click="generateHmac" />
+              <Button label="Apply to HMAC field ↑" color="gray" :disabled="!devTools.hmacResult"
+                @click="auth.hmac = devTools.hmacResult" />
+            </div>
+            <div v-if="devTools.hmacResult"
+              class="bg-gray-900 rounded px-3 py-2 font-mono text-xs text-green-400 break-all select-all">
+              {{ devTools.hmacResult }}
+            </div>
+          </div>
+
+          <!-- JWT generator -->
+          <div class="bg-gray-800/50 rounded-lg p-3 space-y-3">
+            <h3 class="text-xs font-semibold text-gray-300">JWT — HS256 (Messenger Security)</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <Field label="user_id (required)" v-model="devTools.jwtUserId"
+                placeholder="Auto-fills from Auth fields" />
+              <Field label="email (optional)" v-model="devTools.jwtEmail" placeholder="user@example.com" />
+              <Field label="Expires in (minutes)" v-model="devTools.jwtExpiryMinutes" placeholder="60" />
+              <Field label="Extra claims (JSON)" v-model="devTools.jwtExtra" placeholder='{"company_id":"abc"}' />
+            </div>
+            <div class="flex gap-2">
+              <Button label="Generate JWT" color="yellow" @click="generateJwt" />
+              <Button label="Apply to JWT field ↑" color="gray" :disabled="!devTools.jwtResult"
+                @click="auth.jwt = devTools.jwtResult" />
+            </div>
+            <div v-if="devTools.jwtResult"
+              class="bg-gray-900 rounded px-3 py-2 font-mono text-xs text-green-400 break-all select-all">
+              {{ devTools.jwtResult }}
+            </div>
+            <div v-if="devTools.jwtDecoded" class="bg-gray-900 rounded px-3 py-2 text-xs text-gray-400 space-y-1">
+              <div><span class="text-gray-500">Header:</span> {{ devTools.jwtDecoded.header }}</div>
+              <div><span class="text-gray-500">Payload:</span> {{ devTools.jwtDecoded.payload }}</div>
+            </div>
           </div>
         </div>
-        <div class="mt-2 flex justify-end">
-          <button @click="logs = []" class="text-xs text-gray-600 hover:text-gray-400">Clear</button>
-        </div>
       </Section>
+
+    </div>
+
+    <!-- Right column: log (sticky on desktop, below controls on mobile) -->
+    <div class="px-4 pb-6 lg:px-0 lg:py-6">
+      <div class="lg:sticky lg:top-4">
+        <Section title="Log" icon="📋">
+          <div class="bg-gray-900 rounded-lg p-3 h-48 lg:h-[calc(100vh-10rem)] overflow-y-auto font-mono text-xs space-y-1">
+            <div v-if="logs.length === 0" class="text-gray-600">No output yet. Tap a button to test.</div>
+            <div v-for="(entry, i) in logs" :key="i" class="flex gap-2">
+              <span class="text-gray-600 shrink-0">{{ entry.time }}</span>
+              <span
+                :class="entry.type === 'error' ? 'text-red-400' : entry.type === 'success' ? 'text-green-400' : 'text-gray-300'">{{
+                  entry.msg }}</span>
+            </div>
+          </div>
+          <div class="mt-2 flex justify-end">
+            <button @click="logs = []" class="text-xs text-gray-600 hover:text-gray-400">Clear</button>
+          </div>
+        </Section>
+      </div>
+    </div>
 
     </div>
   </div>
@@ -235,37 +274,50 @@ const bottomPadding = ref('80')
 const pushToken = ref('')
 const messengerSpace = ref('home')
 
+// ─── dev tools ────────────────────────────────────────────────────────────────
+const devTools = ref({
+  secretKey: '',
+  hmacData: '',
+  hmacResult: '',
+  jwtUserId: '',
+  jwtEmail: '',
+  jwtExpiryMinutes: '60',
+  jwtExtra: '',
+  jwtResult: '',
+  jwtDecoded: null,
+})
+
 // ─── enum options ─────────────────────────────────────────────────────────────
 const apiBaseOptions = [
-  { value: 'https://api-iam.intercom.io',    label: 'US  — api-iam.intercom.io' },
+  { value: 'https://api-iam.intercom.io', label: 'US  — api-iam.intercom.io' },
   { value: 'https://api-iam.eu.intercom.io', label: 'EU  — api-iam.eu.intercom.io' },
   { value: 'https://api-iam.au.intercom.io', label: 'AU  — api-iam.au.intercom.io' },
 ]
 
 const spaceOptions = computed(() => [
-  { value: 'home',     label: 'Home' },
+  { value: 'home', label: 'Home' },
   { value: 'messages', label: 'Messages' },
-  { value: 'help',     label: 'Help Center' },
-  { value: 'tickets',  label: 'Tickets' },
-  { value: 'news',     label: 'News (web only)' },
-  { value: 'tasks',    label: 'Tasks (web only)' },
+  { value: 'help', label: 'Help Center' },
+  { value: 'tickets', label: 'Tickets' },
+  { value: 'news', label: 'News (web only)' },
+  { value: 'tasks', label: 'Tasks (web only)' },
 ])
 
 const contentTypeOptions = computed(() => [
-  { value: 'article',      label: 'Article' },
-  { value: 'survey',       label: 'Survey' },
+  { value: 'article', label: 'Article' },
+  { value: 'survey', label: 'Survey' },
   { value: 'conversation', label: 'Conversation' },
-  { value: 'ticket',       label: 'Ticket' },
-  { value: 'carousel',     label: 'Carousel (native only)' },
-  { value: 'checklist',    label: 'Checklist (web only)' },
-  { value: 'news',         label: 'News (web only)' },
-  { value: 'tour',         label: 'Tour (web only)' },
+  { value: 'ticket', label: 'Ticket' },
+  { value: 'carousel', label: 'Carousel (native only)' },
+  { value: 'checklist', label: 'Checklist (web only)' },
+  { value: 'news', label: 'News (web only)' },
+  { value: 'tour', label: 'Tour (web only)' },
 ])
 
 // ─── logging ─────────────────────────────────────────────────────────────────
 function log(msg, type = 'info') {
   const now = new Date()
-  const time = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`
+  const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`
   logs.value.unshift({ time, msg, type })
 }
 
@@ -303,9 +355,9 @@ async function setUserHash() {
   await run('setUserHash()', () => Intercom.setUserHash({ hmac: auth.value.hmac }))
 }
 
-async function setJWT() {
+async function setUserJwt() {
   if (!auth.value.jwt) return log('Enter a JWT value first', 'error')
-  await run('setJWT() ★', () => Intercom.setJWT({ jwt: auth.value.jwt }))
+  await run('setUserJwt()', () => Intercom.setUserJwt({ jwt: auth.value.jwt }))
 }
 
 async function loginIdentifiedUser() {
@@ -325,11 +377,11 @@ async function logout() {
 }
 
 async function isUserLoggedIn() {
-  await run('isUserLoggedIn() ★', () => Intercom.isUserLoggedIn())
+  await run('isUserLoggedIn()', () => Intercom.isUserLoggedIn())
 }
 
 async function fetchLoggedInUserAttributes() {
-  await run('fetchLoggedInUserAttributes() ★', () => Intercom.fetchLoggedInUserAttributes())
+  await run('fetchLoggedInUserAttributes()', () => Intercom.fetchLoggedInUserAttributes())
 }
 
 // ─── user ─────────────────────────────────────────────────────────────────────
@@ -410,6 +462,65 @@ async function removeUnreadListener() {
 async function getUnreadCount() {
   const result = await run('getUnreadConversationCount()', () => Intercom.getUnreadConversationCount())
   if (result) unreadCount.value = result.unreadCount
+}
+
+// ─── dev tools: crypto helpers ────────────────────────────────────────────────
+import { hmacSha256, generateJwtToken } from './crypto.js'
+
+async function generateHmac() {
+  const secret = devTools.value.secretKey
+  const data = devTools.value.hmacData || auth.value.userId || auth.value.email
+  if (!secret) return log('Enter a secret key in Dev Tools', 'error')
+  if (!data) return log('Enter data to hash (or fill User ID / Email in Auth section)', 'error')
+  // Auto-fill the data field if it was empty
+  if (!devTools.value.hmacData) devTools.value.hmacData = data
+  try {
+    const { hex } = await hmacSha256(secret, data)
+    devTools.value.hmacResult = hex
+    log(`✓ HMAC generated for "${data.substring(0, 20)}${data.length > 20 ? '…' : ''}"`, 'success')
+  } catch (e) {
+    log(`✗ HMAC generation failed: ${e.message}`, 'error')
+  }
+}
+
+async function generateJwt() {
+  const secret = devTools.value.secretKey
+  const userId = devTools.value.jwtUserId || auth.value.userId || auth.value.email
+  if (!secret) return log('Enter a secret key in Dev Tools', 'error')
+  if (!userId) return log('Enter a user_id (or fill User ID / Email in Auth section)', 'error')
+  // Auto-fill if it was empty
+  if (!devTools.value.jwtUserId) devTools.value.jwtUserId = userId
+
+  try {
+    let extraClaims
+    if (devTools.value.jwtExtra) {
+      try {
+        extraClaims = JSON.parse(devTools.value.jwtExtra)
+      } catch {
+        return log('Extra claims must be valid JSON', 'error')
+      }
+    }
+
+    const emailValue = devTools.value.jwtEmail || auth.value.email || undefined
+    const minutes = parseInt(devTools.value.jwtExpiryMinutes) || 60
+
+    const { token, header, payload } = await generateJwtToken({
+      secret,
+      userId,
+      email: emailValue,
+      expiryMinutes: minutes,
+      extraClaims,
+    })
+
+    devTools.value.jwtResult = token
+    devTools.value.jwtDecoded = {
+      header: JSON.stringify(header),
+      payload: JSON.stringify(payload, null, 1),
+    }
+    log(`✓ JWT generated — expires in ${minutes}min`, 'success')
+  } catch (e) {
+    log(`✗ JWT generation failed: ${e.message}`, 'error')
+  }
 }
 
 onUnmounted(() => { if (unreadListener) unreadListener.remove() })

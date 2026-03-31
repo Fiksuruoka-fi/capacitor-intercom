@@ -349,12 +349,12 @@ public class IntercomPlugin: CAPPlugin {
         call.resolve(["unreadCount": unreadCount])
     }
 
-    @objc func setJWT(_ call: CAPPluginCall) {
+    @objc func setUserJwt(_ call: CAPPluginCall) {
         guard let jwt = call.getString("jwt"), !jwt.isEmpty else {
             call.reject("jwt is required")
             return
         }
-        Intercom.setJWT(jwt)
+        Intercom.setUserJwt(jwt)
         call.resolve()
     }
 
