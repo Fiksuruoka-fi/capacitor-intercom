@@ -90,3 +90,4 @@ vendor/
 coverage/
 .cache/
 tmp/
+.artifacts/
