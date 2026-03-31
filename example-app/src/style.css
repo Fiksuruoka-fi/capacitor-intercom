@@ -1,6 +1,7 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-html, body {
+html,
+body {
   overflow-x: hidden;
   max-width: 100vw;
 }

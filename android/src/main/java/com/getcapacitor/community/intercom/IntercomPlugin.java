@@ -53,14 +53,12 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
         super.handleOnStart();
         bridge
             .getActivity()
-            .runOnUiThread(
-                () -> {
-                    try {
-                        setupIntercom();
-                        Intercom.client().handlePushMessage();
-                    } catch (Exception ignored) {}
-                }
-            );
+            .runOnUiThread(() -> {
+                try {
+                    setupIntercom();
+                    Intercom.client().handlePushMessage();
+                } catch (Exception ignored) {}
+            });
     }
 
     @PluginMethod
@@ -89,9 +87,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
         if (userId != null && !userId.isEmpty()) {
             registration = registration.withUserId(userId);
         }
-        Intercom
-            .client()
-            .loginIdentifiedUser(
+        Intercom.client().loginIdentifiedUser(
                 registration,
                 new IntercomStatusCallback() {
                     @Override
@@ -121,9 +117,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             registration = registration.withUserId(userId);
         }
 
-        Intercom
-            .client()
-            .loginIdentifiedUser(
+        Intercom.client().loginIdentifiedUser(
                 registration,
                 new IntercomStatusCallback() {
                     @Override
@@ -142,9 +136,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
     @PluginMethod
     @Deprecated
     public void registerUnidentifiedUser(PluginCall call) {
-        Intercom
-            .client()
-            .loginUnidentifiedUser(
+        Intercom.client().loginUnidentifiedUser(
                 new IntercomStatusCallback() {
                     @Override
                     public void onSuccess() {
@@ -161,9 +153,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
 
     @PluginMethod
     public void loginUnidentifiedUser(PluginCall call) {
-        Intercom
-            .client()
-            .loginUnidentifiedUser(
+        Intercom.client().loginUnidentifiedUser(
                 new IntercomStatusCallback() {
                     @Override
                     public void onSuccess() {
@@ -227,9 +217,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             return;
         }
 
-        Intercom
-            .client()
-            .updateUser(
+        Intercom.client().updateUser(
                 builder.build(),
                 new IntercomStatusCallback() {
                     @Override
@@ -419,21 +407,23 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
 
     @PluginMethod
     public void fetchLoggedInUserAttributes(PluginCall call) {
-        bridge.getActivity().runOnUiThread(() -> {
-            Intercom.client().fetchLoggedInUserAttributes(result -> {
-                if (result != null) {
-                    JSObject ret = new JSObject();
-                    if (result.getUserId() != null) ret.put("userId", result.getUserId());
-                    if (result.getEmail() != null) ret.put("email", result.getEmail());
-                    if (result.getName() != null) ret.put("name", result.getName());
-                    if (result.getPhone() != null) ret.put("phone", result.getPhone());
-                    if (result.getLanguageOverride() != null) ret.put("languageOverride", result.getLanguageOverride());
-                    call.resolve(ret);
-                } else {
-                    call.reject("Failed to fetch user attributes");
-                }
+        bridge
+            .getActivity()
+            .runOnUiThread(() -> {
+                Intercom.client().fetchLoggedInUserAttributes((result) -> {
+                        if (result != null) {
+                            JSObject ret = new JSObject();
+                            if (result.getUserId() != null) ret.put("userId", result.getUserId());
+                            if (result.getEmail() != null) ret.put("email", result.getEmail());
+                            if (result.getName() != null) ret.put("name", result.getName());
+                            if (result.getPhone() != null) ret.put("phone", result.getPhone());
+                            if (result.getLanguageOverride() != null) ret.put("languageOverride", result.getLanguageOverride());
+                            call.resolve(ret);
+                        } else {
+                            call.reject("Failed to fetch user attributes");
+                        }
+                    });
             });
-        });
     }
 
     @PluginMethod
