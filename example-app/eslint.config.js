@@ -1,5 +1,5 @@
-import js from '@eslint/js'
-import pluginVue from 'eslint-plugin-vue'
+import js from '@eslint/js';
+import pluginVue from 'eslint-plugin-vue';
 
 export default [
   js.configs.recommended,
@@ -26,8 +26,6 @@ export default [
     },
     rules: {
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-      'vue/multi-word-component-names': 'off',
-      'vue/no-reserved-component-names': 'off',
     },
   },
 
@@ -55,4 +53,4 @@ export default [
   {
     ignores: ['dist/', 'node_modules/'],
   },
-]
+];
