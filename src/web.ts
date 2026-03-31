@@ -19,7 +19,7 @@ import IntercomModule, {
   startTour,
   trackEvent,
   update,
-  whoami
+  whoami,
 } from '@intercom/messenger-js-sdk';
 
 import type {
@@ -105,8 +105,11 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
 
   async loginUnidentifiedUser(): Promise<void> {
     // Strip any user identity from config, then shutdown + boot fresh
-    const { user_id: _uid, email: _email, ...anonConfig } = this.state.config as any;
-    const bootConfig: IntercomWebConfig = anonConfig;
+    // Avoid object rest destructuring to prevent TypeScript emitting a __rest
+    // helper that references top-level `this` (which Rollup rewrites to undefined).
+    const bootConfig: IntercomWebConfig = Object.fromEntries(
+      Object.entries(this.state.config).filter(([key]) => key !== 'user_id' && key !== 'email'),
+    ) as IntercomWebConfig;
 
     if (this.state.booted) {
       shutdown();
@@ -241,11 +244,15 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
 
   async setUserHash(options: { hmac: string }): Promise<void> {
     const { hmac } = options;
-    if (hmac) {
-      this.updateConfig({ user_hash: hmac });
-      return;
+    if (!hmac) {
+      throw this.unavailable('HMAC option not found.');
     }
-    throw this.unavailable('HMAC option not found.');
+
+    // Only stash the hash in config for the next boot() call.
+    // Do NOT call update() here — pushing user_hash to a live session
+    // that has no user_id/email triggers an Identity Verification error
+    // when Messenger Security is enforced.
+    this.state.config = { ...this.state.config, user_hash: hmac };
   }
 
   async setUserJwt(options: { jwt: string }): Promise<void> {
@@ -253,7 +260,10 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
       throw this.unavailable('JWT option not found.');
     }
 
-    this.updateConfig({ intercom_user_jwt: options.jwt });
+    // Only stash the JWT in config for the next boot() call.
+    // Same reasoning as setUserHash — pushing auth credentials to a
+    // live session before identity is established causes errors.
+    this.state.config = { ...this.state.config, intercom_user_jwt: options.jwt };
   }
 
   async isUserLoggedIn(): Promise<{ isLoggedIn: boolean }> {
