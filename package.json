@@ -35,7 +35,7 @@
     "@capacitor/core": ">=8.0.0"
   },
   "dependencies": {
-    "@intercom/messenger-js-sdk": "^0.0.17"
+    "@intercom/messenger-js-sdk": "^0.0.18"
   },
   "devDependencies": {
     "@capacitor/android": "^8.0.0",
