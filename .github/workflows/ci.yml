@@ -55,6 +55,9 @@ jobs:
       - name: Run tests
         working-directory: example-app
         run: npm test
+      - name: Lint example-app
+        working-directory: example-app
+        run: npm run lint
       - name: Build example-app
         working-directory: example-app
         run: npm run build
