@@ -28,138 +28,138 @@
     <div class="max-w-2xl mx-auto px-4 py-6 space-y-6 lg:max-w-none lg:mx-0 lg:px-0">
 
       <!-- Config -->
-      <Section title="Configuration" icon="⚙️">
+      <AppSection title="Configuration" icon="⚙️">
         <div class="space-y-3">
           <div class="grid grid-cols-2 gap-3">
-            <Field label="App ID" v-model="config.appId" placeholder="your_app_id" />
-            <Select label="API Base (web)" v-model="config.apiBase" :options="apiBaseOptions" />
-            <Field label="iOS API Key" v-model="config.iosApiKey" placeholder="ios_sdk-..." />
-            <Field label="Android API Key" v-model="config.androidApiKey" placeholder="android_sdk-..." />
+            <AppField label="App ID" v-model="config.appId" placeholder="your_app_id" />
+            <AppSelect label="API Base (web)" v-model="config.apiBase" :options="apiBaseOptions" />
+            <AppField label="iOS API Key" v-model="config.iosApiKey" placeholder="ios_sdk-..." />
+            <AppField label="Android API Key" v-model="config.androidApiKey" placeholder="android_sdk-..." />
           </div>
           <div class="flex gap-2">
-            <Button label="load() — Web" color="indigo" :disabled="isNative"
+            <AppButton label="load() — Web" color="indigo" :disabled="isNative"
               disabled-reason="Web only — not available on native" @click="loadWeb" />
-            <Button label="loadWithKeys() — Native" color="indigo" :disabled="isWeb"
+            <AppButton label="loadWithKeys() — Native" color="indigo" :disabled="isWeb"
               disabled-reason="Native only — not available on web" @click="loadWithKeys" />
           </div>
         </div>
-      </Section>
+      </AppSection>
 
       <!-- Auth -->
-      <Section title="Authentication" icon="🔐">
+      <AppSection title="Authentication" icon="🔐">
         <div class="space-y-3">
           <div class="grid grid-cols-2 gap-3">
-            <Field label="User ID" v-model="auth.userId" placeholder="user_123" />
-            <Field label="Email" v-model="auth.email" placeholder="user@example.com" />
-            <Field label="HMAC (identity verification)" v-model="auth.hmac" placeholder="sha256 hmac..." />
-            <Field label="JWT" v-model="auth.jwt" placeholder="eyJ..." />
+            <AppField label="User ID" v-model="auth.userId" placeholder="user_123" />
+            <AppField label="Email" v-model="auth.email" placeholder="user@example.com" />
+            <AppField label="HMAC (identity verification)" v-model="auth.hmac" placeholder="sha256 hmac..." />
+            <AppField label="JWT" v-model="auth.jwt" placeholder="eyJ..." />
           </div>
           <div class="flex flex-wrap gap-2">
-            <Button label="setUserHash()" color="yellow" @click="setUserHash" />
-            <Button label="setUserJwt()" color="yellow" @click="setUserJwt" />
-            <Button label="loginIdentifiedUser()" color="green" @click="loginIdentifiedUser" />
-            <Button label="loginUnidentifiedUser()" color="green" @click="loginUnidentifiedUser" />
-            <Button label="logout()" color="red" @click="logout" />
+            <AppButton label="setUserHash()" color="yellow" @click="setUserHash" />
+            <AppButton label="setUserJwt()" color="yellow" @click="setUserJwt" />
+            <AppButton label="loginIdentifiedUser()" color="green" @click="loginIdentifiedUser" />
+            <AppButton label="loginUnidentifiedUser()" color="green" @click="loginUnidentifiedUser" />
+            <AppButton label="logout()" color="red" @click="logout" />
           </div>
           <div class="flex flex-wrap gap-2">
-            <Button label="isUserLoggedIn()" color="blue" @click="isUserLoggedIn" />
-            <Button label="fetchLoggedInUserAttributes()" color="blue" @click="fetchLoggedInUserAttributes" />
+            <AppButton label="isUserLoggedIn()" color="blue" @click="isUserLoggedIn" />
+            <AppButton label="fetchLoggedInUserAttributes()" color="blue" @click="fetchLoggedInUserAttributes" />
           </div>
         </div>
-      </Section>
+      </AppSection>
 
       <!-- User -->
-      <Section title="User Attributes" icon="👤">
+      <AppSection title="User Attributes" icon="👤">
         <div class="space-y-3">
           <div class="grid grid-cols-2 gap-3">
-            <Field label="Name" v-model="user.name" placeholder="Jane Doe" />
-            <Field label="Phone" v-model="user.phone" placeholder="+1 555 000 0000" />
-            <Field label="Language" v-model="user.language" placeholder="en" />
-            <Field label="Custom attr key" v-model="user.customKey" placeholder="plan" />
-            <Field label="Custom attr value" v-model="user.customValue" placeholder="pro" />
+            <AppField label="Name" v-model="user.name" placeholder="Jane Doe" />
+            <AppField label="Phone" v-model="user.phone" placeholder="+1 555 000 0000" />
+            <AppField label="Language" v-model="user.language" placeholder="en" />
+            <AppField label="Custom attr key" v-model="user.customKey" placeholder="plan" />
+            <AppField label="Custom attr value" v-model="user.customValue" placeholder="pro" />
           </div>
-          <Button label="updateUser()" color="indigo" @click="updateUser" />
+          <AppButton label="updateUser()" color="indigo" @click="updateUser" />
         </div>
-      </Section>
+      </AppSection>
 
       <!-- Messenger -->
-      <Section title="Messenger" icon="💬">
+      <AppSection title="Messenger" icon="💬">
         <div class="space-y-3">
           <div class="grid grid-cols-2 gap-3">
-            <Select label="Space" v-model="messengerSpace" :options="spaceOptions" />
+            <AppSelect label="Space" v-model="messengerSpace" :options="spaceOptions" />
             <div class="flex items-end">
-              <Button label="present(space)" color="indigo" @click="presentSpace" />
+              <AppButton label="present(space)" color="indigo" @click="presentSpace" />
             </div>
           </div>
           <div class="flex flex-wrap gap-2">
-            <Button label="hideMessenger()" color="red" @click="hideMessenger" />
+            <AppButton label="hideMessenger()" color="red" @click="hideMessenger" />
           </div>
           <div class="flex gap-3 items-end">
-            <Field label="Initial message" v-model="composerMessage" placeholder="Hi, I need help with..."
+            <AppField label="Initial message" v-model="composerMessage" placeholder="Hi, I need help with..."
               class="flex-1" />
-            <Button label="Open composer" color="indigo" @click="displayMessageComposer" />
+            <AppButton label="Open composer" color="indigo" @click="displayMessageComposer" />
           </div>
         </div>
-      </Section>
+      </AppSection>
 
       <!-- Content -->
-      <Section title="Content" icon="📄">
+      <AppSection title="Content" icon="📄">
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <Field label="Content ID" v-model="content.id" placeholder="12345" />
-          <Select label="Content type" v-model="content.type" :options="contentTypeOptions" />
+          <AppField label="Content ID" v-model="content.id" placeholder="12345" />
+          <AppSelect label="Content type" v-model="content.type" :options="contentTypeOptions" />
         </div>
-        <Button label="presentContent()" color="indigo" @click="presentContent" />
-      </Section>
+        <AppButton label="presentContent()" color="indigo" @click="presentContent" />
+      </AppSection>
 
       <!-- Launcher & In-App -->
-      <Section title="Launcher & In-App" icon="🚀">
+      <AppSection title="Launcher & In-App" icon="🚀">
         <div class="flex flex-wrap gap-2">
-          <Button label="displayLauncher()" color="green" @click="displayLauncher" />
-          <Button label="hideLauncher()" color="red" @click="hideLauncher" />
-          <Button label="displayInAppMessages()" color="green" :disabled="isWeb"
+          <AppButton label="displayLauncher()" color="green" @click="displayLauncher" />
+          <AppButton label="hideLauncher()" color="red" @click="hideLauncher" />
+          <AppButton label="displayInAppMessages()" color="green" :disabled="isWeb"
             disabled-reason="Native only — not available on web" @click="displayInAppMessages" />
-          <Button label="hideInAppMessages()" color="red" :disabled="isWeb"
+          <AppButton label="hideInAppMessages()" color="red" :disabled="isWeb"
             disabled-reason="Native only — not available on web" @click="hideInAppMessages" />
         </div>
         <div class="mt-3 flex gap-3 items-end">
-          <Field label="Bottom padding (px)" v-model="bottomPadding" placeholder="80" class="w-40" />
-          <Button label="setBottomPadding()" color="gray" :disabled="isWeb"
+          <AppField label="Bottom padding (px)" v-model="bottomPadding" placeholder="80" class="w-40" />
+          <AppButton label="setBottomPadding()" color="gray" :disabled="isWeb"
             disabled-reason="Native only — on web set vertical_padding in load() config instead"
             @click="setBottomPadding" />
         </div>
-      </Section>
+      </AppSection>
 
       <!-- Events & Push -->
-      <Section title="Events & Push" icon="📡">
+      <AppSection title="Events & Push" icon="📡">
         <div class="space-y-3">
           <div class="grid grid-cols-2 gap-3">
-            <Field label="Event name" v-model="event.name" placeholder="button_tapped" />
-            <Field label="Event data (JSON)" v-model="event.data" placeholder='{"screen":"home"}' />
-            <Field label="Push token" v-model="pushToken" placeholder="device-push-token" class="col-span-2" />
+            <AppField label="Event name" v-model="event.name" placeholder="button_tapped" />
+            <AppField label="Event data (JSON)" v-model="event.data" placeholder='{"screen":"home"}' />
+            <AppField label="Push token" v-model="pushToken" placeholder="device-push-token" class="col-span-2" />
           </div>
           <div class="flex flex-wrap gap-2">
-            <Button label="logEvent()" color="indigo" @click="logEvent" />
-            <Button label="sendPushTokenToIntercom()" color="indigo" :disabled="isWeb"
+            <AppButton label="logEvent()" color="indigo" @click="logEvent" />
+            <AppButton label="sendPushTokenToIntercom()" color="indigo" :disabled="isWeb"
               disabled-reason="Native only — not available on web" @click="sendPushToken" />
           </div>
         </div>
-      </Section>
+      </AppSection>
 
       <!-- Unread count -->
-      <Section title="Unread Count" icon="🔔">
+      <AppSection title="Unread Count" icon="🔔">
         <div class="flex flex-wrap gap-2 items-center">
-          <Button label="setupUnreadConversationListener()" color="green" @click="setupUnreadListener" />
-          <Button label="removeUnreadConversationListener()" color="red" @click="removeUnreadListener" />
-          <Button label="getUnreadConversationCount()" color="blue" @click="getUnreadCount" />
+          <AppButton label="setupUnreadConversationListener()" color="green" @click="setupUnreadListener" />
+          <AppButton label="removeUnreadConversationListener()" color="red" @click="removeUnreadListener" />
+          <AppButton label="getUnreadConversationCount()" color="blue" @click="getUnreadCount" />
           <div v-if="unreadCount !== null" class="ml-auto flex items-center gap-2">
             <span class="text-xs text-gray-400">Unread:</span>
             <span class="bg-indigo-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ unreadCount }}</span>
           </div>
         </div>
-      </Section>
+      </AppSection>
 
       <!-- Dev Tools -->
-      <Section title="Dev Tools — Local Token Generator" icon="🔧">
+      <AppSection title="Dev Tools — Local Token Generator" icon="🔧">
         <div class="bg-amber-950 border border-amber-700 rounded-lg px-3 py-2 mb-4 flex items-start gap-2">
           <span class="text-amber-400 text-base leading-none mt-0.5">⚠️</span>
           <p class="text-xs text-amber-300">
@@ -170,17 +170,17 @@
 
         <div class="space-y-4">
           <!-- Shared secret key -->
-          <Field label="Secret key (Identity Verification / Messenger Security)" v-model="devTools.secretKey"
+          <AppField label="Secret key (Identity Verification / Messenger Security)" v-model="devTools.secretKey"
             placeholder="Your Intercom secret key" />
 
           <!-- HMAC generator -->
           <div class="bg-gray-800/50 rounded-lg p-3 space-y-3">
             <h3 class="text-xs font-semibold text-gray-300">HMAC-SHA256 (Identity Verification)</h3>
-            <Field label="Data (user_id or email)" v-model="devTools.hmacData"
+            <AppField label="Data (user_id or email)" v-model="devTools.hmacData"
               placeholder="Auto-fills from Auth fields above" />
             <div class="flex gap-2">
-              <Button label="Generate HMAC" color="yellow" @click="generateHmac" />
-              <Button label="Apply to HMAC field ↑" color="gray" :disabled="!devTools.hmacResult"
+              <AppButton label="Generate HMAC" color="yellow" @click="generateHmac" />
+              <AppButton label="Apply to HMAC field ↑" color="gray" :disabled="!devTools.hmacResult"
                 @click="auth.hmac = devTools.hmacResult" />
             </div>
             <div v-if="devTools.hmacResult"
@@ -193,15 +193,15 @@
           <div class="bg-gray-800/50 rounded-lg p-3 space-y-3">
             <h3 class="text-xs font-semibold text-gray-300">JWT — HS256 (Messenger Security)</h3>
             <div class="grid grid-cols-2 gap-3">
-              <Field label="user_id (required)" v-model="devTools.jwtUserId"
+              <AppField label="user_id (required)" v-model="devTools.jwtUserId"
                 placeholder="Auto-fills from Auth fields" />
-              <Field label="email (optional)" v-model="devTools.jwtEmail" placeholder="user@example.com" />
-              <Field label="Expires in (minutes)" v-model="devTools.jwtExpiryMinutes" placeholder="60" />
-              <Field label="Extra claims (JSON)" v-model="devTools.jwtExtra" placeholder='{"company_id":"abc"}' />
+              <AppField label="email (optional)" v-model="devTools.jwtEmail" placeholder="user@example.com" />
+              <AppField label="Expires in (minutes)" v-model="devTools.jwtExpiryMinutes" placeholder="60" />
+              <AppField label="Extra claims (JSON)" v-model="devTools.jwtExtra" placeholder='{"company_id":"abc"}' />
             </div>
             <div class="flex gap-2">
-              <Button label="Generate JWT" color="yellow" @click="generateJwt" />
-              <Button label="Apply to JWT field ↑" color="gray" :disabled="!devTools.jwtResult"
+              <AppButton label="Generate JWT" color="yellow" @click="generateJwt" />
+              <AppButton label="Apply to JWT field ↑" color="gray" :disabled="!devTools.jwtResult"
                 @click="auth.jwt = devTools.jwtResult" />
             </div>
             <div v-if="devTools.jwtResult"
@@ -214,14 +214,14 @@
             </div>
           </div>
         </div>
-      </Section>
+      </AppSection>
 
     </div>
 
     <!-- Right column: log (sticky on desktop, below controls on mobile) -->
     <div class="px-4 pb-6 lg:px-0 lg:py-6">
       <div class="lg:sticky lg:top-4">
-        <Section title="Log" icon="📋">
+        <AppSection title="Log" icon="📋">
           <div class="bg-gray-900 rounded-lg p-3 h-48 lg:h-[calc(100vh-10rem)] overflow-y-auto font-mono text-xs space-y-1">
             <div v-if="logs.length === 0" class="text-gray-600">No output yet. Tap a button to test.</div>
             <div v-for="(entry, i) in logs" :key="i" class="flex gap-2">
@@ -234,7 +234,7 @@
           <div class="mt-2 flex justify-end">
             <button @click="logs = []" class="text-xs text-gray-600 hover:text-gray-400">Clear</button>
           </div>
-        </Section>
+        </AppSection>
       </div>
     </div>
 
