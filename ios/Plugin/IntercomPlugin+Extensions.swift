@@ -14,7 +14,7 @@ extension IntercomPlugin {
         ]
         let spaceString = call.getString("space", "")
         let space = spaceMapping[spaceString] ?? .home
-        Intercom.present(space)
+        Intercom.presentIntercom(space)
         call.resolve()
     }
 
@@ -124,13 +124,13 @@ extension IntercomPlugin {
 
     @available(*, deprecated, message: "This method is deprecated, use present() instead.")
     @objc func displayMessenger(_ call: CAPPluginCall) {
-        Intercom.present()
+        Intercom.presentIntercom()
         call.resolve()
     }
 
     @available(*, deprecated, message: "This method is deprecated, use present() instead.")
     @objc func displayHelpCenter(_ call: CAPPluginCall) {
-        Intercom.present(Space.helpCenter)
+        Intercom.presentIntercom(Space.helpCenter)
         call.resolve()
     }
 
