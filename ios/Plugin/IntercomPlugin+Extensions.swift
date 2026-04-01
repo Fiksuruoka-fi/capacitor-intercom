@@ -28,7 +28,8 @@ extension IntercomPlugin {
             "carousel": Intercom.Content.carousel(id: contentId),
             "survey": Intercom.Content.survey(id: contentId),
             "article": Intercom.Content.article(id: contentId),
-            "conversation": Intercom.Content.conversation(id: contentId)
+            "conversation": Intercom.Content.conversation(id: contentId),
+            "ticket": Intercom.Content.ticket(id: contentId)
         ]
         let contentTypeString = call.getString("contentType", "")
         guard let contentType = contentMapping[contentTypeString] else {
