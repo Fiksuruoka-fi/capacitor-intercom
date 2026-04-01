@@ -2,6 +2,7 @@ dist/
 
 # bg-shell session state (pi process manager)
 .bg-shell
+.artifacts/
 
 # node files
 node_modules
@@ -11,6 +12,8 @@ Pods
 Podfile.lock
 Build
 xcuserdata
+.build/
+Package.resolved
 
 # macOS files
 .DS_Store
