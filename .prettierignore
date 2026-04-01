@@ -1,4 +1,6 @@
 ios
 android/*
 !android/src
+.build
+example-app/android
 CHANGELOG.md

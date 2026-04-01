@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "capacitor-swift-pm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ionic-team/capacitor-swift-pm.git",
+      "state" : {
+        "revision" : "6a2a3feb25fda8df2a284d0818bc9c83e57a7d56",
+        "version" : "8.3.0"
+      }
+    },
+    {
+      "identity" : "intercom-ios-sp",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/intercom/intercom-ios-sp.git",
+      "state" : {
+        "revision" : "035258868b1b956ea27b15e9fc5f1a8ce1fd81b9",
+        "version" : "19.5.5"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -91,3 +91,4 @@ coverage/
 .cache/
 tmp/
 .artifacts/
+.build/
