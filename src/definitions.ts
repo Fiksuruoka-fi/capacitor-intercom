@@ -784,8 +784,6 @@ export enum IntercomContent {
   Tour = 'tour',
 
   /**
-   * Only available for Web
-   *
    * @since 7.0.0
    */
   Ticket = 'ticket',
