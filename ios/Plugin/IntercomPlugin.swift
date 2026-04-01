@@ -68,7 +68,7 @@ public class IntercomPlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
         DispatchQueue.main.async {
-            Intercom.setDeviceToken(deviceToken)
+            Intercom.setDeviceToken(deviceToken, completion: nil)
         }
     }
 
@@ -183,20 +183,18 @@ public class IntercomPlugin: CAPPlugin, CAPBridgedPlugin {
     }
 
     @objc func fetchLoggedInUserAttributes(_ call: CAPPluginCall) {
-        Intercom.fetchLoggedInUserAttributes { result in
-            switch result {
-            case .success(let attributes):
-                var data: [String: Any] = [:]
-                if let userId = attributes.userId { data["userId"] = userId }
-                if let email = attributes.email { data["email"] = email }
-                if let name = attributes.name { data["name"] = name }
-                if let phone = attributes.phone { data["phone"] = phone }
-                if let lang = attributes.languageOverride { data["languageOverride"] = lang }
-                if let custom = attributes.customAttributes { data["customAttributes"] = custom }
-                call.resolve(data)
-            case .failure(let error):
-                call.reject("Error fetching user attributes: \(error.localizedDescription)")
-            }
+        guard let attributes = Intercom.fetchLoggedInUserAttributes() else {
+            call.resolve()
+            return
         }
+
+        var data: [String: Any] = [:]
+        if let userId = attributes.userId { data["userId"] = userId }
+        if let email = attributes.email { data["email"] = email }
+        if let name = attributes.name { data["name"] = name }
+        if let phone = attributes.phone { data["phone"] = phone }
+        if let lang = attributes.languageOverride { data["languageOverride"] = lang }
+        if let custom = attributes.customAttributes { data["customAttributes"] = custom }
+        call.resolve(data)
     }
 }

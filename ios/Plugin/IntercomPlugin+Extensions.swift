@@ -14,7 +14,7 @@ extension IntercomPlugin {
         ]
         let spaceString = call.getString("space", "")
         let space = spaceMapping[spaceString] ?? .home
-        Intercom.presentIntercom(space)
+        Intercom.present(space)
         call.resolve()
     }
 
@@ -99,6 +99,15 @@ extension IntercomPlugin {
         call.resolve()
     }
 
+    @objc func removeUnreadConversationListener(_ call: CAPPluginCall) {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: NSNotification.Name.IntercomUnreadConversationCountDidChange,
+            object: nil
+        )
+        call.resolve()
+    }
+
     @objc func handleUpdateUnreadCountListener(notification: NSNotification) {
         let unreadCount = Intercom.unreadConversationCount()
         notifyListeners("updateUnreadCount", data: ["unreadCount": unreadCount])
@@ -124,13 +133,13 @@ extension IntercomPlugin {
 
     @available(*, deprecated, message: "This method is deprecated, use present() instead.")
     @objc func displayMessenger(_ call: CAPPluginCall) {
-        Intercom.presentIntercom()
+        Intercom.present()
         call.resolve()
     }
 
     @available(*, deprecated, message: "This method is deprecated, use present() instead.")
     @objc func displayHelpCenter(_ call: CAPPluginCall) {
-        Intercom.presentIntercom(Space.helpCenter)
+        Intercom.present(Space.helpCenter)
         call.resolve()
     }
 
@@ -158,7 +167,7 @@ extension IntercomPlugin {
 // MARK: - Private Helpers & Notification Handlers
 
 extension IntercomPlugin {
-    private func constructCompany(_ companyData: JSObject?) -> ICMCompany? {
+    func constructCompany(_ companyData: JSObject?) -> ICMCompany? {
         guard let company = companyData else { return nil }
 
         let companyAttributes = ICMCompany()
