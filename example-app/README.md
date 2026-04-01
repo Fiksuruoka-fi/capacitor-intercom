@@ -34,6 +34,9 @@ npm run open:android
 
 Edit `capacitor.config.ts` to set your `iosApiKey`, `iosAppId`, `androidApiKey`, and `androidAppId` for native builds.
 
+If you want to initialize at runtime instead, leave the native keys blank in `capacitor.config.ts`.
+This matters on Android because the Intercom Android SDK does not support switching app IDs after it has already been initialized.
+
 On web, enter your `App ID` in the Configuration section and tap **load() — Web**.
 
 On native, tap **loadWithKeys() — Native** after entering keys, or set them in `capacitor.config.ts` for automatic initialization.

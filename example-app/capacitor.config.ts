@@ -6,11 +6,12 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   plugins: {
     Intercom: {
-      // Set your keys here or via loadWithKeys() at runtime
-      iosApiKey: 'ios_sdk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-      iosAppId: 'your_app_id',
-      androidApiKey: 'android_sdk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-      androidAppId: 'your_app_id',
+      // Set real keys here for native auto-initialization.
+      // Leave these blank if you want to initialize at runtime via loadWithKeys().
+      iosApiKey: '',
+      iosAppId: '',
+      androidApiKey: '',
+      androidAppId: '',
     },
   },
 };

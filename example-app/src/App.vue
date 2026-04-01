@@ -30,6 +30,11 @@
       <!-- Config -->
       <AppSection title="Configuration" icon="⚙️">
         <div class="space-y-3">
+          <div v-if="isNative" class="rounded-lg border border-amber-800 bg-amber-950/40 px-3 py-2 text-xs text-amber-200">
+            This form is seeded from <code>capacitor.config.ts</code>. If you edit that file for a native build, run
+            <code>npm run sync</code> and rebuild the app. If you change the values in this form instead, tap
+            <strong>loadWithKeys() — Native</strong> before trying to open Intercom.
+          </div>
           <div class="grid grid-cols-2 gap-3">
             <AppField label="App ID" v-model="config.appId" placeholder="your_app_id" />
             <AppSelect label="API Base (web)" v-model="config.apiBase" :options="apiBaseOptions" />
@@ -246,6 +251,7 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { Capacitor } from '@capacitor/core'
 import { Intercom } from '@foodello/intercom'
+import capacitorConfig from '../capacitor.config'
 
 // ─── platform ────────────────────────────────────────────────────────────────
 const platform = ref(Capacitor.getPlatform())
@@ -258,10 +264,12 @@ const logs = ref([])
 const unreadCount = ref(null)
 let unreadListener = null
 
+const intercomConfig = capacitorConfig.plugins?.Intercom ?? {}
+
 const config = ref({
-  appId: '',
-  iosApiKey: '',
-  androidApiKey: '',
+  appId: intercomConfig.androidAppId || intercomConfig.iosAppId || '',
+  iosApiKey: intercomConfig.iosApiKey || '',
+  androidApiKey: intercomConfig.androidApiKey || '',
   apiBase: 'https://api-iam.intercom.io',
 })
 
@@ -333,20 +341,33 @@ async function run(label, fn) {
 
 // ─── config ───────────────────────────────────────────────────────────────────
 async function loadWeb() {
-  await run('load()', () => Intercom.load({
-    app_id: config.value.appId || 'demo',
-    api_base: config.value.apiBase,
-  }))
-  sdkReady.value = true
+  try {
+    await Intercom.load({
+      app_id: config.value.appId || 'demo',
+      api_base: config.value.apiBase,
+    })
+    log('✓ load()', 'success')
+    sdkReady.value = true
+  } catch (e) {
+    sdkReady.value = false
+    log(`✗ load(): ${e?.message ?? e}`, 'error')
+  }
 }
 
 async function loadWithKeys() {
-  await run('loadWithKeys()', () => Intercom.loadWithKeys({
-    appId: config.value.appId,
-    iosApiKey: config.value.iosApiKey || undefined,
-    androidApiKey: config.value.androidApiKey || undefined,
-  }))
-  sdkReady.value = true
+  try {
+    await Intercom.loadWithKeys({
+      appId: config.value.appId,
+      androidAppId: config.value.appId,
+      iosApiKey: config.value.iosApiKey || undefined,
+      androidApiKey: config.value.androidApiKey || undefined,
+    })
+    log('✓ loadWithKeys()', 'success')
+    sdkReady.value = true
+  } catch (e) {
+    sdkReady.value = false
+    log(`✗ loadWithKeys(): ${e?.message ?? e}`, 'error')
+  }
 }
 
 // ─── auth ─────────────────────────────────────────────────────────────────────
