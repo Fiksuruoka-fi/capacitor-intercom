@@ -39,21 +39,42 @@ public class IntercomPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "isUserLoggedIn", returnType: CAPPluginReturnPromise)
     ]
 
-    var appId = "NO_APP_ID_PASSED"
-    var apiKey = "NO_API_KEY_PASSED"
+    var appId = ""
+    var apiKey = ""
 
     public override func load() {
-        appId = getConfig().getString("iosAppId") ?? "NO_APP_ID_PASSED"
-        apiKey = getConfig().getString("iosApiKey") ?? "NO_API_KEY_PASSED"
+        appId = getConfig().getString("iosAppId") ?? ""
+        apiKey = getConfig().getString("iosApiKey") ?? ""
 
-        _ = try? setupIntercom()
+        registerNotificationObservers()
+
+        if !appId.isEmpty && !apiKey.isEmpty {
+            _ = try? setupIntercom()
+        }
     }
 
     @objc func loadWithKeys(_ call: CAPPluginCall) {
+        var resolvedAppId = call.getString("appId") ?? ""
+        if resolvedAppId.isEmpty {
+            resolvedAppId = call.getString("iosAppId") ?? ""
+        }
+
+        let resolvedApiKey = call.getString("iosApiKey") ?? ""
+
+        guard !resolvedAppId.isEmpty else {
+            call.reject("appId is required")
+            return
+        }
+
+        guard !resolvedApiKey.isEmpty else {
+            call.reject("iosApiKey is required")
+            return
+        }
+
         DispatchQueue.main.async {
             do {
-                self.appId = call.getString("appId", "NO_APP_ID_PASSED")
-                self.apiKey = call.getString("iosApiKey", "NO_API_KEY_PASSED")
+                self.appId = resolvedAppId
+                self.apiKey = resolvedApiKey
                 try self.setupIntercom()
                 call.resolve()
             } catch let error as NSError {

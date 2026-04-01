@@ -197,13 +197,13 @@ extension IntercomPlugin {
     }
 
     func setupIntercom() throws {
-        guard appId != "NO_APP_ID_PASSED" else {
+        guard !appId.isEmpty, appId != "NO_APP_ID_PASSED" else {
             throw NSError(
                 domain: "Intercom", code: 0,
                 userInfo: [NSLocalizedDescriptionKey: "App ID missing"])
         }
 
-        guard apiKey != "NO_API_KEY_PASSED" else {
+        guard !apiKey.isEmpty, apiKey != "NO_API_KEY_PASSED" else {
             throw NSError(
                 domain: "Intercom", code: 0,
                 userInfo: [NSLocalizedDescriptionKey: "API Key missing"])
@@ -214,11 +214,9 @@ extension IntercomPlugin {
         #if DEBUG
             Intercom.enableLogging()
         #endif
-
-        registerNotificationObservers()
     }
 
-    private func registerNotificationObservers() {
+    func registerNotificationObservers() {
         let center = NotificationCenter.default
 
         center.addObserver(
