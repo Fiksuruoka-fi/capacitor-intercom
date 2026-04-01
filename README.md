@@ -19,14 +19,15 @@
 
 ## Notice 🚀
 
-This version is for Capacitor > v7. If you are looking for plugin for another Capacitor versions use:
+This version is for Capacitor > v8. If you are looking for plugin for another Capacitor versions use:
 
 - `@foodello/intercom@^4.2.2` for v4
-- `@foodello/intercom@^5.0.0`for v5
-- `@foodello/intercom@^6.0.0`for v6
-- `@foodello/intercom@^7.0.0`for v7
+- `@foodello/intercom@^5.0.0` for v5
+- `@foodello/intercom@^6.0.0` for v6
+- `@foodello/intercom@^7.0.0` for v7
+- - `@foodello/intercom@^7.0.0` for v8
 
-Thanks for the all the authors with their work in [`@capacitor-community/intercom`](https://github.com/capacitor-community/intercom). We have noticed that the repository was left behind the newest updates and the original repository did not get updates quick enough once pull request were opened. So we decided to serve the newest Intercom capabilities under seperate org until the original repository catches the changes.
+Original work based on the [`@capacitor-community/intercom`](https://github.com/capacitor-community/intercom). So, we want to thank and acknowledge all the contributors and authors of their hard work in [`@capacitor-community/intercom`](https://github.com/capacitor-community/intercom). We needed unified API with all Capacitor.js supported platforms (Android, iOS, and Web), so we decided to serve the these capabilities with this seperate Capacitor.js plugin.
 
 **This plugin is built for the Capacitor v4 upwards.**
 
@@ -41,7 +42,7 @@ Thanks for the all the authors with their work in [`@capacitor-community/interco
 - **User management** — update user attributes, custom attributes, and company data
 - **Unread conversations** — listen for real-time unread count changes across all platforms
 - **Messenger lifecycle events** — listen for show, hide, new conversation, and email-supplied events
-- **Capacitor 4, 5, 6, and 7** — maintained across major Capacitor versions
+- **Capacitor 4, 5, 6, 7, and 8** — maintained across major Capacitor versions
 
 ### Intercom SDK versions
 
@@ -49,7 +50,7 @@ Thanks for the all the authors with their work in [`@capacitor-community/interco
 | -------- | --- | ------- |
 | iOS | [Intercom iOS SDK](https://github.com/intercom/intercom-ios) | `~> 17.0` |
 | Android | [Intercom Android SDK](https://github.com/intercom/intercom-android) | `17.x` |
-| Web | [`@intercom/messenger-js-sdk`](https://www.npmjs.com/package/@intercom/messenger-js-sdk) | `^0.0.17` |
+| Web | [`@intercom/messenger-js-sdk`](https://www.npmjs.com/package/@intercom/messenger-js-sdk) | `^0.0.18` |
 
 ### Platform support matrix
 
@@ -126,6 +127,18 @@ if (!Capacitor.isNativePlatform()) {
     // api_base: 'https://api-iam.eu.intercom.io',
   });
 }
+```
+
+#### Runtime initialization (iOS and Android)
+
+If you need to initialize Intercom at runtime instead of from the Capacitor config (for example, when the app ID comes from a remote config):
+
+```typescript
+await Intercom.loadWithKeys({
+  appId: 'your_app_id',
+  iosApiKey: 'ios_sdk-xxx',       // required on iOS
+  androidApiKey: 'android_sdk-xxx', // required on Android
+});
 ```
 
 ### User authentication
@@ -339,18 +352,6 @@ await Intercom.load({
   session_duration: 300000,    // 5 minutes in ms
   action_color: '#FF5733',
   background_color: '#1A1A2E',
-});
-```
-
-### Runtime initialization (iOS and Android)
-
-If you need to initialize Intercom at runtime instead of from the Capacitor config (for example, when the app ID comes from a remote config):
-
-```typescript
-await Intercom.loadWithKeys({
-  appId: 'your_app_id',
-  iosApiKey: 'ios_sdk-xxx',       // required on iOS
-  androidApiKey: 'android_sdk-xxx', // required on Android
 });
 ```
 
