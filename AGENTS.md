@@ -154,7 +154,7 @@ Update `src/definitions.ts` JSDoc and run `npm run docgen` (or `npm run build`).
 |---|---|---|---|
 | iOS (CocoaPods) | Intercom iOS SDK | `~> 19.0` | `FoodelloIntercom.podspec` |
 | iOS (SPM) | intercom-ios-sp | `from: "19.0.0"` | `Package.swift` |
-| Android | intercom-sdk | `17.4.7` (overridable) | `android/build.gradle` → `intercomSdkVersion` |
+| Android | intercom-sdk | `18.0.0` (overridable) | `android/build.gradle` → `intercomSdkVersion` |
 | Web | @intercom/messenger-js-sdk | `^0.0.18` | `package.json` → `dependencies` |
 | Capacitor | @capacitor/core | `>=8.0.0` | `package.json` → `peerDependencies` |
 
@@ -181,27 +181,26 @@ When bumping SDK versions, update **all** relevant locations. For iOS, that mean
 | `logout` | `Intercom.logout()` |
 | `updateUser` | `Intercom.updateUser(with: ICMUserAttributes)` |
 | `logEvent` | `Intercom.logEvent(withName:metaData:)` |
-| `present` | `Intercom.presentIntercom(Space)` ⚠️ renamed from `present()` in SDK 19.x |
-| `presentContent` | `Intercom.presentContent(Intercom.Content)` — carousel, survey, article, conversation |
-| `displayMessenger` (deprecated) | `Intercom.presentIntercom()` ⚠️ renamed from `present()` |
-| `displayHelpCenter` (deprecated) | `Intercom.presentIntercom(Space.helpCenter)` |
+| `present` | `Intercom.present(_ space: Space)` |
+| `presentContent` | `Intercom.presentContent(_:)` — carousel, survey, article, conversation, ticket |
+| `displayMessenger` (deprecated) | `Intercom.present()` |
+| `displayHelpCenter` (deprecated) | `Intercom.present(Space.helpCenter)` |
 | `displayMessageComposer` | `Intercom.presentMessageComposer(_:)` |
 | `setUserHash` | `Intercom.setUserHash(_:)` |
 | `setUserJwt` | `Intercom.setUserJwt(_:)` |
 | `isUserLoggedIn` | `Intercom.isUserLoggedIn()` → `Bool` |
-| `fetchLoggedInUserAttributes` | `Intercom.fetchLoggedInUserAttributes()` → `ICMUserAttributes?` (synchronous in 19.x) |
+| `fetchLoggedInUserAttributes` | `Intercom.fetchLoggedInUserAttributes()` → `ICMUserAttributes?` (synchronous) |
 | `setBottomPadding` | `Intercom.setBottomPadding(_:)` |
 | `displayLauncher` / `hideLauncher` | `Intercom.setLauncherVisible(_:)` |
 | `displayInAppMessages` / `hideInAppMessages` | `Intercom.setInAppMessagesVisible(_:)` |
-| `sendPushTokenToIntercom` | `Intercom.setDeviceToken(_:failure:)` (deprecated) or `Intercom.setDeviceToken(_:success:failure:)` |
+| `sendPushTokenToIntercom` | `Intercom.setDeviceToken(_:completion:)` |
 | `getUnreadConversationCount` | `Intercom.unreadConversationCount()` |
-| `hideMessenger` | `Intercom.hideIntercom()` ⚠️ renamed from `hide()` in SDK 19.x |
+| `hideMessenger` | `Intercom.hide()` |
 
-**⚠️ API renames in Intercom iOS SDK 19.x:**
-- `Intercom.present()` → `Intercom.presentIntercom()`
-- `Intercom.present(Space)` → `Intercom.presentIntercom(Space)`
-- `Intercom.hide()` → `Intercom.hideIntercom()`
-- `fetchLoggedInUserAttributes` is now **synchronous** (returns `ICMUserAttributes?` directly, no callback)
+**Notes on SDK 19.x:**
+- The SDK header declares `presentIntercom`/`presentIntercom:` and `hideIntercom` as the canonical ObjC names, but the plugin calls `present()`/`present(_:)` and `hide()` — these compile fine and are the names the plugin actually uses.
+- `fetchLoggedInUserAttributes` is **synchronous** (returns `ICMUserAttributes?` directly, no callback).
+- `Intercom.Content` supports: `article`, `carousel`, `survey`, `conversation`, `ticket`. iOS is currently missing `ticket` — tracked separately.
 
 ## Android Native Implementation
 
@@ -348,8 +347,8 @@ Plugin major version tracks Capacitor major version (plugin v8 = Capacitor 8). *
 | Breaking CocoaPods or SPM | Users depend on both — verify both before merging |
 | `Carousel`, `receivePush` on web | These are native-only; throw `unimplemented` |
 | `private` in Swift extension in separate file | Not visible to main class file — use `internal` or `fileprivate` |
-| iOS SDK 19.x `present()` → `presentIntercom()` | Old API names don't exist; build fails if not updated |
 | iOS SDK 19.x `fetchLoggedInUserAttributes` is synchronous | No callback — returns `ICMUserAttributes?` directly |
+| iOS `presentContent` missing `ticket` type | Android supports `IntercomContent.Ticket`; iOS contentMapping does not yet include `"ticket"` |
 | SwiftLint autocorrect doesn't fix structural violations | identifier_name, type_body_length, file_length, cyclomatic_complexity all require manual refactoring |
 | Root `npm run lint` / `npm run verify` do not validate `example-app/` | UI regressions in the harness slip through unless you run the example-app lint/test/build commands too |
 | `example-app/src/style.css` is not a theme layer | It should stay minimal; piling custom CSS into it will drift from the Tailwind utility approach |
