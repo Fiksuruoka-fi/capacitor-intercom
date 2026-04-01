@@ -5,22 +5,76 @@ import Intercom
 /// Please read the Capacitor iOS Plugin Development Guide
 /// here: https://capacitorjs.com/docs/plugins/ios
 @objc(IntercomPlugin)
-public class IntercomPlugin: CAPPlugin {
-    private var appId = "NO_APP_ID_PASSED"
-    private var apiKey = "NO_API_KEY_PASSED"
+public class IntercomPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "IntercomPlugin"
+    public let jsName = "Intercom"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "fetchLoggedInUserAttributes", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "registerIdentifiedUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "registerUnidentifiedUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "loginIdentifiedUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "loginUnidentifiedUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "updateUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "loadWithKeys", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "logout", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "logEvent", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayMessenger", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayMessageComposer", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayHelpCenter", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "hideMessenger", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayLauncher", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "hideLauncher", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayInAppMessages", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "hideInAppMessages", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayCarousel", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setUserHash", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setUserJwt", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setBottomPadding", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayArticle", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "present", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "presentContent", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setupUnreadConversationListener", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "removeUnreadConversationListener", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getUnreadConversationCount", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "isUserLoggedIn", returnType: CAPPluginReturnPromise)
+    ]
+
+    var appId = ""
+    var apiKey = ""
 
     public override func load() {
-        appId = getConfig().getString("iosAppId") ?? "NO_APP_ID_PASSED"
-        apiKey = getConfig().getString("iosApiKey") ?? "NO_API_KEY_PASSED"
+        appId = getConfig().getString("iosAppId") ?? ""
+        apiKey = getConfig().getString("iosApiKey") ?? ""
 
-        let _ = try? setupIntercom()
+        registerNotificationObservers()
+
+        if !appId.isEmpty && !apiKey.isEmpty {
+            _ = try? setupIntercom()
+        }
     }
 
     @objc func loadWithKeys(_ call: CAPPluginCall) {
+        var resolvedAppId = call.getString("appId") ?? ""
+        if resolvedAppId.isEmpty {
+            resolvedAppId = call.getString("iosAppId") ?? ""
+        }
+
+        let resolvedApiKey = call.getString("iosApiKey") ?? ""
+
+        guard !resolvedAppId.isEmpty else {
+            call.reject("appId is required")
+            return
+        }
+
+        guard !resolvedApiKey.isEmpty else {
+            call.reject("iosApiKey is required")
+            return
+        }
+
         DispatchQueue.main.async {
             do {
-                self.appId = call.getString("appId", "NO_APP_ID_PASSED")
-                self.apiKey = call.getString("iosApiKey", "NO_API_KEY_PASSED")
+                self.appId = resolvedAppId
+                self.apiKey = resolvedApiKey
                 try self.setupIntercom()
                 call.resolve()
             } catch let error as NSError {
@@ -35,57 +89,7 @@ public class IntercomPlugin: CAPPlugin {
         }
 
         DispatchQueue.main.async {
-            Intercom.setDeviceToken(deviceToken)
-        }
-    }
-
-    @objc func setupUnreadConversationListener(_ call: CAPPluginCall) {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleUpdateUnreadCountListener(notification:)),
-            name: NSNotification.Name.IntercomUnreadConversationCountDidChange,
-            object: nil
-        )
-        call.resolve()
-    }
-
-    @objc func handleUpdateUnreadCountListener(notification: NSNotification) {
-        let unreadCount = Intercom.unreadConversationCount()
-        notifyListeners("updateUnreadCount", data: ["unreadCount": unreadCount])
-    }
-
-    @available(
-        *, deprecated, message: "This method is deprecated, use loginIdentifiedUser() instead."
-    )
-    @objc func registerIdentifiedUser(_ call: CAPPluginCall) {
-        let userId = call.getString("userId")
-        let email = call.getString("email")
-        let attributes = ICMUserAttributes()
-
-        if (email) != nil {
-            attributes.email = email
-            DispatchQueue.main.async {
-                Intercom.loginUser(with: attributes) { result in
-                    switch result {
-                    case .success: call.resolve()
-                    case .failure(let error):
-                        call.reject("Error logging in: \(error.localizedDescription)")
-                    }
-                }
-            }
-        }
-
-        if (userId) != nil {
-            attributes.userId = userId
-            DispatchQueue.main.async {
-                Intercom.loginUser(with: attributes) { result in
-                    switch result {
-                    case .success: call.resolve()
-                    case .failure(let error):
-                        call.reject("Error logging in: \(error.localizedDescription)")
-                    }
-                }
-            }
+            Intercom.setDeviceToken(deviceToken, completion: nil)
         }
     }
 
@@ -94,18 +98,13 @@ public class IntercomPlugin: CAPPlugin {
         let email = call.getString("email")
         let attributes = ICMUserAttributes()
 
-        if (email) == nil && (userId) == nil {
+        if email == nil && userId == nil {
             call.reject("Email or userId is required")
             return
         }
 
-        if (email) != nil {
-            attributes.email = email
-        }
-
-        if (userId) != nil {
-            attributes.userId = userId
-        }
+        attributes.email = email
+        attributes.userId = userId
 
         DispatchQueue.main.async {
             Intercom.loginUser(with: attributes) { result in
@@ -118,28 +117,13 @@ public class IntercomPlugin: CAPPlugin {
         }
     }
 
-    @available(
-        *, deprecated, message: "This method is deprecated, use loginIdentifiedUser() instead."
-    )
-    @objc func registerUnidentifiedUser(_ call: CAPPluginCall) {
-        DispatchQueue.main.async {
-            Intercom.loginUnidentifiedUser { result in
-                switch result {
-                case .success: call.resolve()
-                case .failure(let error):
-                    call.reject("Error loggin in unidentified user: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
-
     @objc func loginUnidentifiedUser(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             Intercom.loginUnidentifiedUser { result in
                 switch result {
                 case .success: call.resolve()
                 case .failure(let error):
-                    call.reject("Error loggin in unidentified user: \(error.localizedDescription)")
+                    call.reject("Error logging in unidentified user: \(error.localizedDescription)")
                 }
             }
         }
@@ -147,49 +131,25 @@ public class IntercomPlugin: CAPPlugin {
 
     @objc func updateUser(_ call: CAPPluginCall) {
         let userAttributes = ICMUserAttributes()
-        let userId = call.getString("userId")
-        if userId != nil {
-            userAttributes.userId = userId
-        }
-        let email = call.getString("email")
-        if email != nil {
-            userAttributes.email = email
-        }
-        let name = call.getString("name")
-        if name != nil {
-            userAttributes.name = name
-        }
-        let phone = call.getString("phone")
-        if phone != nil {
-            userAttributes.phone = phone
-        }
-        let languageOverride = call.getString("languageOverride")
-        if languageOverride != nil {
-            userAttributes.languageOverride = languageOverride
-        }
-        let customAttributes = call.getObject("customAttributes")
-        if customAttributes != nil {
-            userAttributes.customAttributes = customAttributes
-        }
+        userAttributes.userId = call.getString("userId")
+        userAttributes.email = call.getString("email")
+        userAttributes.name = call.getString("name")
+        userAttributes.phone = call.getString("phone")
+        userAttributes.languageOverride = call.getString("languageOverride")
+        userAttributes.customAttributes = call.getObject("customAttributes")
 
         if let company = constructCompany(call.getObject("company")) {
             userAttributes.companies = [company]
-        } else {
-            if let companies = call.getArray("companies") as? [JSObject] {
-                if !companies.isEmpty {
-                    let companyArray = companies.compactMap { c in
-                        constructCompany(c)
-                    }
-                    userAttributes.companies = companyArray
-                }
+        } else if let companies = call.getArray("companies") as? [JSObject], !companies.isEmpty {
+            userAttributes.companies = companies.compactMap { company in
+                constructCompany(company)
             }
         }
 
         DispatchQueue.main.async {
             Intercom.updateUser(with: userAttributes) { result in
                 switch result {
-                case .success:
-                    call.resolve()
+                case .success: call.resolve()
                 case .failure(let error):
                     call.reject("Error updating user: \(error.localizedDescription)")
                 }
@@ -220,65 +180,6 @@ public class IntercomPlugin: CAPPlugin {
         }
     }
 
-    @objc func present(_ call: CAPPluginCall) {
-        let spaceMapping: [String: Space] = [
-            "help": .helpCenter,
-            "messages": .messages,
-            "home": .home,
-            "tickets": .tickets,
-        ]
-        let spaceString = call.getString("space", "")
-        let space = spaceMapping[spaceString] ?? .home
-        Intercom.present(space)
-        call.resolve()
-    }
-
-    @available(*, deprecated, message: "This method is deprecated, use present() instead.")
-    @objc func displayMessenger(_ call: CAPPluginCall) {
-        Intercom.present()
-        call.resolve()
-    }
-
-    @objc func displayMessageComposer(_ call: CAPPluginCall) {
-        guard let initialMessage = call.getString("message") else {
-            call.reject("Enter an initial message")
-            return
-        }
-        Intercom.presentMessageComposer(initialMessage)
-        call.resolve()
-    }
-
-    @available(*, deprecated, message: "This method is deprecated, use present() instead.")
-    @objc func displayHelpCenter(_ call: CAPPluginCall) {
-        Intercom.present(Space.helpCenter)
-        call.resolve()
-    }
-
-    @objc func hideMessenger(_ call: CAPPluginCall) {
-        Intercom.hide()
-        call.resolve()
-    }
-
-    @objc func displayLauncher(_ call: CAPPluginCall) {
-        Intercom.setLauncherVisible(true)
-        call.resolve()
-    }
-
-    @objc func hideLauncher(_ call: CAPPluginCall) {
-        Intercom.setLauncherVisible(false)
-        call.resolve()
-    }
-
-    @objc func displayInAppMessages(_ call: CAPPluginCall) {
-        Intercom.setInAppMessagesVisible(true)
-        call.resolve()
-    }
-
-    @objc func hideInAppMessages(_ call: CAPPluginCall) {
-        Intercom.setInAppMessagesVisible(false)
-        call.resolve()
-    }
-
     @objc func setUserHash(_ call: CAPPluginCall) {
         guard let hmac = call.getString("hmac") else {
             call.reject("hmac is missing or empty. Read intercom docs and generate it.")
@@ -287,196 +188,34 @@ public class IntercomPlugin: CAPPlugin {
 
         Intercom.setUserHash(hmac)
         call.resolve()
-        print("hmac sent to intercom")
     }
 
-    @objc func setBottomPadding(_ call: CAPPluginCall) {
-        if let value = call.getString("value"),
-            let number = NumberFormatter().number(from: value)
-        {
-            Intercom.setBottomPadding(CGFloat(truncating: number))
-            call.resolve()
-            print("set bottom padding")
-        } else {
-            call.reject("enter a value for padding bottom")
-        }
-    }
-
-    @objc func presentContent(_ call: CAPPluginCall) {
-        guard let contentId = call.getString("contentId") else {
-            call.reject("contentId not defined")
+    @objc func setUserJwt(_ call: CAPPluginCall) {
+        guard let jwt = call.getString("jwt"), !jwt.isEmpty else {
+            call.reject("jwt is required")
             return
         }
-
-        let contentMapping: [String: Intercom.Content] = [
-            "carousel": Intercom.Content.carousel(id: contentId),
-            "survey": Intercom.Content.survey(id: contentId),
-            "article": Intercom.Content.article(id: contentId),
-            "conversation": Intercom.Content.conversation(id: contentId),
-        ]
-        let contentTypeString = call.getString("contentType", "")
-        guard let contentType = contentMapping[contentTypeString] else {
-            call.reject("contentType not found")
-            return
-        }
-
-        Intercom.presentContent(contentType)
+        Intercom.setUserJwt(jwt)
         call.resolve()
     }
 
-    @available(*, deprecated, message: "This method is deprecated, use presentContent() instead.")
-    @objc func displayCarousel(_ call: CAPPluginCall) {
-        if let carouselId = call.getString("carouselId") {
-            Intercom.presentContent(Intercom.Content.carousel(id: carouselId))
+    @objc func isUserLoggedIn(_ call: CAPPluginCall) {
+        call.resolve(["isLoggedIn": Intercom.isUserLoggedIn()])
+    }
+
+    @objc func fetchLoggedInUserAttributes(_ call: CAPPluginCall) {
+        guard let attributes = Intercom.fetchLoggedInUserAttributes() else {
             call.resolve()
-        } else {
-            call.reject("carouselId not provided.")
-        }
-    }
-
-    @available(*, deprecated, message: "This method is deprecated, use presentContent() instead.")
-    @objc func displayArticle(_ call: CAPPluginCall) {
-        if let articleId = call.getString("articleId") {
-            Intercom.presentContent(Intercom.Content.article(id: articleId))
-            call.resolve()
-        } else {
-            call.reject("articleId not provided.")
-        }
-    }
-
-    @objc func getUnreadConversationCount(_ call: CAPPluginCall) {
-        let unreadCount = Intercom.unreadConversationCount()
-        call.resolve(["unreadCount": unreadCount])
-    }
-
-    private func constructCompany(_ companyData: JSObject?) -> ICMCompany? {
-        guard let company = companyData else { return nil }
-
-        let companyAttributes = ICMCompany()
-
-        companyAttributes.companyId = company["companyId"] as? String ?? ""
-
-        let name = company["name"] as? String ?? nil
-        if name != nil {
-            companyAttributes.name = name
+            return
         }
 
-        let createdAt = company["createdAt"] as? TimeInterval ?? 0
-        if createdAt != 0 {
-            companyAttributes.createdAt = Date(timeIntervalSince1970: TimeInterval(createdAt))
-        }
-
-        let monthlySpend = company["monthlySpend"] as? NSNumber ?? nil
-        if monthlySpend != nil {
-            companyAttributes.monthlySpend = monthlySpend
-        }
-
-        let plan = company["plan"] as? String ?? nil
-        if plan != nil {
-            companyAttributes.plan = plan
-        }
-
-        let customAttributes = company["customAttributes"] as? [String: Any] ?? nil
-        if customAttributes != nil {
-            companyAttributes.customAttributes = customAttributes
-        }
-
-        return companyAttributes
-    }
-
-    private func setupIntercom() throws {
-        guard appId != "NO_APP_ID_PASSED" else {
-            throw NSError(
-                domain: "Intercom", code: 0, userInfo: [NSLocalizedDescriptionKey: "App ID missing"]
-            )
-        }
-
-        guard apiKey != "NO_API_KEY_PASSED" else {
-            throw NSError(
-                domain: "Intercom", code: 0,
-                userInfo: [NSLocalizedDescriptionKey: "API Key missing"])
-        }
-
-        Intercom.setApiKey(apiKey, forAppId: appId)
-
-        #if DEBUG
-            Intercom.enableLogging()
-        #endif
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.didRegisterWithToken(notification:)),
-            name: Notification.Name.capacitorDidRegisterForRemoteNotifications,
-            object: nil
-        )
-
-        // Listen for Messenger show/hide events
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleMessengerWillShowListener(_:)),
-            name: NSNotification.Name.IntercomWindowWillShow,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleMessengerDidShow(_:)),
-            name: NSNotification.Name.IntercomWindowDidShow,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleMessengerWillHideListener(_:)),
-            name: NSNotification.Name.IntercomWindowWillHide,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleMessengerDidHideListener(_:)),
-            name: NSNotification.Name.IntercomWindowDidHide,
-            object: nil
-        )
-
-        // Listen for new conversation events
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleNewConversationStartedListener(_:)),
-            name: NSNotification.Name.IntercomDidStartNewConversation,
-            object: nil
-        )
-
-        // Listen for unread ticket count change events
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.unreadTicketCountChanged(_:)),
-            name: NSNotification.Name.IntercomUnreadTicketCountDidChange,
-            object: nil
-        )
-    }
-
-    @objc func handleMessengerWillShowListener(_ notification: Notification) {
-        self.notifyListeners("messengerWillShow", data: [:])
-    }
-
-    @objc func handleMessengerDidShow(_ notification: Notification) {
-        self.notifyListeners("messengerDidShow", data: [:])
-    }
-
-    @objc func handleMessengerWillHideListener(_ notification: Notification) {
-        self.notifyListeners("messengerWillHide", data: [:])
-    }
-
-    @objc func handleMessengerDidHideListener(_ notification: Notification) {
-        self.notifyListeners("messengerDidHide", data: [:])
-    }
-
-    @objc func handleNewConversationStartedListener(_ notification: Notification) {
-        self.notifyListeners("newConversationStarted", data: [:])
-    }
-
-    @objc func unreadTicketCountChanged(_ notification: Notification) {
-        self.notifyListeners("unreadTicketCountChange", data: [:])
+        var data: [String: Any] = [:]
+        if let userId = attributes.userId { data["userId"] = userId }
+        if let email = attributes.email { data["email"] = email }
+        if let name = attributes.name { data["name"] = name }
+        if let phone = attributes.phone { data["phone"] = phone }
+        if let lang = attributes.languageOverride { data["languageOverride"] = lang }
+        if let custom = attributes.customAttributes { data["customAttributes"] = custom }
+        call.resolve(data)
     }
 }
