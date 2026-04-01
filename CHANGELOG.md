@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.0] (2026-04-01)
+
+### ⚠ BREAKING CHANGES
+
+* Requires `@capacitor/core` v8. Update your app's peer dependency before upgrading.
+
+### Features
+
+* **ios:** Intercom SDK 17 → 19 — adds Conversational Fin, dark mode, and JWT auth support
+* **ios:** Swift Package Manager support — `Package.swift` added alongside CocoaPods
+* **ios:** Fixed SPM build failure — plugin registration migrated from Objective-C to Swift (`CAPBridgedPlugin`), resolving the "mixed language source files" error
+* **ios:** Dynamic initialization — `loadWithKeys()` now accepts `iosAppId` as a key alias and registers observers unconditionally
+* **android:** Intercom SDK 17.0.0 → 18.0.0
+* **android:** `loadWithKeys()` accepts both `appId` and `androidAppId` for consistent key naming
+* **web:** Bump `@intercom/messenger-js-sdk` to `^0.0.18`
+* **all:** Add `setUserJwt({ jwt })` — set a JWT for Intercom identity verification
+* **all:** Add `isUserLoggedIn()` — returns `{ isLoggedIn: boolean }`
+* **all:** Add `fetchLoggedInUserAttributes()` — retrieve attributes for the currently logged-in user
+* **ios/android:** Add `removeUnreadConversationListener()`
+
+### Bug Fixes
+
+* **web:** Fix `setUserHash()` / `setUserJwt()` timing bug — values are now stashed in config for the next `boot()` call instead of calling `update()` on a live session, which could push credentials to an anonymous session
+
+### Miscellaneous
+
+* Replace old Angular/Ionic example app with a modern Vite + Vue 3 + Tailwind CSS example app covering the full plugin API surface
+* Add browser-based HMAC-SHA256 and JWT (HS256) dev tools to the example app for local identity verification testing
+* Add GitHub Actions CI pipeline: ESLint + Prettier lint, TypeScript build, example app unit tests and Vite build
+
 ## [7.0.0](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v6.0.1...v7.0.0) (2025-09-10)
 
 
