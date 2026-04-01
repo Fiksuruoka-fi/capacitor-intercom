@@ -5,9 +5,42 @@ import Intercom
 /// Please read the Capacitor iOS Plugin Development Guide
 /// here: https://capacitorjs.com/docs/plugins/ios
 @objc(IntercomPlugin)
-public class IntercomPlugin: CAPPlugin {
-    private var appId = "NO_APP_ID_PASSED"
-    private var apiKey = "NO_API_KEY_PASSED"
+public class IntercomPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "IntercomPlugin"
+    public let jsName = "Intercom"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "fetchLoggedInUserAttributes", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "registerIdentifiedUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "registerUnidentifiedUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "loginIdentifiedUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "loginUnidentifiedUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "updateUser", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "loadWithKeys", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "logout", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "logEvent", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayMessenger", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayMessageComposer", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayHelpCenter", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "hideMessenger", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayLauncher", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "hideLauncher", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayInAppMessages", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "hideInAppMessages", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayCarousel", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setUserHash", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setUserJwt", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setBottomPadding", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "displayArticle", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "present", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "presentContent", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setupUnreadConversationListener", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "removeUnreadConversationListener", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getUnreadConversationCount", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "isUserLoggedIn", returnType: CAPPluginReturnPromise)
+    ]
+
+    var appId = "NO_APP_ID_PASSED"
+    var apiKey = "NO_API_KEY_PASSED"
 
     public override func load() {
         appId = getConfig().getString("iosAppId") ?? "NO_APP_ID_PASSED"
