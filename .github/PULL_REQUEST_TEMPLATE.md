@@ -1,42 +1,30 @@
-## Description
+## What
 
-Please provide a clear and concise description of the changes you've made in this pull request. Include context for any decisions made, and explain the reasoning behind them.
+<!-- Brief description of what this PR changes -->
 
-Fixes # (issue)
+## Why
 
-## Type of change
+<!-- Motivation for this change — what problem does it solve? -->
 
-Please delete options that are not relevant.
+## How
 
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] This change requires a documentation update
+<!-- Implementation approach — key decisions, tradeoffs, anything non-obvious -->
 
-## How Has This Been Tested?
+## Testing
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration.
+<!-- What was tested and how — platforms, devices, commands run -->
 
-- [ ] Test A
-- [ ] Test B
+- [ ] `npm run verify:web` passes
+- [ ] `npm run verify:ios` passes (or CI covers it)
+- [ ] `npm run verify:android` passes (or CI covers it)
+- [ ] `npm run fmt` run — no lint/format errors
 
-**Test Configuration**:
+## Not Tested
 
-- Device/OS:
-- Browser:
-- Version:
+<!-- What still needs testing or further validation, if anything -->
 
-## Checklist:
+## Breaking Changes
 
-- [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published in downstream modules
+<!-- If this is a breaking change, describe what breaks and the migration path -->
 
-## Screenshots (if appropriate):
-
-Add any screenshots or screen recordings that help visualize the changes made in this pull request.
+- [ ] This is a breaking change

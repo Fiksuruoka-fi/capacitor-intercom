@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Intercom Example</string>
+    <string name="title_activity_main">Intercom Example</string>
+    <string name="package_name">fi.foodello.intercom.example</string>
+    <string name="custom_url_scheme">fi.foodello.intercom.example</string>
+</resources>

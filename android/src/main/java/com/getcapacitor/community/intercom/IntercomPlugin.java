@@ -53,26 +53,40 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
         super.handleOnStart();
         bridge
             .getActivity()
-            .runOnUiThread(
-                () -> {
-                    try {
-                        setupIntercom();
-                        Intercom.client().handlePushMessage();
-                    } catch (Exception ignored) {}
-                }
-            );
+            .runOnUiThread(() -> {
+                try {
+                    setupIntercom();
+                } catch (Exception ignored) {}
+            });
     }
 
     @PluginMethod
     public void loadWithKeys(PluginCall call) {
-        try {
-            appId = call.getString("appId", "NO_APP_ID_PASSED");
-            apiKey = call.getString("androidApiKey", "NO_API_KEY_PASSED");
-            setupIntercom();
-            call.resolve();
-        } catch (Exception e) {
-            call.reject(e.getMessage());
+        String runtimeAppId = call.getString("appId");
+        if (runtimeAppId == null || runtimeAppId.isBlank()) {
+            runtimeAppId = call.getString("androidAppId", "NO_APP_ID_PASSED");
         }
+
+        final String resolvedAppId = runtimeAppId;
+        final String resolvedApiKey = call.getString("androidApiKey", "NO_API_KEY_PASSED");
+
+        if (bridge.getActivity() == null) {
+            call.reject("Activity unavailable");
+            return;
+        }
+
+        bridge
+            .getActivity()
+            .runOnUiThread(() -> {
+                try {
+                    appId = resolvedAppId;
+                    apiKey = resolvedApiKey;
+                    setupIntercom();
+                    call.resolve();
+                } catch (Exception e) {
+                    call.reject(e.getMessage());
+                }
+            });
     }
 
     @PluginMethod
@@ -89,9 +103,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
         if (userId != null && !userId.isEmpty()) {
             registration = registration.withUserId(userId);
         }
-        Intercom
-            .client()
-            .loginIdentifiedUser(
+        Intercom.client().loginIdentifiedUser(
                 registration,
                 new IntercomStatusCallback() {
                     @Override
@@ -121,9 +133,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             registration = registration.withUserId(userId);
         }
 
-        Intercom
-            .client()
-            .loginIdentifiedUser(
+        Intercom.client().loginIdentifiedUser(
                 registration,
                 new IntercomStatusCallback() {
                     @Override
@@ -142,9 +152,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
     @PluginMethod
     @Deprecated
     public void registerUnidentifiedUser(PluginCall call) {
-        Intercom
-            .client()
-            .loginUnidentifiedUser(
+        Intercom.client().loginUnidentifiedUser(
                 new IntercomStatusCallback() {
                     @Override
                     public void onSuccess() {
@@ -161,9 +169,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
 
     @PluginMethod
     public void loginUnidentifiedUser(PluginCall call) {
-        Intercom
-            .client()
-            .loginUnidentifiedUser(
+        Intercom.client().loginUnidentifiedUser(
                 new IntercomStatusCallback() {
                     @Override
                     public void onSuccess() {
@@ -227,9 +233,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             return;
         }
 
-        Intercom
-            .client()
-            .updateUser(
+        Intercom.client().updateUser(
                 builder.build(),
                 new IntercomStatusCallback() {
                     @Override
@@ -283,59 +287,51 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             space = IntercomSpace.Home;
         }
 
-        Intercom.client().present(space);
-        call.resolve();
+        IntercomSpace finalSpace = space;
+        runOnUiThread(call, () -> Intercom.client().present(finalSpace));
     }
 
     @PluginMethod
     @Deprecated
     public void displayMessenger(PluginCall call) {
-        Intercom.client().present();
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().present());
     }
 
     @PluginMethod
     public void displayMessageComposer(PluginCall call) {
         String message = call.getString("message");
-        Intercom.client().displayMessageComposer(message);
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().displayMessageComposer(message));
     }
 
     @PluginMethod
     @Deprecated
     public void displayHelpCenter(PluginCall call) {
-        Intercom.client().present(IntercomSpace.HelpCenter);
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().present(IntercomSpace.HelpCenter));
     }
 
     @PluginMethod
     public void hideMessenger(PluginCall call) {
-        Intercom.client().hideIntercom();
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().hideIntercom());
     }
 
     @PluginMethod
     public void displayLauncher(PluginCall call) {
-        Intercom.client().setLauncherVisibility(Intercom.VISIBLE);
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().setLauncherVisibility(Intercom.VISIBLE));
     }
 
     @PluginMethod
     public void hideLauncher(PluginCall call) {
-        Intercom.client().setLauncherVisibility(Intercom.GONE);
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().setLauncherVisibility(Intercom.GONE));
     }
 
     @PluginMethod
     public void displayInAppMessages(PluginCall call) {
-        Intercom.client().setInAppMessageVisibility(Intercom.VISIBLE);
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().setInAppMessageVisibility(Intercom.VISIBLE));
     }
 
     @PluginMethod
     public void hideInAppMessages(PluginCall call) {
-        Intercom.client().setLauncherVisibility(Intercom.GONE);
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().setInAppMessageVisibility(Intercom.GONE));
     }
 
     @PluginMethod
@@ -360,8 +356,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             return;
         }
 
-        Intercom.client().presentContent(contentType);
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().presentContent(contentType));
     }
 
     @PluginMethod
@@ -372,8 +367,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             call.reject("carouselId is missing or empty");
             return;
         }
-        Intercom.client().presentContent(new IntercomContent.Carousel(carouselId));
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().presentContent(new IntercomContent.Carousel(carouselId)));
     }
 
     @PluginMethod
@@ -384,8 +378,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             call.reject("articleId is missing or empty");
             return;
         }
-        Intercom.client().presentContent(new IntercomContent.Article(articleId));
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().presentContent(new IntercomContent.Article(articleId)));
     }
 
     @PluginMethod
@@ -400,6 +393,60 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
     }
 
     @PluginMethod
+    public void setUserJwt(PluginCall call) {
+        String jwt = call.getString("jwt");
+        if (jwt == null || jwt.isEmpty()) {
+            call.reject("jwt is required");
+            return;
+        }
+        Intercom.client().setUserJwt(jwt);
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void isUserLoggedIn(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("isLoggedIn", Intercom.client().isUserLoggedIn());
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void fetchLoggedInUserAttributes(PluginCall call) {
+        bridge
+            .getActivity()
+            .runOnUiThread(() -> {
+                Registration registration = Intercom.client().fetchLoggedInUserAttributes();
+                if (registration == null) {
+                    call.resolve();
+                    return;
+                }
+
+                JSObject ret = new JSObject();
+                if (registration.getUserId() != null) ret.put("userId", registration.getUserId());
+                if (registration.getEmail() != null) ret.put("email", registration.getEmail());
+
+                UserAttributes attributes = registration.getAttributes();
+                if (attributes != null && !attributes.isEmpty()) {
+                    Map<String, Object> attributeMap = attributes.toMap();
+
+                    Object name = attributeMap.get("name");
+                    if (name instanceof String) ret.put("name", name);
+
+                    Object phone = attributeMap.get("phone");
+                    if (phone instanceof String) ret.put("phone", phone);
+
+                    Object languageOverride = attributeMap.get("language_override");
+                    if (languageOverride instanceof String) ret.put("languageOverride", languageOverride);
+
+                    Object customAttributes = attributeMap.get("custom_attributes");
+                    if (customAttributes instanceof Map) ret.put("customAttributes", customAttributes);
+                }
+
+                call.resolve(ret);
+            });
+    }
+
+    @PluginMethod
     public void setBottomPadding(PluginCall call) {
         String stringValue = call.getString("value");
         if (stringValue == null || stringValue.isEmpty()) {
@@ -407,8 +454,7 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             return;
         }
         int value = Integer.parseInt(stringValue);
-        Intercom.client().setBottomPadding(value);
-        call.resolve();
+        runOnUiThread(call, () -> Intercom.client().setBottomPadding(value));
     }
 
     @PluginMethod
@@ -475,12 +521,16 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
 
     private void setupIntercom() throws Exception {
         try {
-            if (appId.equals("NO_APP_ID_PASSED")) {
+            if (appId == null || appId.isBlank() || appId.equals("NO_APP_ID_PASSED")) {
                 throw new Exception("App ID missing");
             }
 
-            if (apiKey.equals("NO_API_KEY_PASSED")) {
+            if (apiKey == null || apiKey.isBlank() || apiKey.equals("NO_API_KEY_PASSED")) {
                 throw new Exception("API Key missing");
+            }
+
+            if (!apiKey.startsWith("android_sdk-")) {
+                throw new Exception("Android API Key has an invalid format");
             }
 
             Intercom.initialize(this.getActivity().getApplication(), apiKey, appId);
@@ -494,6 +544,24 @@ public class IntercomPlugin extends Plugin implements UnreadConversationCountLis
             Logger.warn("Intercom", "Something went wrong when initializing Intercom. Check your configurations. " + e.getMessage());
             throw e;
         }
+    }
+
+    private void runOnUiThread(PluginCall call, Runnable action) {
+        if (bridge.getActivity() == null) {
+            call.reject("Activity unavailable");
+            return;
+        }
+
+        bridge
+            .getActivity()
+            .runOnUiThread(() -> {
+                try {
+                    action.run();
+                    call.resolve();
+                } catch (Exception e) {
+                    call.reject(e.getMessage());
+                }
+            });
     }
 
     private Company constructCompany(JSObject company) throws JSONException {

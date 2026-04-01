@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run eslint
+      - run: npm run prettier -- --check
+
+  build:
+    name: Build Plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  test-example-app:
+    name: Example App — Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: example-app/.nvmrc
+          cache: npm
+          cache-dependency-path: example-app/package-lock.json
+      - name: Install plugin dependencies
+        run: npm ci
+      - name: Build plugin (needed by example-app)
+        run: npm run build
+      - name: Install example-app dependencies
+        working-directory: example-app
+        run: npm ci
+      - name: Run tests
+        working-directory: example-app
+        run: npm test
+      - name: Lint example-app
+        working-directory: example-app
+        run: npm run lint
+      - name: Build example-app
+        working-directory: example-app
+        run: npm run build

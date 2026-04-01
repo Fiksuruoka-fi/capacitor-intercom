@@ -1,0 +1,141 @@
+---
+description: Android-specific rules for IntercomPlugin.java — Java 21, plugin method patterns, Intercom Android SDK API.
+globs: ["android/**/*.java", "android/**/*.kt"]
+alwaysApply: false
+---
+
+# Android Native — IntercomPlugin.java
+
+## Class Structure
+
+`IntercomPlugin` extends `Plugin` and implements `UnreadConversationCountListener`.
+
+Init paths:
+1. **Static** — `load()` reads `androidApiKey` + `androidAppId` from `CapConfig`, calls `setupIntercom()`.
+2. **Dynamic** — `loadWithKeys` plugin method accepts `appId`, `androidApiKey`.
+3. **Resume** — `handleOnStart()` calls `setupIntercom()` + `Intercom.client().handlePushMessage()` on every app start.
+
+## Adding a New Plugin Method
+
+```java
+@PluginMethod
+public void myNewMethod(PluginCall call) {
+    String param = call.getString("param");
+    if (param == null || param.isEmpty()) {
+        call.reject("param is required");
+        return;
+    }
+    bridge.getActivity().runOnUiThread(() -> {
+        try {
+            // Call Intercom SDK
+            call.resolve();
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
+    });
+}
+```
+
+All methods that touch the Intercom SDK or UI must run on the UI thread via `bridge.getActivity().runOnUiThread(_:)`.
+
+## Returning Data
+
+```java
+JSObject result = new JSObject();
+result.put("unreadCount", count);
+call.resolve(result);
+```
+
+## Intercom Android SDK Cheatsheet
+
+```java
+// Auth
+Intercom.client().loginIdentifiedUser(Registration, IntercomStatusCallback)
+Intercom.client().loginUnidentifiedUser(IntercomStatusCallback)
+Intercom.client().logout()
+
+// User
+Intercom.client().updateUser(UserAttributes, IntercomStatusCallback)
+Intercom.client().setUserHash(String hmac)  // identity verification — call BEFORE login
+
+// Presentation
+Intercom.client().present()                          // default (home)
+Intercom.client().presentSpace(IntercomSpace)        // HOME, MESSAGES, HELP_CENTER, TICKETS
+Intercom.client().presentContent(IntercomContent)    // Article, Survey, Carousel, Conversation
+Intercom.client().displayMessageComposer(String)
+Intercom.client().hideIntercom()
+
+// Launcher / in-app
+Intercom.client().setLauncherVisibility(Intercom.Visibility.VISIBLE / GONE)
+Intercom.client().setInAppMessageVisibility(Intercom.Visibility.VISIBLE / GONE)
+Intercom.client().setBottomPadding(int dp)
+
+// Push
+new IntercomPushClient().sendTokenToIntercom(Application app, String token)
+Intercom.client().handlePushMessage()
+
+// Events
+Intercom.client().logEvent(String name)
+Intercom.client().logEvent(String name, Map<String, Object> metadata)
+
+// Unread
+Intercom.client().getUnreadConversationCount()  // returns int
+```
+
+## UserAttributes Builder Pattern
+
+```java
+UserAttributes attrs = new UserAttributes.Builder()
+    .withUserId(userId)
+    .withEmail(email)
+    .withName(name)
+    .withPhone(phone)
+    .withLanguageOverride(lang)
+    .withCustomAttributes(Map<String, Object> attrs)
+    .withCompany(Company company)
+    .build();
+```
+
+`Company` builder: `.withCompanyId(String)` (required), `.withName(String)`, `.withCreatedAt(Date)`, `.withPlan(String)`, `.withMonthlySpend(int)`, `.withCustomAttributes(Map)`.
+
+## IntercomStatusCallback
+
+```java
+new IntercomStatusCallback() {
+    @Override public void onSuccess() { call.resolve(); }
+    @Override public void onFailure(@NonNull IntercomError error) {
+        call.reject("Error: " + error.getErrorMessage());
+    }
+}
+```
+
+## Java Version Constraints
+
+- **Java 21 only.** Do not use language features requiring a higher API level than the plugin's `minSdkVersion`.
+- Avoid Java 8 lambdas in anonymous callback positions if they cause build issues on older AGP versions.
+- Use `Iterator` for JSON array traversal — do not assume stream availability.
+
+## Space Availability
+
+| IntercomSpace enum value | Available |
+|---|---|
+| `HOME` | ✓ |
+| `MESSAGES` | ✓ |
+| `HELP_CENTER` | ✓ |
+| `TICKETS` | ✓ |
+| news / tasks | web-only — reject if received |
+
+## Unread Count Listener
+
+`IntercomPlugin` implements `UnreadConversationCountListener`:
+
+```java
+@Override
+public void onCountUpdate(int unreadCount) {
+    JSObject data = new JSObject();
+    data.put("unreadCount", unreadCount);
+    notifyListeners("updateUnreadCount", data);
+}
+```
+
+Register via `Intercom.client().addUnreadConversationCountListener(this)` in `setupUnreadConversationListener`, remove in `removeUnreadConversationListener`.

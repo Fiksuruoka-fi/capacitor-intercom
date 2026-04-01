@@ -1,0 +1,94 @@
+---
+description: Core contributor rules for @foodello/intercom Capacitor plugin — applies to all files.
+globs: ["**/*.ts", "**/*.swift", "**/*.java", "**/*.md", "**/*.podspec"]
+alwaysApply: true
+---
+
+# @foodello/intercom — Contributor Rules
+
+## What This Is
+
+A Capacitor plugin that bridges the Intercom iOS SDK, Intercom Android SDK, and `@intercom/messenger-js-sdk` (web) to a unified TypeScript API. It is published as `@foodello/intercom` on npm.
+
+The plugin major version tracks Capacitor major (plugin v8 = Capacitor v8). Breaking changes only ship with a new Capacitor major version.
+
+## Repository Layout
+
+```
+src/
+  definitions.ts    Public API — TypeScript interfaces, enums, JSDoc. Source of truth.
+  index.ts          registerPlugin() entry point
+  web.ts            Web implementation (uses @intercom/messenger-js-sdk)
+ios/Plugin/
+  IntercomPlugin.swift    iOS native (CAPPlugin subclass)
+android/src/main/java/com/getcapacitor/community/intercom/
+  IntercomPlugin.java     Android native (Plugin subclass, Java 21)
+dist/               Generated — never edit
+FoodelloIntercom.podspec  CocoaPods spec
+```
+
+## Source of Truth
+
+`src/definitions.ts` drives:
+- TypeScript types consumed by end users
+- Auto-generated API docs in `README.md` (between `<docgen-index>` and `<docgen-api>` tags)
+- `dist/docs.json`
+
+**Never edit `<docgen-index>` or `<docgen-api>` sections in README.md directly.**
+Update JSDoc in `src/definitions.ts`, then run `npm run docgen` or `npm run build`.
+
+## Build & Verify
+
+```bash
+npm run build        # tsc + rollup + docgen
+npm run verify       # iOS + Android + Web (run before every commit)
+npm run fmt          # ESLint + Prettier + SwiftLint (auto-fix)
+npm run lint         # check only
+npm run verify:web   # fast — just TypeScript + rollup
+```
+
+## iOS Rules
+
+- All Intercom and UIKit calls must be on `DispatchQueue.main.async`.
+- Events fire via `notifyListeners("eventName", data: [...])`.
+- Both **CocoaPods** (`FoodelloIntercom.podspec`) and **Swift Package Manager** must keep working.
+- `setupIntercom()` is called from `load()` (static keys) or `loadWithKeys()` (dynamic keys).
+- Identity verification: `setUserHash(hmac:)` must be called **before** `loginIdentifiedUser`. If the order is wrong, Intercom silently degrades to unverified — document this clearly in any PR touching auth.
+- `IntercomSpace` on iOS: `.home`, `.messages`, `.helpCenter`, `.tickets` — `news` and `tasks` are web-only; guard with `call.reject` if received.
+- `IntercomContent` on iOS: `carousel`, `survey`, `article`, `conversation` — other variants are web-only.
+
+## Android Rules
+
+- Java **21** only. No Java 8 lambdas, no records, no newer language features.
+- All UI calls must run on `bridge.getActivity().runOnUiThread(_:)`.
+- Push handled via `IntercomPushClient`.
+- `handleOnStart()` calls `setupIntercom()` and `Intercom.client().handlePushMessage()` — do not remove this.
+
+## Web Rules
+
+- `IntercomWeb` extends `WebPlugin` from `@capacitor/core`.
+- State is maintained in a local `State` object (booted, config, initialized, isVisible, unreadCount, unreadListenerAttached).
+- Methods not supported on web (`loginIdentifiedUser`, `loginUnidentifiedUser`, `receivePush`, `sendPushTokenToIntercom`, `loadWithKeys`) must throw `this.unimplemented('Not implemented on web.')`.
+- `load(config)` boots the SDK and wires show/hide/userEmailSupplied listeners.
+- Unread count listener is managed internally via `onUnreadCountChange`.
+
+## Common Pitfalls
+
+| Pitfall | Why it matters |
+|---|---|
+| `setUserHash` called after `loginIdentifiedUser` | Identity verification silently degrades — always call before login |
+| `setupUnreadConversationListener()` not called before `addListener('updateUnreadCount', ...)` | Events never fire on native |
+| Forgetting `removeUnreadConversationListener()` | Duplicate events from stale `NotificationCenter` observers |
+| Editing `dist/` | Fully regenerated on build — changes are lost |
+| `CompanyOption.companyId` missing on native | Required for company association; `name` is required on web |
+| Breaking CocoaPods or SPM | Users depend on both — verify both before merging |
+| `Carousel`, `receivePush` on web | These are native-only; throw `unimplemented` |
+
+## PR Checklist
+
+- [ ] `npm run verify` passes (all three platforms)
+- [ ] `npm run fmt` run (no lint/format errors)
+- [ ] `src/definitions.ts` updated if public API changed
+- [ ] `README.md` API sections regenerated via `npm run docgen`
+- [ ] No breaking changes (unless aligned with a new Capacitor major)
+- [ ] Both CocoaPods and SPM remain functional if iOS files changed

@@ -19,12 +19,14 @@ import IntercomModule, {
   startTour,
   trackEvent,
   update,
+  whoami,
 } from '@intercom/messenger-js-sdk';
 
 import type {
   IntercomCompany,
   IntercomPlugin,
   IntercomPushNotificationData,
+  IntercomUserAttributes,
   IntercomUserUpdateOptions,
   IntercomWebConfig,
   LoadWithKeysOption,
@@ -40,6 +42,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     isVisible: false,
     unreadCount: 0,
     unreadListenerAttached: false,
+    isUserLoggedIn: false,
   };
 
   constructor() {
@@ -76,12 +79,45 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     this.state.booted = true;
   }
 
-  async loginIdentifiedUser(_options: { userId?: string; email?: string }): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+  async loginIdentifiedUser(options: { userId?: string; email?: string }): Promise<void> {
+    if (!options.userId && !options.email) {
+      throw this.unavailable('userId or email is required.');
+    }
+
+    const bootConfig: IntercomWebConfig = {
+      ...this.state.config,
+      ...(options.userId ? { user_id: options.userId } : {}),
+      ...(options.email ? { email: options.email } : {}),
+    };
+
+    // Always shutdown first — boot() with credentials is ignored if the SDK
+    // is already running as a visitor. shutdown() + boot() is the correct
+    // sequence to re-identify a session on the Intercom web SDK.
+    if (this.state.booted) {
+      shutdown();
+    }
+
+    boot(bootConfig);
+    this.state.booted = true;
+    this.state.config = bootConfig;
+    this.state.isUserLoggedIn = true;
   }
 
   async loginUnidentifiedUser(): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+    // Strip any user identity from config, then shutdown + boot fresh
+    // Avoid object rest destructuring to prevent TypeScript emitting a __rest
+    // helper that references top-level `this` (which Rollup rewrites to undefined).
+    const bootConfig: IntercomWebConfig = Object.fromEntries(
+      Object.entries(this.state.config).filter(([key]) => key !== 'user_id' && key !== 'email'),
+    ) as IntercomWebConfig;
+
+    if (this.state.booted) {
+      shutdown();
+    }
+
+    boot(bootConfig);
+    this.state.booted = true;
+    this.state.config = bootConfig;
   }
 
   async presentContent(options: { contentType: IntercomContent; contentId: string }): Promise<void> {
@@ -125,12 +161,12 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     action();
   }
 
-  async registerIdentifiedUser(_options: { userId?: string; email?: string }): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+  async registerIdentifiedUser(options: { userId?: string; email?: string }): Promise<void> {
+    return this.loginIdentifiedUser(options);
   }
 
   async registerUnidentifiedUser(): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+    return this.loginUnidentifiedUser();
   }
 
   async updateUser(options: IntercomUserUpdateOptions): Promise<void> {
@@ -208,11 +244,34 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
 
   async setUserHash(options: { hmac: string }): Promise<void> {
     const { hmac } = options;
-    if (hmac) {
-      this.updateConfig({ user_hash: hmac });
-      return;
+    if (!hmac) {
+      throw this.unavailable('HMAC option not found.');
     }
-    throw this.unavailable('HMAC option not found.');
+
+    // Only stash the hash in config for the next boot() call.
+    // Do NOT call update() here — pushing user_hash to a live session
+    // that has no user_id/email triggers an Identity Verification error
+    // when Messenger Security is enforced.
+    this.state.config = { ...this.state.config, user_hash: hmac };
+  }
+
+  async setUserJwt(options: { jwt: string }): Promise<void> {
+    if (!options.jwt) {
+      throw this.unavailable('JWT option not found.');
+    }
+
+    // Only stash the JWT in config for the next boot() call.
+    // Same reasoning as setUserHash — pushing auth credentials to a
+    // live session before identity is established causes errors.
+    this.state.config = { ...this.state.config, intercom_user_jwt: options.jwt };
+  }
+
+  async isUserLoggedIn(): Promise<{ isLoggedIn: boolean }> {
+    return { isLoggedIn: this.state.booted && this.state.initialized && this.state.isUserLoggedIn };
+  }
+
+  async fetchLoggedInUserAttributes(): Promise<IntercomUserAttributes | Record<string, string> | undefined> {
+    return whoami();
   }
 
   async setBottomPadding(options: { value: string }): Promise<void> {
@@ -287,6 +346,7 @@ export class IntercomWeb extends WebPlugin implements IntercomPlugin {
     this.state.config = { app_id: '' };
     this.state.unreadCount = 0;
     this.state.unreadListenerAttached = false;
+    this.state.isUserLoggedIn = false;
   }
 
   /**
