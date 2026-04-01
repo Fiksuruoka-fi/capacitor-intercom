@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v8.0.0...v8.0.1) (2026-04-01)
+
+
+### Bug Fixes
+
+* adds ios support on showing ticket ([ea3ffcf](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/ea3ffcf0260938094b2cb525de6679cc1ea55af4))
+* fixes typo ([03f9849](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/03f9849422111e827cd6ad4aa69b340aecbb6d38))
+
 ## [8.0.0] (2026-04-01)
 
 ### ⚠ BREAKING CHANGES
