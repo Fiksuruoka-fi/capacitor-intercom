@@ -25,7 +25,7 @@ This version is for Capacitor > v8. If you are looking for plugin for another Ca
 - `@foodello/intercom@^5.0.0` for v5
 - `@foodello/intercom@^6.0.0` for v6
 - `@foodello/intercom@^7.0.0` for v7
-- - `@foodello/intercom@^7.0.0` for v8
+- `@foodello/intercom@^8.0.0` for v8
 
 Original work based on the [`@capacitor-community/intercom`](https://github.com/capacitor-community/intercom). So, we want to thank and acknowledge all the contributors and authors of their hard work in [`@capacitor-community/intercom`](https://github.com/capacitor-community/intercom). We needed unified API with all Capacitor.js supported platforms (Android, iOS, and Web), so we decided to serve the these capabilities with this seperate Capacitor.js plugin.
 
@@ -1181,7 +1181,9 @@ Only available for iOS and Android.
 
 Construct a type with a set of properties K of type T
 
-<code>{ [P in K]: T; }</code>
+<code>{
+ [P in K]: T;
+ }</code>
 
 
 ### Enums
