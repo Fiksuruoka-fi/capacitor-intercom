@@ -1181,9 +1181,7 @@ Only available for iOS and Android.
 
 Construct a type with a set of properties K of type T
 
-<code>{
- [P in K]: T;
- }</code>
+<code>{ [P in K]: T; }</code>
 
 
 ### Enums
@@ -1216,7 +1214,7 @@ Construct a type with a set of properties K of type T
 | **`Checklist`**    | <code>'checklist'</code>    | Only available for Web             | 4.2.0 |
 | **`News`**         | <code>'news'</code>         | Only available for Web             | 4.2.0 |
 | **`Tour`**         | <code>'tour'</code>         | Only available for Web             | 4.2.0 |
-| **`Ticket`**       | <code>'ticket'</code>       | Only available for Web             | 7.0.0 |
+| **`Ticket`**       | <code>'ticket'</code>       |                                    | 7.0.0 |
 | **`Conversation`** | <code>'conversation'</code> |                                    | 7.0.0 |
 
 
