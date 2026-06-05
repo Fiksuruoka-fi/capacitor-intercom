@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.2](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v8.0.1...v8.0.2) (2026-06-05)
+
+
+### Miscellaneous Chores
+
+* release 8.0.2 ([131e9e3](https://github.com/Fiksuruoka-fi/capacitor-intercom/commit/131e9e3f40b8c14baa0e5ff113ee2ecd176913db))
+
 ## [8.0.1](https://github.com/Fiksuruoka-fi/capacitor-intercom/compare/v8.0.0...v8.0.1) (2026-04-01)
 
 
