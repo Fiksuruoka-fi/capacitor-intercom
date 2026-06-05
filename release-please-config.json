@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "include-v-in-tag": true,
+  "draft": true,
+  "force-tag-creation": true,
+  "pull-request-title-pattern": "chore${scope}: release${component} v${version}",
+  "pull-request-header": "",
+  "packages": {
+    ".": {
+      "package-name": "@foodello/intercom"
+    }
+  }
+}
