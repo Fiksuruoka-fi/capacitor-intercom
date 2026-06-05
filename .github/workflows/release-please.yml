@@ -13,18 +13,11 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
       - name: Release please
-        uses: google-github-actions/release-please-action@v3
-        id: release
+        # Opens/updates the release PR (version bump + CHANGELOG). When that PR is
+        # merged, it creates the git tag and a DRAFT GitHub Release. Publishing the
+        # draft fires the Publish workflow (see publish.yml). Config lives in
+        # release-please-config.json and .release-please-manifest.json.
+        uses: googleapis/release-please-action@v4
         with:
-          release-type: node
-          package-name: '@foodello/intercom'
-          command: release-pr
-          pull-request-title-pattern: 'chore${scope}: release${component} v${version}'
-          pull-request-header: ''
-          include-v-in-tag: true
+          token: ${{ secrets.GITHUB_TOKEN }}
